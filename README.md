@@ -11,4 +11,9 @@
   * React query, Zustand 알아보기
   * 실제 설치하고 사용해보기
 
+* 09-03
+  * 하이드레이션 개념
+  * TypeScript 공부
+  * React app 설치 시, 선택하는 선택지 이해
+
 - 박준영 -
