@@ -9,7 +9,7 @@ function App() {
   const nav = useNavigate();
 
   const goGallery = () => {
-    nav('/gallery')
+    nav('/gallery/:tripId')
   }
 
   return (
