@@ -1,0 +1,32 @@
+.trip {
+  margin: 20px 0;
+}
+
+.trip .title {
+  font-size: x-large;
+  font-weight: bolder;
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subtitle {
+  font-size: medium;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.member-familyname {
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+}
