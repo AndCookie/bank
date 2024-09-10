@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import StepOne from '@/components/StepOne';
-import StepTwo from '@/components/StepTwo';
-import StepThree from '@/components/StepThree';
-import StepFour from '@/components/StepFour';
-import './TripPage.css';
+import StepOne from '../components/StepOne';
+import StepTwo from '../components/StepTwo';
+import StepThree from '../components/StepThree';
+import StepFour from '../components/StepFour';
+import './styles/TripPage.css';
 
 const TripCreate = () => {
   const [step, setStep] = useState(1);
