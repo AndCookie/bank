@@ -1,0 +1,30 @@
+.main-container {
+  height: 93vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  margin: 0px auto;
+  padding-bottom: 100px;
+  background-color: #f4f6fa;
+}
+
+.past {
+  margin: 0 auto;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.trip-card {
+  padding: 10px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 80%;
+}
+
+.trip-card:hover {
+  background-color: #f0f0f0;
+}

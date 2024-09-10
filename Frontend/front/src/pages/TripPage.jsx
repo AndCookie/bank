@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-// import useTripStore from '@/stores/tripStore'
+import './styles/TripPage.css';
+// import useTripStore from '@/stores/tripStore'  
 
 const TripPage = () => {
   // const tripStore = useTripStore();
@@ -27,16 +28,23 @@ const TripPage = () => {
     },
   ]
   const navigate = useNavigate();
-  const handleClick = (tripId) => {
+  const toGallery = (tripId) => {
     navigate(`/gallery/${tripId}`); // 각 trip의 tripId에 따라 페이지 이동
   };
+  const toCreate = () => {
+    navigate('/trip/create');
+  }
 
   return (
     <>
       <div className='main-container'>
         <div className='profile'>
           {/* 프로필 작업 */}
-          {/* 여행 만들기 버튼 들어감 */}
+          {/* <img src="{profileImageUrl}" alt="" /> */}
+          <button onClick={toCreate}>
+          {/* 여행 만들기 버튼 */}
+            +  
+          </button>
         </div>
         <div className='non-past'>
           {/* 차후 조건문으로 진행중인 여행 여부 들어감 */}
@@ -50,7 +58,7 @@ const TripPage = () => {
               <div
                 key={trip.id}
                 className="trip-card"
-                onClick={() => handleClick(trip.id)} // 클릭 시 해당 tripId로 이동
+                onClick={() => toGallery(trip.id)} // 클릭 시 해당 tripId로 이동
               >
                 <h3>{trip.trip_name}</h3>
                 <p>Location: {trip.location}</p>
