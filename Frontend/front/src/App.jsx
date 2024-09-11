@@ -15,9 +15,9 @@ function App() {
 
   return (
     <>
-    <div>
-      <button onClick={goGallery}>Gallery</button>
-    </div>
+      <div>
+        <button onClick={goGallery}>Gallery</button>
+      </div>
       <Routes>
         <Route path="/trip" element={<TripPage />}></Route>
         <Route path="/gallery/:tripId" element={<GalleryPage />}></Route>
