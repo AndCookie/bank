@@ -28,8 +28,8 @@ const TripDuration = ({ startDate, endDate }) => {
         <div className="subtitle">{duration}</div>
       </div>
       <div className="content">
-        <p>시작일 &nbsp; | &nbsp; {formatDay(startDate)}</p>
-        <p>종료일 &nbsp; | &nbsp; {formatDay(endDate)}</p>
+        <div>시작일 &nbsp; | &nbsp; {formatDay(startDate)}</div>
+        <div>종료일 &nbsp; | &nbsp; {formatDay(endDate)}</div>
       </div>
     </div>
   );
@@ -37,13 +37,13 @@ const TripDuration = ({ startDate, endDate }) => {
 
 const MemberList = ({ tripMembers }) => {
   return (
-    <div className="trip member">
+    <div className="trip">
       <div className="title">
         <div>멤버</div>
         <div className="subtitle">{tripMembers.length}명</div>
       </div>
       <div className="content">
-        <div className="member-familyname">
+        <div>
           {tripMembers.map((member, index) => (
             <div key={index}>{member}</div>
           ))}

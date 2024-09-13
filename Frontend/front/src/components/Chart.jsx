@@ -9,13 +9,13 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const Chart = () => {
   // 차트에 사용할 더미 데이터
   const data = {
-    labels: ['항목 A', '항목 B', '항목 C'],
+    labels: ['항공', '식비', '교통'],
     datasets: [
       {
         label: '지출 내역',
         data: [300, 150, 200],
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-        hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        backgroundColor: ['#CA7172', '#FBCC98', '#D5FB98'],
+        hoverBackgroundColor: ['#CA7172', '#FBCC98', '#D5FB98'],
       },
     ],
   };
