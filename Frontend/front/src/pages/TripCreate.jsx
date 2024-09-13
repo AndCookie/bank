@@ -11,7 +11,7 @@ const TripCreate = () => {
   const [step, setStep] = useState(0); // Vue에서 0부터 시작했으므로 맞춤
   const [showCancelModal, setShowCancelModal] = useState(false); // 취소 모달 관리
   const navigate = useNavigate();
-
+  const tripStore = useTripStore();
   const [formData, setFormData] = useState({
     members: [],
     dates: { start: '', end: '' },
