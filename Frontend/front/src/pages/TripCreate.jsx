@@ -6,7 +6,7 @@ import StepTwo from '../components/StepTwo';
 import StepThree from '../components/StepThree';
 import StepFour from '../components/StepFour';
 import './styles/TripCreate.css';
-import useTripStore from '@/stores/tripStore'
+import { useTripStore } from '../stores/tripStore'
 
 const TripCreate = () => {
   const [step, setStep] = useState(0); // Vue에서 0부터 시작했으므로 맞춤
