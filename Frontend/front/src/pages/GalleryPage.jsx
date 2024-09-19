@@ -6,16 +6,16 @@ import PreviousTrip from '../components/PreviousTrip';
 import Chart from '../components/Chart';
 import Sketch from '../components/Sketch';
 
+import './styles/GalleryPage.css'
+
 const GalleryPage = () => {
-  // const params = useParams();
   return (
-    <>
+    <div className="main-container">
       <PreviousTrip />
       <Chart />
       <Sketch />
-    </>
-  )
-}
-
+    </div>
+  );
+};
 
 export default GalleryPage;

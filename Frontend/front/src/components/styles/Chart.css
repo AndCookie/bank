@@ -1,0 +1,18 @@
+.paymentTrip {
+  margin: 10px auto;
+}
+
+.title {
+  font-size: x-large;
+  font-weight: bolder;
+  padding: 5px 20px;
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 10px 20px;
+}
+
+.content * {
+  font-size: 1rem;
+}

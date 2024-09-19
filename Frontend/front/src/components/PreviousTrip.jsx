@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { format } from 'date-fns';
+import './styles/PreviousTrip.css'
 
 const TripDuration = ({ startDate, endDate }) => {
   const [duration, setDuration] = useState('');
@@ -20,14 +22,14 @@ const TripDuration = ({ startDate, endDate }) => {
   const formatDay = (date) => format(new Date(date), 'yyyy년 MM월 dd일');
 
   return (
-    <div>
-      <div>
+    <div className="trip date">
+      <div className="title">
         <div>날짜</div>
-        <div>{duration}</div>
-        <div>
-          <p>시작일 &nbsp; | &nbsp; {formatDay(startDate)}</p>
-          <p>종료일 &nbsp; | &nbsp; {formatDay(endDate)}</p>
-        </div>
+        <div className="subtitle">{duration}</div>
+      </div>
+      <div className="content">
+        <div>시작일 &nbsp; | &nbsp; {formatDay(startDate)}</div>
+        <div>종료일 &nbsp; | &nbsp; {formatDay(endDate)}</div>
       </div>
     </div>
   );
@@ -35,13 +37,17 @@ const TripDuration = ({ startDate, endDate }) => {
 
 const MemberList = ({ tripMembers }) => {
   return (
-    <div>
-      <div>멤버</div>
-      <div>{tripMembers.length}명</div>
-      <div>
-        {tripMembers.map(member => {
-          return member
-        })}
+    <div className="trip">
+      <div className="title">
+        <div>멤버</div>
+        <div className="subtitle">{tripMembers.length}명</div>
+      </div>
+      <div className="content">
+        <div>
+          {tripMembers.map((member, index) => (
+            <div key={index}>{member}</div>
+          ))}
+        </div>
       </div>
     </div>
   )
