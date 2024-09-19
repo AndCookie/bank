@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         ENV_FILE_PATH = '/home/ubuntu/.env'
+        DOCKER_BUILDKIT = '1'  // BuildKit 활성화
     }
 
     stages {
@@ -15,7 +16,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t my-django-app:${env.BUILD_ID} ."
+                    // BuildKit 활성화 및 이미지 빌드
+                    sh """
+                    export DOCKER_BUILDKIT=${env.DOCKER_BUILDKIT}
+                    docker build -t my-django-app:${env.BUILD_ID} .
+                    """
                 }
             }
         }
@@ -31,9 +36,12 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    sh "docker stop my-django-app || true"
-                    sh "docker rm my-django-app || true"
-                    sh "docker run -d -p 8000:8000 --name my-django-app --env-file ${env.ENV_FILE_PATH} my-django-app:${env.BUILD_ID}"
+                    // 기존 컨테이너 정지 및 삭제 후 배포
+                    sh """
+                    docker stop my-django-app || true
+                    docker rm my-django-app || true
+                    docker run -d -p 8000:8000 --name my-django-app --env-file ${env.ENV_FILE_PATH} my-django-app:${env.BUILD_ID}
+                    """
                 }
             }
         }
@@ -41,6 +49,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
+                    // 사용하지 않는 이미지 및 볼륨 정리
                     sh "docker system prune -a -f --volumes"
                 }
             }
