@@ -29,9 +29,11 @@ pipeline {
         stage('Deploy Docker Container') {
             steps {
                 script {
+                    // 기존 컨테이너 정지 및 삭제
                     sh 'docker stop my-react-app || true'
                     sh 'docker rm my-react-app || true'
-                    sh 'docker run -d -p 8081:80 --name my-react-app my-react-app:latest'
+                    // React 애플리케이션 컨테이너 실행 (내부 포트 3000 가정)
+                    sh 'docker run -d -p 8081:3000 --name my-react-app my-react-app:latest'
                 }
             }
         }
