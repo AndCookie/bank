@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdArrowBack, MdClose } from 'react-icons/md'; // react-icons에서 아이콘 가져오기
-import StepOne from '../components/StepOne';
-import StepTwo from '../components/StepTwo';
-import StepThree from '../components/StepThree';
-import StepFour from '../components/StepFour';
+import { MdArrowBack, MdClose } from 'react-icons/md';
+import StepOne from '../components/Step1';
+import StepTwo from '../components/Step2';
+import StepThree from '../components/Step3';
+import StepFour from '../components/Step4';
 import '@/styles/TripCreatePage.css';
 import { useTripStore } from '../stores/tripStore';
+import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
 
 const TripCreatePage = () => {
-  const [step, setStep] = useState(0); // Vue에서 0부터 시작했으므로 맞춤
-  const [showCancelModal, setShowCancelModal] = useState(false); // 취소 모달 관리
+  const [step, setStep] = useState(0);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
-  const { setTrip, clearTrip: clearTripStore } = useTripStore(); // Zustand 스토어에서 setTrip, clearTrip 가져오기
+  const { setTrip, clearTrip: clearTripStore } = useTripStore();
+  const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const [formData, setFormData] = useState({
     members: [],
     dates: { start: '', end: '' },
     tripName: '',
     destination: '',
     account: '',
+    countries: [],
   });
 
   // 폼 데이터 업데이트 함수
@@ -29,25 +32,53 @@ const TripCreatePage = () => {
     }));
   };
 
-  const nextStep = () => setStep(step + 1);
+  // 각 스텝별 필수 입력값 검증
+  const validateStep = () => {
+    switch (step) {
+      case 0: // Step 1: 국가, 날짜, 목적지 검증
+        if (!formData.destination || !formData.countries.length || !formData.dates.start || !formData.dates.end) {
+          setError('국가, 날짜, 또는 목적지를 입력해주세요.'); // 에러 메시지 설정
+          return false;
+        }
+        return true;
+      case 1: // Step 2: 여행 이름 및 멤버 검증
+        if (!formData.tripName || !formData.members.length) {
+          setError('여행 이름과 참여 인원을 입력해주세요.');
+          return false;
+        }
+        return true;
+      case 2: // Step 3: 정산 계좌 검증
+        if (!formData.account) {
+          setError('정산 계좌를 입력해주세요.');
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  };
+
+  const nextStep = () => {
+    // 스텝별 데이터 검증 후 다음 스텝으로 이동
+    if (validateStep()) {
+      setStep(step + 1);
+    }
+  };
+
   const prevStep = () => setStep(step - 1);
 
-  const cancelTrip = () => setShowCancelModal(true); // 취소 모달 열기
-  const closeCancelModal = () => setShowCancelModal(false); // 모달 닫기
+  const cancelTrip = () => setShowCancelModal(true);
+  const closeCancelModal = () => setShowCancelModal(false);
 
   const clearTrip = () => {
-    // 여행 생성 취소 로직 처리
     clearTripStore(); // Zustand 스토어의 여행 데이터 초기화
     setShowCancelModal(false);
     navigate('/trip');
   };
 
   const saveTrip = () => {
-    // Zustand 스토어에 여행 데이터 저장
-    const { tripName, destination, dates, members, settlementTime, account } = formData;
+    const { tripName, destination, dates, members, account } = formData;
     setTrip(destination, members, dates.start, dates.end);
-    console.log('Trip saved to Zustand store:', formData);
-    // 여행 저장 후 다른 페이지로 이동
     navigate('/trip');
   };
 
@@ -89,25 +120,6 @@ const TripCreatePage = () => {
           </button>
         )}
       </div>
-
-      {/* Cancel Modal */}
-      {showCancelModal && (
-        <div className="modal">
-          <div className="modal-container">
-            <div className="modal-message">
-              <span>여행 생성을 취소하시겠습니까?</span>
-            </div>
-            <div className="modal-btns">
-              <button className="modal-btn" onClick={clearTrip}>
-                네
-              </button>
-              <button className="modal-btn" onClick={closeCancelModal}>
-                아니오
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

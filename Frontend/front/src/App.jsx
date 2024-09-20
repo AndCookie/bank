@@ -7,10 +7,12 @@ import TripPage from './pages/TripPage';
 import TripCreatePage from './pages/TripCreatePage'
 import GalleryPage from './pages/GalleryPage';
 import NotfoundPage from './pages/NotfoundPage';
+import ErrorModal from './components/ErrorModal';
 
 function App() {
   return (
     <>
+      <ErrorModal />
       <Routes>
         <Route path="" element={<HomePage />}></Route>
         <Route path="/trip" element={<TripPage />}></Route>

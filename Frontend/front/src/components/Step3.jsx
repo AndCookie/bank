@@ -3,7 +3,7 @@ import React from 'react';
 const StepThree = ({ formData, updateFormData }) => {
   return (
     <div>
-      <h2>Step 3: Set Settlement Time and Account</h2>
+      <h2>정산시간과 계좌 선택</h2>
       <input
         type="text"
         placeholder="Settlement Time"
