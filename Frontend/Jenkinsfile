@@ -15,17 +15,17 @@ pipeline {
             steps {
                 dir('Frontend') {
                     // 디렉토리 구조 확인을 위해 파일 리스트 출력
-                    sh 'ls -la'
-                    sh 'ls -la front/'
+                    sh 'ls -la' // Frontend 폴더 구조 확인
+                    sh 'ls -la front/' // front 폴더 내용 확인
                 }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                dir('Frontend/front') {
+                dir('Frontend/front') { // 정확한 경로로 이동
                     script {
-                        // 정확한 경로로 Dockerfile 빌드
+                        // Dockerfile 빌드
                         sh 'docker build -t my-react-app:latest -f Dockerfile .'
                     }
                 }
