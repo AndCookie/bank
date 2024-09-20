@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/react,python,django,visualstudiocode,windows,database,git
 # Edit at https://www.toptal.com/developers/gitignore?templates=react,python,django,visualstudiocode,windows,database,git
 
+###
+J11A204T.pem
+
 ### Database ###
 *.accdb
 *.db
