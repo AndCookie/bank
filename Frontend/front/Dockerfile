@@ -12,14 +12,17 @@ COPY . .
 # 빌드 실행
 RUN npm run build
 
-# 빌드 디렉토리 확인을 위해 파일 리스트 출력
-RUN ls -la /app/build
+# 빌드 후 파일 구조 확인 (루트 디렉토리)
+RUN ls -la /app
+
+# 빌드 후 파일 구조 확인 (dist 디렉토리 예상 위치)
+RUN ls -la /app/dist || echo "Dist directory not found, checking alternative locations"
 
 # production-stage
 FROM nginx:stable-alpine AS production-stage
 
 # 빌드된 파일을 Nginx의 HTML 경로로 복사
-COPY --from=build-stage /app/build /usr/share/nginx/html
+COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Nginx 노출 포트
 EXPOSE 80
