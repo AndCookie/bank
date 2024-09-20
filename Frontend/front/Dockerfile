@@ -26,6 +26,7 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Nginx 노출 포트
 EXPOSE 80
+EXPOSE 3000
 
 # Nginx 실행 명령어
 CMD ["nginx", "-g", "daemon off;"]
