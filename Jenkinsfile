@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git', branch: 'back', credentialsId: 'oodeng98'
+                git url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git', branch: 'back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a'
             }
         }
 
