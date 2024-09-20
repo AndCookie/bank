@@ -28,7 +28,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    sh "docker run --env-file ${env.ENV_FILE_PATH} -w /app/SOLoTrip my-django-app:${env.BUILD_ID} python manage.py test"
+                    sh "docker run --env-file /home/ubuntu/.env -w /app my-django-app:9 python manage.py test"
                 }
             }
         }
