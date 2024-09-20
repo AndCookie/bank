@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, startTransition } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import './styles/TripPage.css';
+import '@/styles/TripPage.css';
 // import useTripStore from '@/stores/tripStore'  
 
 const TripPage = () => {

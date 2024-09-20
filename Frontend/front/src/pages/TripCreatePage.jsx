@@ -5,28 +5,27 @@ import StepOne from '../components/StepOne';
 import StepTwo from '../components/StepTwo';
 import StepThree from '../components/StepThree';
 import StepFour from '../components/StepFour';
-import './styles/TripCreate.css';
-import { useTripStore } from '../stores/tripStore'
+import '@/styles/TripCreatePage.css';
+import { useTripStore } from '../stores/tripStore';
 
-const TripCreate = () => {
+const TripCreatePage = () => {
   const [step, setStep] = useState(0); // Vue에서 0부터 시작했으므로 맞춤
   const [showCancelModal, setShowCancelModal] = useState(false); // 취소 모달 관리
   const navigate = useNavigate();
-  const tripStore = useTripStore();
+  const { setTrip, clearTrip: clearTripStore } = useTripStore(); // Zustand 스토어에서 setTrip, clearTrip 가져오기
   const [formData, setFormData] = useState({
     members: [],
     dates: { start: '', end: '' },
     tripName: '',
     destination: '',
-    settlementTime: '',
-    account: ''
+    account: '',
   });
 
   // 폼 데이터 업데이트 함수
   const updateFormData = (newData) => {
     setFormData((prevData) => ({
       ...prevData,
-      ...newData
+      ...newData,
     }));
   };
 
@@ -35,9 +34,20 @@ const TripCreate = () => {
 
   const cancelTrip = () => setShowCancelModal(true); // 취소 모달 열기
   const closeCancelModal = () => setShowCancelModal(false); // 모달 닫기
+
   const clearTrip = () => {
     // 여행 생성 취소 로직 처리
+    clearTripStore(); // Zustand 스토어의 여행 데이터 초기화
     setShowCancelModal(false);
+    navigate('/trip');
+  };
+
+  const saveTrip = () => {
+    // Zustand 스토어에 여행 데이터 저장
+    const { tripName, destination, dates, members, settlementTime, account } = formData;
+    setTrip(destination, members, dates.start, dates.end);
+    console.log('Trip saved to Zustand store:', formData);
+    // 여행 저장 후 다른 페이지로 이동
     navigate('/trip');
   };
 
@@ -50,7 +60,7 @@ const TripCreate = () => {
       case 2:
         return <StepThree formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <StepFour formData={formData} />;
+        return <StepFour formData={formData} saveTrip={saveTrip} />;
       default:
         return null;
     }
@@ -61,9 +71,7 @@ const TripCreate = () => {
       {/* Header */}
       <div className="header my-2">
         <div className="back">
-          {step > 0 && (
-            <MdArrowBack className="btns" size={30} onClick={prevStep} />
-          )}
+          {step > 0 && <MdArrowBack className="btns" size={30} onClick={prevStep} />}
         </div>
         <div className="cancel">
           <MdClose className="btns" size={30} onClick={cancelTrip} />
@@ -71,9 +79,7 @@ const TripCreate = () => {
       </div>
 
       {/* Main Form */}
-      <div className="main px-2">
-        {renderStep()}
-      </div>
+      <div className="main px-2">{renderStep()}</div>
 
       {/* Next Button */}
       <div className="bottom">
@@ -106,4 +112,4 @@ const TripCreate = () => {
   );
 };
 
-export default TripCreate;
+export default TripCreatePage;
