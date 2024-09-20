@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git', branch: 'develop-front-test'
+                git url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git', branch: 'develop-front-test', , credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a'
             }
         }
 
