@@ -1,7 +1,7 @@
 import React from "react";
-import './styles/Sketch.css'
+import './styles/Modal.css';
 
-const Sketch = ({ isOpen, onClose }) => {
+const SketchModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -14,4 +14,4 @@ const Sketch = ({ isOpen, onClose }) => {
   );
 }
 
-export default Sketch;
+export default SketchModal;

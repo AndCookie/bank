@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import '@/styles/TripPage.css';
 // import useTripStore from '@/stores/tripStore'  
 
-import Sketch from '../components/Sketch';
+import SketchModal from '../components/SketchModal';
 
 const TripPage = () => {
   // const tripStore = useTripStore();
@@ -64,12 +64,18 @@ const TripPage = () => {
     },
   ]
   const navigate = useNavigate();
-  const toGallery = (tripId) => {
-    navigate(`/gallery/${tripId}`); // 각 trip의 tripId에 따라 페이지 이동
-  };
+
   const toCreate = () => {
     navigate('/trip/create');
   }
+
+  const toDetail = (tripId) => {
+    navigate(`/trip/${tripId}`);
+  }
+  
+  const toGallery = (tripId) => {
+    navigate(`/gallery/${tripId}`); // 각 trip의 tripId에 따라 페이지 이동
+  };
 
   const openModal = (event) => {
     // 이벤트 버블링 방지
@@ -94,13 +100,13 @@ const TripPage = () => {
 
           {/* 차후 조건문으로 진행중인 여행 여부 들어감 */}
           {currentTrips.map((trip) => (
-            <span className='current' key={trip.id}>
+            <span className='current' key={trip.id} onClick={() => toDetail(trip.id)}>
               {trip.location}
             </span>
           ))}
 
           {futureTrips.map((trip) => (
-            <span className='future' key={trip.id}>
+            <span className='future' key={trip.id} onClick={() => toDetail(trip.id)}>
               {trip.location}
             </span>
           ))}
@@ -130,7 +136,7 @@ const TripPage = () => {
       </div >
 
       {/* AI 스케치 모달 창 */}
-      <Sketch isOpen={isOpen} onClose={closeModal} />
+      <SketchModal isOpen={isOpen} onClose={closeModal} />
     </>
   )
 }
