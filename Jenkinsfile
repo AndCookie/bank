@@ -16,6 +16,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker-compose build backend'
+                    sh 'docker tag backend:latest $BACKEND_IMAGE:$BUILD_NUMBER'  // 이미지에 태그 추가
                 }
             }
         }
