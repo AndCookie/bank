@@ -1,0 +1,9 @@
+version: "3"
+services:
+  backend:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 manage:application
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
