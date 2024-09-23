@@ -113,8 +113,6 @@ const TripPage = () => {
         </div>
 
         <div className='past'>
-          {/* 과거 여행을 상하 슬라이드로 넣음 */}
-          <h2>과거 여행</h2>
           <div className="past-trips">
             {/* pastTrips 배열을 반복하여 각 trip 카드를 표시 */}
             {pastTrips.map((trip) => (
