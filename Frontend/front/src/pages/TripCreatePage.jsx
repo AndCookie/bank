@@ -36,7 +36,7 @@ const TripCreatePage = () => {
   const validateStep = () => {
     switch (step) {
       case 0: // Step 1: 국가, 날짜, 목적지 검증
-        if (!formData.destination || !formData.countries.length || !formData.dates.start || !formData.dates.end) {
+        if (!formData.countries.length || !formData.dates.start || !formData.dates.end) {
           setError('국가, 날짜, 또는 목적지를 입력해주세요.'); // 에러 메시지 설정
           return false;
         }
@@ -120,6 +120,24 @@ const TripCreatePage = () => {
           </button>
         )}
       </div>
+      {/* Cancel Modal */}
+      {showCancelModal && (
+        <div className="modal">
+          <div className="modal-container">
+            <div className="modal-message">
+              <span>여행 생성을 취소하시겠습니까?</span>
+            </div>
+            <div className="modal-btns">
+              <button className="modal-btn" onClick={clearTrip}>
+                네
+              </button>
+              <button className="modal-btn" onClick={closeCancelModal}>
+                아니오
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

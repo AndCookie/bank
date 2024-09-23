@@ -24,6 +24,14 @@ export const useTripStore = create((set) => ({
       member.id === memberId ? { ...member, ...updatedMember } : member
     ),
   })),
+
+  clearTrip: () => set(() => ({
+    locations: [],
+    members: [],
+    payments: [],
+    startDate: '',
+    endDate: '',
+  })),
 }));
 
 const initializeTrip = () => {

@@ -5,6 +5,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import TripPage from './pages/TripPage';
 import TripCreatePage from './pages/TripCreatePage'
+import TripFinishPage from './pages/TripFinishPage';
 import GalleryPage from './pages/GalleryPage';
 import NotfoundPage from './pages/NotfoundPage';
 import ErrorModal from './components/ErrorModal';
@@ -19,6 +20,7 @@ function App() {
         <Route path="/gallery/:tripId" element={<GalleryPage />}></Route>
         <Route path="/trip/create" element={<TripCreatePage />}></Route>
         <Route path="*" element={<NotfoundPage />}></Route>
+        <Route path="/finish/:tripId" element={<TripFinishPage />}></Route>
       </Routes>
     </>
   )

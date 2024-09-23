@@ -19,10 +19,10 @@ const StepOne = ({ formData, updateFormData }) => {
   };
 
   return (
-    <div>
-      <h2>Step 1</h2>
+    <div className="main-container">
+      <h2 className="question">어디로 여행을 떠나시나요?</h2>
       {/* 국가 입력 */}
-      <div>
+      <div className="first">
         <input
           type="text"
           placeholder="Add Country"
@@ -30,11 +30,11 @@ const StepOne = ({ formData, updateFormData }) => {
           onChange={(e) => setCountryInput(e.target.value)}
           onKeyUp={(e) => e.key === 'Enter' && addCountry()} // Enter 키로 국가 추가
         />
-        <button onClick={addCountry}>+ 추가</button>
+        <button className="btn-add" onClick={addCountry}>+ 추가</button>
       </div>
 
       {/* 선택된 국가 리스트 */}
-      <div>
+      <div className="chip-container">
         {formData.countries && formData.countries.length > 0 && (
           <ul>
             {formData.countries.map((country, index) => (
@@ -47,18 +47,20 @@ const StepOne = ({ formData, updateFormData }) => {
       </div>
 
       {/* 날짜 입력 */}
-      <input
-        type="date"
-        placeholder="Start Date"
-        value={formData.dates.start}
-        onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
-      />
-      <input
-        type="date"
-        placeholder="End Date"
-        value={formData.dates.end}
-        onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
-      />
+      <div className="second">
+        <input
+          type="date"
+          placeholder="Start Date"
+          value={formData.dates.start}
+          onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
+        />
+        <input
+          type="date"
+          placeholder="End Date"
+          value={formData.dates.end}
+          onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
+        />
+      </div>
     </div>
   );
 };

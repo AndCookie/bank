@@ -1,0 +1,90 @@
+.main-container {
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  margin: 0px auto;
+  padding: 0px;
+}
+
+.chip-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.first,
+.second {
+  margin: 0px 10px;
+}
+
+.first {
+  margin-top: 30px;
+  margin-bottom: 70px;
+}
+
+.second {
+  padding-bottom: 120px;
+}
+
+.question {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 15px;
+  width: 90%;
+}
+
+.subtitle {
+  font-size: small;
+  padding-left: 2px;
+}
+
+.calendar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.btn-container {
+  margin: 0px auto;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-add {
+  margin: 0px auto;
+  width: 80%;
+  text-align: center;
+  cursor: pointer;
+}
+
+.error-message {
+  font-size: small;
+  color: red;
+  padding: auto;
+}
+
+ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+li button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
