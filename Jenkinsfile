@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         BACKEND_IMAGE = 'parenhark/backend'
-    }
         ENV_FILE_PATH = '/home/ubuntu/.env'
+    }
 
     stages {
         stage('Clone Backend Repo') {
