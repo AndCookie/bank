@@ -23,7 +23,7 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'c23281eb-4db4-4090-973c-80cacc65904d', url: 'https://index.docker.io/v1/') {
+                    withDockerRegistry([credentialsId: 'c23281eb-4db4-4090-973c-80cacc65904d', url: 'https://index.docker.io/v1/']) {
                         sh 'docker push $BACKEND_IMAGE:$BUILD_NUMBER'
                     }
                 }
