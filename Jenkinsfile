@@ -2,69 +2,43 @@ pipeline {
     agent any
 
     environment {
-        ENV_FILE_PATH = '/home/ubuntu/.env'
-        DOCKER_BUILDKIT = '1'  // BuildKit 활성화
+        BACKEND_IMAGE = 'parenhark/backend'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Backend Repo') {
             steps {
-                git url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git', branch: 'back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a'
+                git branch: 'develop-back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Backend Docker Image') {
             steps {
                 script {
-                    // BuildKit 활성화 및 이미지 빌드
-                    sh """
-                    export DOCKER_BUILDKIT=${env.DOCKER_BUILDKIT}
-                    docker build -t my-django-app:${env.BUILD_ID} .
-                    """
+                    sh 'docker-compose build backend'
                 }
             }
         }
 
-        stage('Run Tests') {
+        stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    sh "docker run --env-file /home/ubuntu/.env -w /app my-django-app:9 python manage.py test"
+                    withDockerRegistry(credentialsId: 'c23281eb-4db4-4090-973c-80cacc65904d', url: '') {
+                        sh 'docker push $BACKEND_IMAGE:$BUILD_NUMBER'
+                    }
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Backend on EC2') {
             steps {
                 script {
-                    // 기존 컨테이너 정지 및 삭제 후 배포
-                    sh """
-                    docker stop my-django-app || true
-                    docker rm my-django-app || true
-                    docker run -d -p 8000:8000 --name my-django-app --env-file ${env.ENV_FILE_PATH} my-django-app:${env.BUILD_ID}
-                    """
+                    sh '''
+                    docker-compose down backend &&
+                    docker-compose up -d backend
+                    '''
                 }
             }
-        }
-
-        stage('Clean Up') {
-            steps {
-                script {
-                    // 사용하지 않는 이미지 및 볼륨 정리
-                    sh "docker system prune -a -f --volumes"
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Build finished'
-        }
-        success {
-            echo 'Build succeeded!'
-        }
-        failure {
-            echo 'Build failed!'
         }
     }
 }
