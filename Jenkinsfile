@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone Backend Repo') {
             steps {
-                git branch: 'develop-back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
+                git branch: 'back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
             }
         }
 
