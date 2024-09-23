@@ -15,6 +15,7 @@ pipeline {
         stage('Build Backend Docker Image') {
             steps {
                 script {
+                    // 백엔드만 빌드
                     sh 'docker-compose build backend'
                     sh 'docker tag backend_image:latest $BACKEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
                 }
@@ -31,11 +32,12 @@ pipeline {
             }
         }
 
-        stage('Deploy Backend on EC2') {
+        stage('Restart Backend Only') {
             steps {
                 script {
+                    // 백엔드만 중지 후 다시 시작
                     sh '''
-                    docker-compose down backend &&
+                    docker-compose stop backend &&
                     docker-compose up -d backend
                     '''
                 }
