@@ -24,15 +24,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the current directory contents into the container at /app
 COPY . .
 
-# Copy the .env file from EC2 root directory to the container (assuming .env is in /home/ubuntu/.env)
-COPY /home/ubuntu/.env /app/.env
-
-# Ensure environment variables from .env are loaded
-RUN apt-get install -y python3-dotenv
-
-# Load .env file for environment variables
-ENV $(cat /app/.env | xargs)
-
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
