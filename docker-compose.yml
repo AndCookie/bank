@@ -1,6 +1,7 @@
 version: "3"
 services:
   backend:
+    image: backend_image # 이미지 이름을 명시적으로 지정
     build: .
     command: gunicorn --bind 0.0.0.0:8000 manage:application
     volumes:
