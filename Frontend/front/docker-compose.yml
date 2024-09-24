@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   frontend:
-    build: ./Frontend/front
-    volumes:
-      - ./Frontend/front:/app
+    build: .
     ports:
       - "3000:3000"
     networks:
