@@ -1,20 +1,24 @@
 pipeline {
     agent any
 
+    environment {
+        BACKEND_IMAGE = 'parenhark/backend'
+        ENV_FILE_PATH = '/home/ubuntu/.env'
+    }
+
     stages {
-        stage('Clone Frontend Repo') {
+        stage('Clone Backend Repo') {
             steps {
-                git branch: 'develop-front-test', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
+                git branch: 'back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
             }
         }
 
-        stage('Build Frontend Docker Image') {
+        stage('Build Backend Docker Image') {
             steps {
-                dir('Frontend/front') {
-                    script {
-                    sh 'docker-compose build frontend'
-                    sh 'docker tag frontend_image:latest $FRONTEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
-                }
+                script {
+                    // 백엔드만 빌드
+                    sh 'docker-compose --env-file /home/ubuntu/.env build backend'
+                    sh 'docker tag backend_image:latest $BACKEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
                 }
             }
         }
@@ -23,19 +27,19 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry([credentialsId: 'c23281eb-4db4-4090-973c-80cacc65904d', url: 'https://index.docker.io/v1/']) {
-                        sh 'docker push $FRONTEND_IMAGE:$BUILD_NUMBER'
+                        sh 'docker push $BACKEND_IMAGE:$BUILD_NUMBER'
                     }
                 }
             }
         }
 
-        stage('Restart Frontend Only') {
+        stage('Restart Backend Only') {
             steps {
                 script {
                     // 백엔드만 중지 후 다시 시작
                     sh '''
-                    docker-compose stop frontend &&
-                    docker-compose up -d frontend
+                    docker-compose stop backend &&
+                    docker-compose up -d backend
                     '''
                 }
             }
