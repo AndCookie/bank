@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // 백엔드만 빌드
-                    sh 'docker-compose build backend'
+                    sh 'docker-compose --env-file /home/ubuntu/.env build backend'
                     sh 'docker tag backend_image:latest $BACKEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
                 }
             }
@@ -40,6 +40,16 @@ pipeline {
                     sh '''
                     docker-compose stop backend &&
                     docker-compose up -d backend
+                    '''
+                }
+            }
+        }
+
+                stage('Connect Server') {
+            steps {
+                script {
+                    sh '''
+                    docker network connect app-network back-backend-1
                     '''
                 }
             }
