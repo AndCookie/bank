@@ -45,5 +45,14 @@ pipeline {
                 }
             }
         }
+
+        stage('Connect Server') {
+            steps {
+                script {
+                    sh 'docker network inspect app-network'
+                    sh 'docker network connect app-network front-frontend-1'
+                }
+            }
+        }
     }
 }
