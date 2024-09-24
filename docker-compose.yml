@@ -2,8 +2,14 @@ version: "3"
 services:
   backend:
     build: .
-    command: gunicorn --bind 0.0.0.0:8000 back.wsgi:application # 올바른 WSGI 경로 사용
+    command: gunicorn --bind 0.0.0.0:8000 back.wsgi:application
     volumes:
       - .:/app
     ports:
       - "8000:8000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
