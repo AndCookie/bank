@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        FRONTEND_IMAGE = 'parenhark/backend'
+    }
+
     stages {
         stage('Clone Frontend Repo') {
             steps {
