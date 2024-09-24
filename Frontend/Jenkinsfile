@@ -14,10 +14,9 @@ pipeline {
 
         stage('Build Frontend Docker Image') {
             steps {
-                dir('Frontend/front') {  // docker-compose.yml과 Dockerfile이 있는 경로
+                dir('Frontend/front') {
                     script {
-                        sh 'ls -la'  // 디버깅용으로 현재 디렉토리 내용 확인
-                        sh 'docker-compose build frontend'  // docker-compose.yml 파일 경로에서 빌드
+                        sh 'docker-compose build frontend'
                         sh 'docker tag frontend_image:latest $FRONTEND_IMAGE:$BUILD_NUMBER'
                     }
                 }
