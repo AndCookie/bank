@@ -8,6 +8,21 @@
   background-color: #f4f6fa;
 }
 
+.current, .future {
+  display: inline-block;
+  border: 1px solid black;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+
+  text-align: center;
+  line-height: 50px;
+}
+
+.current {
+  border-color: red;
+}
+
 .past {
   margin: 0 auto;
   width: 100%;
@@ -23,6 +38,13 @@
   border-radius: 8px;
   cursor: pointer;
   width: 80%;
+  position: relative;
+}
+
+.sketch {
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
 .trip-card:hover {
