@@ -1,16 +1,19 @@
-import React from "react";
+import React from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+
 import './styles/Modal.css';
 
 const SketchModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h1>AI 스케치</h1>
-        <button onClick={onClose}>X</button>
-      </div>
-    </div>
+    <Modal open={isOpen} onClose={onClose}>
+      <Box className='box'>
+        <Typography>AI 스케치</Typography>
+      </Box>
+    </Modal>
   );
 }
 
