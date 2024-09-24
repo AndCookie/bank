@@ -35,11 +35,13 @@ pipeline {
 
         stage('Restart Frontend Only') {
             steps {
-                script {
-                    sh '''
-                    docker-compose stop frontend &&
-                    docker-compose up -d frontend
-                    '''
+                dir('Frontend/front') {
+                    script {
+                        sh '''
+                        docker-compose stop frontend &&
+                        docker-compose up -d frontend
+                        '''
+                    }
                 }
             }
         }
