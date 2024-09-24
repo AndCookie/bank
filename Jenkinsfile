@@ -48,9 +48,9 @@ pipeline {
                 stage('Connect Server') {
             steps {
                 script {
-                    sh '''
-                    docker network connect app-network back-backend-1
-                    '''
+                    sh 'docker network inspect app-network'
+                    // sh 'docker network disconnect app-network back-backend-1'
+                    sh 'docker network connect app-network back-backend-1'
                 }
             }
         }
