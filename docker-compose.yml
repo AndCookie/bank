@@ -11,3 +11,7 @@ services:
       - app-network
     env_file: # .env 파일 참조
       - /home/ubuntu/.env
+
+networks:
+  app-network:
+    driver: bridge
