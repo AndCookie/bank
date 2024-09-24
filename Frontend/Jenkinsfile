@@ -14,7 +14,7 @@ pipeline {
 
         stage('Build Frontend Docker Image') {
             steps {
-                dir('Frontend/front') {
+                dir('front') {
                     script {
                     sh 'docker-compose build frontend'
                     sh 'docker tag frontend_image:latest $FRONTEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
