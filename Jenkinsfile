@@ -1,43 +1,57 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/Junyoung-Park-jyp/SH5', branch: 'develop-front'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Dockerfile이 Frontend/front 폴더에 있는 경우 경로 수정
-                    sh 'docker build -t my-react-app:latest -f Frontend/front/Dockerfile Frontend/front/'
-                }
-            }
-        }
-
-        stage('Deploy Docker Container') {
-            steps {
-                script {
-                    // 컨테이너 이름 및 실행 포트 수정
-                    sh 'docker stop my-react-app || true'
-                    sh 'docker rm my-react-app || true'
-                    sh 'docker run -d -p 8081:80 --name my-react-app my-react-app:latest'
-                }
-            }
-        }
+    environment {
+        BACKEND_IMAGE = 'parenhark/backend'
+        ENV_FILE_PATH = '/home/ubuntu/.env'
     }
 
-    post {
-        always {
-            echo 'Build finished'
+    stages {
+        stage('Clone Backend Repo') {
+            steps {
+                git branch: 'back', credentialsId: 'e92707da-8291-494e-bfdd-b2a93870460a', url: 'https://lab.ssafy.com/s11-fintech-finance-sub1/S11P21A204.git'
+            }
         }
-        success {
-            echo 'Build succeeded!'
+
+        stage('Build Backend Docker Image') {
+            steps {
+                script {
+                    // 백엔드만 빌드
+                    sh 'docker-compose --env-file /home/ubuntu/.env build backend'
+                    sh 'docker tag backend_image:latest $BACKEND_IMAGE:$BUILD_NUMBER'  // 빌드된 이미지에 태그 추가
+                }
+            }
         }
-        failure {
-            echo 'Build failed!'
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'c23281eb-4db4-4090-973c-80cacc65904d', url: 'https://index.docker.io/v1/']) {
+                        sh 'docker push $BACKEND_IMAGE:$BUILD_NUMBER'
+                    }
+                }
+            }
+        }
+
+        stage('Restart Backend Only') {
+            steps {
+                script {
+                    // 백엔드만 중지 후 다시 시작
+                    sh '''
+                    docker-compose stop backend &&
+                    docker-compose up -d backend
+                    '''
+                }
+            }
+        }
+
+        stage('Connect Server') {
+            steps {
+                script {
+                    sh 'docker network inspect app-network'
+                    sh 'docker network connect app-network back-backend-1'
+                }
+            }
         }
     }
 }
