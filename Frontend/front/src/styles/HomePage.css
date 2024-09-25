@@ -1,3 +1,85 @@
 .main-container {
-  color: blue;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: bold;
+}
+
+.top, .middle, .bottom {
+  flex: 1; /* 각각 1/3씩 차지 */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.top {
+  justify-content: end;
+  font-size: 1.5rem;
+}
+
+.first, .second {
+  margin: 5px 0 !important;
+  padding: 0 !important;
+}
+
+.second {
+  padding-bottom: 10% !important;
+}
+
+.middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.main-img {
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.bottom {
+  justify-content: flex-start;
+  flex-grow: 1;
+  position: relative;
+  width: 100%;
+  font-size: 1.2rem;
+}
+
+.third {
+  padding-top: 5% !important;
+}
+
+.title {
+  font-weight: bolder !important;
+  font-size: 64px !important;
+}
+
+.login {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.login button {
+  background-color: #FEE500;
+  color: #000;
+  padding: 12px 30px;
+  font-size: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 5%;
+  font-weight: bold;
 }
