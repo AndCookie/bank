@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'dj_rest_auth',
     'corsheaders', 
+    'social_django', 
     'accounts', 
     'bank_accounts', 
     'trips',
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware', 
 ]
 
 
@@ -172,3 +174,21 @@ CORS_ALLOW_CREDENTIALS = True
 
 # ChatGPT API KEY
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+AUTHENTICATION_BACKENDS = (
+    # 기본 Django 백엔드
+    'django.contrib.auth.backends.ModelBackend',
+    
+    # 소셜 로그인을 위한 백엔드
+    'social_core.backends.kakao.KakaoOAuth2',
+)
+
+SOCIAL_AUTH_KAKAO_KEY = os.getenv('SOCIAL_AUTH_KAKAO_KEY')
+SOCIAL_AUTH_KAKAO_SECRET = os.getenv('SOCIAL_AUTH_KAKAO_SECRET')
+
+if os.getenv('DJANGO_ENV') == 'production':
+    SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/auth/complete/kakao/'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io'
+else:
+    SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000/api/auth/complete/kakao/'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/'

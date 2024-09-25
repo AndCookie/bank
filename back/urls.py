@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/keys/', include('keys.urls')),
     path('auth/kftc/callback/', KFTCCallbackView.as_view(), name='kftc_callback'),
     path('api/kftc/transactions/', KFTCTransactionView.as_view(), name='kftc_transactions'),
+    path('api/auth/', include('social_django.urls', namespace='social')), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
