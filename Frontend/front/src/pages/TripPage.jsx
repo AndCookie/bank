@@ -2,7 +2,10 @@ import React, { useEffect, useState, useRef, startTransition } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import '@/styles/TripPage.css';
-// import useTripStore from '@/stores/tripStore';
+
+import { useTripStore } from '@/stores/tripStore';
+import { usePastTripStore } from '@/stores/pastTripStore';
+import { useFutureTripStore } from '@/stores/futureTripStore';
 
 import SketchModal from '@/components/SketchModal';
 
@@ -10,8 +13,15 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 
 const TripPage = () => {
-  // const tripStore = useTripStore();
-  // const { data: pastTrips} = useQuery('pastTrips', tripStore.getPastTrips())
+  const fetchTrips = useTripStore((state) => state.fetchTrips);
+
+  // const currentTrips = useTripStore((state) => state.currentTrips);
+  // const pastTrips = usePastTripStore((state) => state.pastTrips);
+  // const futureTrips = useTripStore((state) => state.futureTrips);
+
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
 
   const currentTrips = [
     {

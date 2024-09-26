@@ -1,9 +1,17 @@
 import { create } from 'zustand';
 
-export const useFutureTripsStore = create((set) => ({
+export const useFutureTripStore = create((set) => ({
+  // 미래 여행 정보
   futureTrips: [],
 
-  addFutureTrip: (trip) => set((state) => ({
-    futureTrips: [...state.futureTrips, trip],
+  // 미래 여행 정보 저장
+  setFutureTrips: (tripInfo) => set(() => ({
+    futureTrips: tripInfo.map(trip => ({
+      id: trip.id,
+      startDate: trip.start_date,
+      endDate: trip.end_date,
+      tripName: trip.trip_name,
+      locations: trip.locations,
+    })),
   })),
 }));
