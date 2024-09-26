@@ -25,7 +25,7 @@ const TripPage = () => {
 
   const currentTrips = [
     {
-      "id": 5,
+      "id": 4,
       "start_date": "2024-09-15",
       "end_date": "2024-10-15",
       "trip_name": "SSAFY 특화 프로젝트",
@@ -43,7 +43,7 @@ const TripPage = () => {
 
   const futureTrips = [
     {
-      "id": 6,
+      "id": 5,
       "start_date": "2024-11-01",
       "end_date": "2024-12-01",
       "trip_name": "화성 갈끄니깐",
@@ -67,7 +67,7 @@ const TripPage = () => {
       ]
     },
     {
-      "id": 6,
+      "id": 7,
       "start_date": "2024-11-01",
       "end_date": "2024-12-01",
       "trip_name": "화성 갈끄니깐",

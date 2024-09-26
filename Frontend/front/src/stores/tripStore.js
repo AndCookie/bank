@@ -9,14 +9,16 @@ export const useTripStore = create((set) => ({
 
   // 현재 여행 정보 저장
   setCurrentTrips: (tripInfo) => set(() => ({
-    currentTrips: {
-      id: tripInfo.id,
-      startDate: tripInfo.start_date,
-      endDate: tripInfo.end_date,
-      tripName: tripInfo.trip_name,
-      imageUrl: tripInfo.image_url,
-      locations: tripInfo.locations,
-    },
+    currentTrips: Array.isArray(tripInfo)
+      ? {
+        id: tripInfo.id,
+        startDate: tripInfo.start_date,
+        endDate: tripInfo.end_date,
+        tripName: tripInfo.trip_name,
+        imageUrl: tripInfo.image_url,
+        locations: tripInfo.locations,
+      }
+      : [],
   })),
 
   // 여행 정보 axios 요청
@@ -24,7 +26,7 @@ export const useTripStore = create((set) => ({
     try {
       const response = await axios.get('');
       const { data } = response;
-      
+
       // 과거, 현재, 미래 여행 정보 저장
       usePastTripStore.getState().setPastTrips(data.past);
       useTripStore.getState().setCurrentTrips(data.current);
