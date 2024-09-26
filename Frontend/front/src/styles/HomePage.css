@@ -3,10 +3,12 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 100vh;
-  width: 100%;
   box-sizing: border-box;
   font-weight: bold;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .top, .middle, .bottom {
@@ -16,11 +18,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0;
+  margin: 0 auto;
   padding: 0;
 }
 
 .top {
+  align-items: center;
   justify-content: end;
   font-size: 1.5rem;
 }
