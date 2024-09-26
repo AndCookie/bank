@@ -149,6 +149,7 @@ MEDIA_URL = '/media/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
@@ -176,19 +177,18 @@ CORS_ALLOW_CREDENTIALS = True
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 AUTHENTICATION_BACKENDS = (
-    # 기본 Django 백엔드
     'django.contrib.auth.backends.ModelBackend',
-    
-    # 소셜 로그인을 위한 백엔드
     'social_core.backends.kakao.KakaoOAuth2',
 )
 
 SOCIAL_AUTH_KAKAO_KEY = os.getenv('SOCIAL_AUTH_KAKAO_KEY')
 SOCIAL_AUTH_KAKAO_SECRET = os.getenv('SOCIAL_AUTH_KAKAO_SECRET')
+SOCIAL_AUTH_KAKAO_SCOPE = ['profile_nickname', 'profile_image', 'friends']
+
 
 if os.getenv('DJANGO_ENV') == 'production':
     SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/auth/complete/kakao/'
     SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io/trip'
 else:
     SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000/api/auth/complete/kakao/'
-    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/accounts/kakao_login_success/'

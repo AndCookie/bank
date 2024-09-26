@@ -4,7 +4,7 @@ from .views import *
 
 app_name = 'accounts'
 urlpatterns = [
-    path('signup/', signup),
-    path('login/', login),
+    path('kakao_login_success/', kakao_login_success),
     path('logout/', logout), 
+    path('friend/', friend), 
 ]
