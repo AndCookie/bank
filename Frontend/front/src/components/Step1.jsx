@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Chip, Stack } from '@mui/material';
 
 const StepOne = ({ formData, updateFormData }) => {
   const [countryInput, setCountryInput] = useState('');
@@ -37,31 +38,32 @@ const StepOne = ({ formData, updateFormData }) => {
       </div>
 
       {/* 선택된 국가 리스트 */}
-      <div className="chip-container">
+      <Stack direction="row" spacing={1} flexWrap="wrap" className="chip-container">
         {formData.locations && formData.locations.length > 0 && (
-          <ul>
-            {formData.locations.map((location, index) => (
-              <li key={index}>
-                {location.country} <button onClick={() => removeCountry(index)}>X</button>
-              </li>
-            ))}
-          </ul>
+          formData.locations.map((location, index) => (
+            <Chip
+              key={index}
+              label={location.country}
+              onDelete={() => removeCountry(index)}
+              variant="outlined"  // 테두리 있는 스타일
+              color="primary"     // 색상 설정
+            />
+          ))
         )}
-      </div>
-
+      </Stack>
       {/* 날짜 입력 */}
       <div className="second">
         <input
           type="date"
           placeholder="Start Date"
-          value={formData.start_date || ''}
-          onChange={(e) => updateFormData({ start_date: e.target.value })}
+          value={formData.dates.start || ''}  // formData.dates.start가 없는 경우 빈 문자열 처리
+          onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
         />
         <input
           type="date"
           placeholder="End Date"
-          value={formData.end_date || ''}
-          onChange={(e) => updateFormData({ end_date: e.target.value })}
+          value={formData.dates.end || ''}  // formData.dates.end가 없는 경우 빈 문자열 처리
+          onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
         />
       </div>
     </div>

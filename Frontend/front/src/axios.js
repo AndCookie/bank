@@ -12,9 +12,9 @@ const axiosInstance = axios.create({
 // 요청 인터셉터 (예: Authorization 헤더에 토큰 추가)
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // 로컬 스토리지에서 토큰 가져오기
+    const token = localStorage.getItem('token'); // 로컬 스토리지에서 'token' 값을 가져옴
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // 요청 헤더에 토큰 추가
+      config.headers.Authorization = `Bearer ${token}`; // 가져온 토큰을 Authorization 헤더에 추가
     }
     return config;
   },
