@@ -1,6 +1,6 @@
 import React from 'react';
-import { MdClose } from 'react-icons/md';
 import { Modal, Box, Typography, Backdrop, Fade } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import './styles/Modal.css';
 
@@ -21,7 +21,7 @@ const SketchModal = ({ isOpen, onClose }) => {
     >
       <Fade in={open}>
         <Box className='box'>
-          <MdClose onClick={onClose} />
+          <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
           <Typography>
             진행 중인 여행 정산 정보
           </Typography>
