@@ -4,9 +4,10 @@ import { useQuery } from 'react-query';
 import '@/styles/HomePage.css';
 
 const HomePage = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const toTrip = () => {
-    window.location.href = 'https://j11a204.p.ssafy.io/api/auth/login/kakao/';
+    // window.location.href = 'https://j11a204.p.ssafy.io/api/auth/login/kakao/';
+    navigate('/trip');
   };
 
   return (

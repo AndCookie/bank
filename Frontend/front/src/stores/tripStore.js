@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 
 export const useTripStore = create((set) => ({
-  locations: [],  
-  members: [],     
-  payments: [],    
-  startDate: '',   
-  endDate: '',     
-  
+  locations: [],  // 기본값으로 빈 배열 설정
+  members: [],
+  payments: [],
+  startDate: '',
+  endDate: '',
+
   setTrip: (locations, members, startDate, endDate) => set(() => ({
     locations: locations || [],
     members: members || [],
-    payments: [],  
+    payments: [],
     startDate,
     endDate,
   })),
@@ -33,24 +33,3 @@ export const useTripStore = create((set) => ({
     endDate: '',
   })),
 }));
-
-const initializeTrip = () => {
-  useTripStore.getState().setTrip(
-    ['South Korea', 'Japan'],  
-    [
-      { id: 'member1', account: '123-456' }, 
-      { id: 'member2', account: '789-012' }
-    ],
-    '2024-09-01', 
-    '2024-09-10' 
-  );
-};
-
-const addPayment = () => {
-  useTripStore.getState().addPayment({
-    id: 'payment1',
-    amount: 100,
-    memberId: 'member1',
-    description: 'Dinner'
-  });
-};

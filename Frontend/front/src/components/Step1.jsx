@@ -1,21 +1,24 @@
 import React, { useState } from 'react';
 
 const StepOne = ({ formData, updateFormData }) => {
-  const [countryInput, setCountryInput] = useState(''); // 입력한 국가를 저장하는 상태
+  const [countryInput, setCountryInput] = useState('');
 
   // 국가 추가 함수
   const addCountry = () => {
-    if (countryInput && !formData.countries.includes(countryInput)) {
-      // 기존 국가 목록에 새로운 국가 추가
-      updateFormData({ countries: [...formData.countries, countryInput] });
-      setCountryInput(''); // 입력 필드 초기화
+    // formData.locations가 존재하지 않으면 빈 배열로 처리
+    const currentLocations = formData.locations || [];
+
+    if (countryInput && !currentLocations.some(loc => loc.country === countryInput)) {
+      updateFormData({
+        locations: [...currentLocations, { country: countryInput }],
+      });
+      setCountryInput('');
     }
   };
 
-  // 국가 삭제 함수
   const removeCountry = (index) => {
-    const updatedCountries = formData.countries.filter((_, i) => i !== index);
-    updateFormData({ countries: updatedCountries });
+    const updatedLocations = formData.locations.filter((_, i) => i !== index);
+    updateFormData({ locations: updatedLocations });
   };
 
   return (
@@ -35,11 +38,11 @@ const StepOne = ({ formData, updateFormData }) => {
 
       {/* 선택된 국가 리스트 */}
       <div className="chip-container">
-        {formData.countries && formData.countries.length > 0 && (
+        {formData.locations && formData.locations.length > 0 && (
           <ul>
-            {formData.countries.map((country, index) => (
+            {formData.locations.map((location, index) => (
               <li key={index}>
-                {country} <button onClick={() => removeCountry(index)}>X</button>
+                {location.country} <button onClick={() => removeCountry(index)}>X</button>
               </li>
             ))}
           </ul>
@@ -51,14 +54,14 @@ const StepOne = ({ formData, updateFormData }) => {
         <input
           type="date"
           placeholder="Start Date"
-          value={formData.dates.start}
-          onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
+          value={formData.start_date || ''}
+          onChange={(e) => updateFormData({ start_date: e.target.value })}
         />
         <input
           type="date"
           placeholder="End Date"
-          value={formData.dates.end}
-          onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
+          value={formData.end_date || ''}
+          onChange={(e) => updateFormData({ end_date: e.target.value })}
         />
       </div>
     </div>
