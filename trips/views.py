@@ -39,33 +39,15 @@ def create_trip(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def ongoing(request):
+def list(request):
     if request.method == 'GET':
-        current_date = timezone.now().date()
         trips = Trip.objects.filter(
             member__user=request.user,
-            end_date__gte=current_date
         ).order_by('start_date')
         serializer = TripSerializer(trips, many=True)
         if serializer.data:
             return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'error': "예정되거나 진행중인 여행이 없습니다."}, status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def finish(request):
-    if request.method == 'GET':
-        current_date = timezone.now().date()
-        trips = Trip.objects.filter(
-            member__user=request.user,
-            end_date__lt=current_date
-        ).order_by('start_date')
-        serializer = TripSerializer(trips, many=True)
-        data = serializer.data
-        if serializer.data:
-            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'error': "완료된 여행이 없습니다."}, status=status.HTTP_204_NO_CONTENT)
+        return Response({'error': "아무 여행도 없습니다."}, status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
