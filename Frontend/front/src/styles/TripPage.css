@@ -1,14 +1,53 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: start;
+  box-sizing: border-box;
+  font-weight: bold;
+  height: 100%;
+  width: 100%;
+}
+
+.upper {
+  display: flex;
+  overflow-x: auto; /* 가로 스크롤 추가 */
+  white-space: nowrap; /* 아이템들이 한 줄에 표시되도록 설정 */
+  margin: 30px 20px 0px 20px;
+  width: 90%;
+  height: 100px;
+  flex-shrink: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #bababa transparent;
+  /* border: 1px solid black; */
+}
+
+.upper::-webkit-scrollbar {
+  height: 3px; /* 스크롤바의 높이 */
+  visibility: hidden;
+}
+
+.upper:hover::-webkit-scrollbar {
+  visibility: visible; /* 스크롤할 때만 보임 */
+}
+
+.upper::-webkit-scrollbar-thumb {
+  background-color: #bababa; /* 스크롤바 색상 */
+  border-radius: 5px; /* 스크롤바 모서리 둥글게 */
+}
+
 .profile,
 .current-trip,
 .future-trip {
+  min-width: 70px;
   width: 70px;
   height: 70px;
   border-radius: 50%;
   border: 4px solid #757575;
   background-color: #D9D9D9;
 
-  display: flex;
-  margin: 50px 10px 30px;
+  display: inline-flex;
+  margin: 0px 9px;
   align-items: center;
   justify-content: center;
 }
@@ -33,19 +72,20 @@
   border-color: #FFB7B7;
 }
 
+
+/* 과거 여행 */
 .past {
   width: 100%;
-  margin-top: 50px;
-
+  margin-top: -30px;
   text-align: center;
 }
 
 .past-trip {
   width: 100%;
   height: 200px;
-
-  margin-bottom: 50px;
-  border: 1px solid #757575;
+  margin-top: 50px;
+  border: 2px solid #757575;
+  border-radius: 10px;
 
   display: flex;
   flex-direction: column;
