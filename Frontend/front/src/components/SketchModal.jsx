@@ -1,7 +1,6 @@
 import React from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import { MdClose } from 'react-icons/md';
+import { Modal, Box, Typography, Backdrop, Fade } from '@mui/material';
 
 import './styles/Modal.css';
 
@@ -9,10 +8,25 @@ const SketchModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <Modal open={isOpen} onClose={onClose}>
-      <Box className='box'>
-        <Typography>AI 스케치</Typography>
-      </Box>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+        },
+      }}
+    >
+      <Fade in={open}>
+        <Box className='box'>
+          <MdClose onClick={onClose} />
+          <Typography>
+            AI 스케치
+          </Typography>
+        </Box>
+      </Fade>
     </Modal>
   );
 }
