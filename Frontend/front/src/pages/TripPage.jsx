@@ -53,6 +53,30 @@ const TripPage = () => {
           "country": "화성"
         }
       ]
+    },
+    {
+      "id": 6,
+      "start_date": "2024-11-01",
+      "end_date": "2024-12-01",
+      "trip_name": "화성 갈끄니깐",
+      "image_url": "",
+      "locations": [
+        {
+          "country": "화성"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "start_date": "2024-11-01",
+      "end_date": "2024-12-01",
+      "trip_name": "화성 갈끄니깐",
+      "image_url": "",
+      "locations": [
+        {
+          "country": "화성"
+        }
+      ]
     }
   ]
 
@@ -137,9 +161,9 @@ const TripPage = () => {
   }
 
   return (
-    <>
+    <div className='main-container'>
       {/* 좌우 스크롤 */}
-      <div className='d-flex'>
+      <div className='d-flex upper'>
         {/* 사용자 프로필 */}
         <div className='profile'>
           <IconButton className='create-btn' onClick={toCreate}>
@@ -181,7 +205,7 @@ const TripPage = () => {
 
       {/* AI 스케치 모달 창 */}
       <SketchModal isOpen={isSketchOpen} onClose={closeModal} />
-    </>
+    </div>
   )
 }
 

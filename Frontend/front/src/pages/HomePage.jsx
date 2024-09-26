@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import '@/styles/HomePage.css';
+import TripPage from './TripPage';
 
 const HomePage = () => {
   const navigate = useNavigate();

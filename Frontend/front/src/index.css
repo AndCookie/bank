@@ -5,22 +5,36 @@
     "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
     "Helvetica Neue", sans-serif;
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html, body {
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  margin: 0;
-  border: 1px solid black;
+  min-width: 300px;
+  max-width: 430px;
+  /* overflow-x: auto;
+  overflow-y: auto; */
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  /* border: 1px solid black; */
 }
 
 #root {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
-  margin: 0 auto;
+  align-items: center;
+  width: 100%;
+  min-width: 300px;
+  max-width: 430px;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
   background-color: #F3F6FB;
 }
