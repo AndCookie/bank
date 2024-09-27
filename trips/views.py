@@ -64,7 +64,7 @@ def list(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def trip_main(request):
+def detail(request):
     if request.method == 'GET':
         trip_id = request.GET.get('trip_id')
         try:
