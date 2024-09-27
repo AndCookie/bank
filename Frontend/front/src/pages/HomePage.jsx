@@ -5,12 +5,8 @@ import '@/styles/HomePage.css';
 import TripPage from './TripPage';
 
 const HomePage = () => {
-  const navigate = useNavigate();
-
   const toTrip = () => {
-    // window.location.href = 'https://j11a204.p.ssafy.io/api/auth/login/kakao/';
-    navigate('/trip');
-
+    window.location.href = 'https://j11a204.p.ssafy.io/api/auth/login/kakao/';
   };
 
   return (

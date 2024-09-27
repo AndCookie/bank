@@ -6,6 +6,7 @@
   width: 90%;
   transform: translate(-50%, -50%);
   background-color: white;
+  border-radius: 10px;
   box-shadow: 24px 24px 24px rgba(0, 0, 0, 0.2);
   padding: 50px 25px;
   text-align: center;
@@ -15,4 +16,20 @@
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+.file-upload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  padding-left: 20px;
+}
+
+.save-btn {
+  width: 70%;
+  background-color: #0471E9;
+  border-radius: 50px !important;
 }

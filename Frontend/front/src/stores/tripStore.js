@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import axiosInstance from '@/axios';
 import { usePastTripStore } from '@/stores/pastTripStore';
 import { useFutureTripStore } from '@/stores/futureTripStore';
 
@@ -24,7 +25,7 @@ export const useTripStore = create((set) => ({
   // 여행 정보 axios 요청
   fetchTrips: async () => {
     try {
-      const response = await axios.get('');
+      const response = await axiosInstance.get('/trips/list/');
       const { data } = response;
 
       // 과거, 현재, 미래 여행 정보 저장
@@ -56,7 +57,11 @@ export const useTripStore = create((set) => ({
   // tripId에 따른 여행 상세 정보 axios 요청
   fetchTripDetail: async (tripId) => {
     try {
-      const response = await axios.get('');
+      const response = await axiosInstance.get('/trips/detail/', {
+        params: {
+          tirp_id: tripId
+        }
+      });
       const { data } = response;
 
       // 여행 상세 정보 저장
