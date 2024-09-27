@@ -2,7 +2,10 @@ import React, { useEffect, useState, useRef, startTransition } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 import '@/styles/TripPage.css';
-// import useTripStore from '@/stores/tripStore';
+
+import { useTripStore } from '@/stores/tripStore';
+import { usePastTripStore } from '@/stores/pastTripStore';
+import { useFutureTripStore } from '@/stores/futureTripStore';
 
 import SketchModal from '@/components/SketchModal';
 
@@ -10,12 +13,19 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 
 const TripPage = () => {
-  // const tripStore = useTripStore();
-  // const { data: pastTrips} = useQuery('pastTrips', tripStore.getPastTrips())
+  const fetchTrips = useTripStore((state) => state.fetchTrips);
+
+  // const currentTrips = useTripStore((state) => state.currentTrips);
+  // const pastTrips = usePastTripStore((state) => state.pastTrips);
+  // const futureTrips = useTripStore((state) => state.futureTrips);
+
+  useEffect(() => {
+    fetchTrips();
+  }, [fetchTrips]);
 
   const currentTrips = [
     {
-      "id": 5,
+      "id": 4,
       "start_date": "2024-09-15",
       "end_date": "2024-10-15",
       "trip_name": "SSAFY 특화 프로젝트",
@@ -33,7 +43,31 @@ const TripPage = () => {
 
   const futureTrips = [
     {
+      "id": 5,
+      "start_date": "2024-11-01",
+      "end_date": "2024-12-01",
+      "trip_name": "화성 갈끄니깐",
+      "image_url": "",
+      "locations": [
+        {
+          "country": "화성"
+        }
+      ]
+    },
+    {
       "id": 6,
+      "start_date": "2024-11-01",
+      "end_date": "2024-12-01",
+      "trip_name": "화성 갈끄니깐",
+      "image_url": "",
+      "locations": [
+        {
+          "country": "화성"
+        }
+      ]
+    },
+    {
+      "id": 7,
       "start_date": "2024-11-01",
       "end_date": "2024-12-01",
       "trip_name": "화성 갈끄니깐",
@@ -127,9 +161,9 @@ const TripPage = () => {
   }
 
   return (
-    <>
+    <div className='main-container'>
       {/* 좌우 스크롤 */}
-      <div className='d-flex'>
+      <div className='d-flex upper'>
         {/* 사용자 프로필 */}
         <div className='profile'>
           <IconButton className='create-btn' onClick={toCreate}>
@@ -171,7 +205,7 @@ const TripPage = () => {
 
       {/* AI 스케치 모달 창 */}
       <SketchModal isOpen={isSketchOpen} onClose={closeModal} />
-    </>
+    </div>
   )
 }
 
