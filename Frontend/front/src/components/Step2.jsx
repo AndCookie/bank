@@ -42,8 +42,8 @@ const StepTwo = ({ formData, updateFormData }) => {
       <input
         type="text"
         placeholder="Trip Name"
-        value={formData.trip_name}
-        onChange={(e) => updateFormData({ trip_name: e.target.value })}
+        value={formData.tripName}
+        onChange={(e) => updateFormData({ tripName: e.target.value })}
       />
     </div>
   );

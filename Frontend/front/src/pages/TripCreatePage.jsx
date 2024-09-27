@@ -16,11 +16,11 @@ const TripCreatePage = () => {
   const { setTrip, clearTrip: clearTripStore } = useTripStore();
   const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const [formData, setFormData] = useState({
-    members: [],
+    locations : [],
     dates: { start: '', end: '' },
+    members: [],
     tripName: '',
-    account: '',
-    locations: [],
+    bankAccount: '',
   });
 
   // 폼 데이터 업데이트 함수
@@ -77,8 +77,8 @@ const TripCreatePage = () => {
   };
 
   const saveTrip = () => {
-    const { tripName, destination, dates, members, account } = formData;
-    setTrip(destination, members, dates.start, dates.end);
+    const { locations, dates, members, tripName, bankAccount } = formData;
+    setTrip(locations, dates.start, dates.end, members, tripName, bankAccount);
     navigate('/trip');
   };
 
