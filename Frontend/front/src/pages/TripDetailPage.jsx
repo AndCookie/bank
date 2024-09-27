@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,24 +9,70 @@ import OngoingModal from '@/components/OngoingModal';
 import { useTripStore } from '@/stores/tripStore';
 
 const TripDetailPage = () => {
-  const currentTrips = useTripStore((state) => state.currentTrips);
+  const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
 
-  // 현재 여행 더미 데이터
-  const locations = ['툼파티파'];
-  const startDate = new Date('2024-09-20');
-  const endDate = new Date('2024-10-10');
+  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+
+  const { tripId } = useParams();
+  useEffect(() => {
+    fetchTripDetail(tripId);
+  }, [fetchTripDetail, tripId]);
+
+  const tripDetailInfo = {
+    id: tripId,
+    startDate: "2024-08-19",
+    endDate: "2024-09-02",
+    imageUrl: " ",
+    locations: [
+      {
+        "country": "기흥"
+      },
+      {
+        "country": "역삼"
+      }
+    ],
+    members: [
+      {
+        "member": "김신한",
+        "bank_account": "0880493544778029",
+        "bank_name": "신한은행",
+        "balance": "7192236"
+      },
+      {
+        "member": "박준영",
+        "bank_account": "0886984969930397",
+        "bank_name": "신한은행",
+        "balance": "6848235"
+      },
+      {
+        "member": "이선재",
+        "bank_account": "0885399658115105",
+        "bank_name": "신한은행",
+        "balance": "9703466"
+      },
+      {
+        "member": "임광영",
+        "bank_account": "0882137908931580",
+        "bank_name": "신한은행",
+        "balance": "5359931"
+      },
+      {
+        "member": "정태완",
+        "bank_account": "0885969348355476",
+        "bank_name": "신한은행",
+        "balance": "6304116"
+      }
+    ]
+  };
 
   const tripDays = eachDayOfInterval({
-    start: startDate,
-    end: endDate,
-    // start: new Date(currentTrips.startDate),
-    // end: new Date(currentTrips.endDate),
+    start: new Date(tripDetailInfo.startDate),
+    end: new Date(tripDetailInfo.endDate),
   });
 
   // 날짜 선택
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const { tripId } = useParams();
 
   const navigate = useNavigate();
 
@@ -63,7 +109,7 @@ const TripDetailPage = () => {
   return (
     <>
       <div className="d-flex">
-        <div>임광영 님은 {locations[0]} 여행 중</div>
+        <div>임광영 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
         <EditIcon onClick={openTripInfoModal} />
       </div>
 
