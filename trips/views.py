@@ -19,7 +19,7 @@ def create_trip(request):
         if serializer.is_valid(raise_exception=True):
             trip = serializer.save()
             Member.objects.create(trip=trip, user=request.user, bank_account=request.data.get('bank_account'))
-            return Response({'data': {"id": trip.pk}}, status=status.HTTP_201_CREATED)
+            return Response({"id": trip.pk}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'PUT':
@@ -32,7 +32,7 @@ def create_trip(request):
         serializer = TripCreateSerializer(trip, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             trip = serializer.save()
-            return Response({'data': {"id": trip.pk}}, status=status.HTTP_200_OK)
+            return Response({"id": trip.pk}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -75,7 +75,7 @@ def trip_main(request):
         if not Member.objects.filter(trip=trip_id, user=request.user).exists():
             return Response({'error': "현재 사용자는 해당 여행에 참여하지 않았습니다."}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = TripMainSerializer(trip)
-        return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
@@ -107,7 +107,7 @@ def member(request):
         members = Member.objects.filter(trip=trip)
         serializer = MemberDetailSerializer(members, many=True)
         data = serializer.data
-        return Response({'data': data}, status=status.HTTP_201_CREATED)
+        return Response(data, status=status.HTTP_201_CREATED)
     
     
 @api_view(['PUT'])
@@ -119,7 +119,7 @@ def budget(request):
         member = Member.objects.get(trip_id=trip_id, user=request.user)
         member.budget = budget
         member.save()
-        return Response({'data': {'budget': budget}}, status=status.HTTP_202_ACCEPTED)
+        return Response({'budget': budget}, status=status.HTTP_202_ACCEPTED)
         
         
 @api_view(['POST'])

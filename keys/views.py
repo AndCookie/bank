@@ -13,4 +13,4 @@ User = get_user_model()
 def index(request):
     if request.method == 'GET':
         response = os.getenv('AILAB_API_KEY')
-        return Response({"data": {"key": response}}, status=status.HTTP_200_OK)
+        return Response({"key": response}, status=status.HTTP_200_OK)

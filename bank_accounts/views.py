@@ -13,7 +13,7 @@ User = get_user_model()
 def index(request):
     user = request.user
     if request.method == 'GET':
-        response = {'data': []}
+        response = []
         for i in inquire_demand_deposit_account_list(user.email)['REC']:
-            response['data'].append({'bankName': i['bankName'], 'accountNo': i['accountNo'], 'accountBalance': i['accountBalance']})
+            response.append({'bankName': i['bankName'], 'accountNo': i['accountNo'], 'accountBalance': i['accountBalance']})
         return Response(response, status=status.HTTP_200_OK)

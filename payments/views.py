@@ -38,7 +38,7 @@ def pay(request):
         serializer = PaymentCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
@@ -73,7 +73,8 @@ def pay_list(request):
                 ).values_list('cost', flat=True))
             remain_budget = initial_budget - used_budget
             budget[username] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
-        return Response({"data": serializer.data, 'budget': budget}, status=status.HTTP_200_OK)
+            serializer.data['budget'] = budget
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -92,7 +93,7 @@ def adjustment(request):
         serializer = CalculateCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             result = serializer.save()
-            return Response({'data': result}, status=status.HTTP_201_CREATED)
+            return Response(result, status=status.HTTP_201_CREATED)
         
         
 @api_view(["POST"])
@@ -141,7 +142,7 @@ def objection(request):
             budget[username] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
         
         calculates.delete()
-        return Response({'data': budget}, status=status.HTTP_204_NO_CONTENT)
+        return Response(budget, status=status.HTTP_204_NO_CONTENT)
     
     
 @api_view(["POST"])
@@ -182,4 +183,4 @@ def prepare(request):
         serializer = PaymentCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

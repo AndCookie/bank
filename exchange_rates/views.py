@@ -14,4 +14,4 @@ def index(request):
     user = request.user
     if request.method == 'GET':
         response = exchange_rate(user.email)['REC']
-        return Response({"data": response}, status=status.HTTP_200_OK)
+        return Response(response, status=status.HTTP_200_OK)
