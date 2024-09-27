@@ -20,12 +20,12 @@ const SketchModal = ({ isOpen, onClose }) => {
       }}
     >
       <Fade in={isOpen}>
-        <Box className='box'>
+        <div className='box'>
           <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
-          <Typography>
+          <div>
             AI 스케치
-          </Typography>
-        </Box>
+          </div>
+        </div>
       </Fade>
     </Modal>
   );

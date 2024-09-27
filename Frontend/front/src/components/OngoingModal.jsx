@@ -19,13 +19,13 @@ const SketchModal = ({ isOpen, onClose }) => {
         },
       }}
     >
-      <Fade in={open}>
-        <Box className='box'>
+      <Fade in={isOpen}>
+        <div className='box'>
           <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
-          <Typography>
+          <div>
             진행 중인 여행 정산 정보
-          </Typography>
-        </Box>
+          </div>
+        </div>
       </Fade>
     </Modal>
   );

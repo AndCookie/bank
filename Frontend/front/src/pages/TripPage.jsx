@@ -191,7 +191,7 @@ const TripPage = () => {
         {pastTrips.map((trip) => (
           <div key={trip.id} className="past-trip" onClick={() => toGallery(trip.id)}>
             <div>{trip.locations[0].country}</div>
-            <div>{dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.start_date, trip.end_date)}일</div>
+            <div>{dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.startDate, trip.endDate)}일</div>
             <div>시작일 : {trip.startDate}</div>
             <div>종료일 : {trip.endDate}</div>
 
