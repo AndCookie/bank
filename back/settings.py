@@ -183,7 +183,7 @@ AUTHENTICATION_BACKENDS = (
 
 SOCIAL_AUTH_KAKAO_KEY = os.getenv('SOCIAL_AUTH_KAKAO_KEY')
 SOCIAL_AUTH_KAKAO_SECRET = os.getenv('SOCIAL_AUTH_KAKAO_SECRET')
-SOCIAL_AUTH_KAKAO_SCOPE = ['profile_nickname', 'profile_image', 'friends']
+SOCIAL_AUTH_KAKAO_SCOPE = ['profile_nickname', 'profile_image', 'friends', 'talk_message']
 
 
 if os.getenv('DJANGO_ENV') == 'production':
