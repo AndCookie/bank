@@ -11,6 +11,12 @@ import SketchModal from '@/components/SketchModal';
 
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import cambodia from '@/assets/images/cambodia.jpg';
+import paris from '@/assets/images/paris.jpeg';
+import bali from '@/assets/images/bali.jpeg';
+import soldier from '@/assets/images/soldier.jpg';
+import hwaseong from '@/assets/images/hwaseong.jpg';
+
 
 const TripPage = () => {
   const fetchTrips = useTripStore((state) => state.fetchTrips);
@@ -25,12 +31,12 @@ const TripPage = () => {
 
   const currentTrips = [
     {
-      id: 4,
-      startDate: "2024-09-15",
-      endDate: "2024-10-15",
-      tripName: "SSAFY 특화 프로젝트",
-      imageUrl: "",
-      locations: [
+      "id": 5,
+      "start_date": "2024-09-15",
+      "end_date": "2024-10-15",
+      "trip_name": "SSAFY 특화 프로젝트",
+      "image_url": soldier,
+      "locations": [
         {
           "country": "기흥"
         },
@@ -43,24 +49,12 @@ const TripPage = () => {
 
   const futureTrips = [
     {
-      id: 5,
-      startDate: "2024-11-01",
-      endDate: "2024-12-01",
-      tripName: "화성 갈끄니깐",
-      imageUrl: "",
-      locations: [
-        {
-          "country": "화성"
-        }
-      ]
-    },
-    {
-      id: 6,
-      startDate: "2024-11-01",
-      endDate: "2024-12-01",
-      tripName: "화성 갈끄니깐",
-      imageUrl: "",
-      locations: [
+      "id": 6,
+      "start_date": "2024-11-01",
+      "end_date": "2024-12-01",
+      "trip_name": "화성 갈끄니깐",
+      "image_url": hwaseong,
+      "locations": [
         {
           "country": "화성"
         }
@@ -77,17 +71,29 @@ const TripPage = () => {
           "country": "화성"
         }
       ]
+    },
+    {
+      id: 8,
+      startDate: "2024-11-01",
+      endDate: "2024-12-01",
+      tripName: "화성 갈끄니깐",
+      imageUrl: "",
+      locations: [
+        {
+          "country": "화성"
+        }
+      ]
     }
   ]
 
   const pastTrips = [
     {
-      id: 4,
-      startDate: "2023-11-15",
-      endDate: "2023-11-24",
-      tripName: "Bubble Gum",
-      imageUrl: "",
-      locations: [
+      "id": 4,
+      "start_date": "2023-11-15",
+      "end_date": "2023-11-24",
+      "trip_name": "Bubble Gum",
+      "image_url": cambodia,
+      "locations": [
         {
           "country": "캄보디아"
         },
@@ -97,12 +103,12 @@ const TripPage = () => {
       ]
     },
     {
-      id: 3,
-      startDate: "2024-01-01",
-      endDate: "2024-01-12",
-      tripName: "How Sweet",
-      imageUrl: "",
-      locations: [
+      "id": 3,
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-12",
+      "trip_name": "How Sweet",
+      "image_url": paris,
+      "locations": [
         {
           "country": "영국"
         },
@@ -112,17 +118,17 @@ const TripPage = () => {
       ]
     },
     {
-      id: 2,
-      startDate: "2024-07-08",
-      endDate: "2024-07-12",
-      tripName: "Supernatural",
-      imageUrl: "",
-      locations: [
+      "id": 2,
+      "start_date": "2024-07-08",
+      "end_date": "2024-07-12",
+      "trip_name": "Supernatural",
+      "image_url": bali,
+      "locations": [
         {
-          "country": "일본"
+          "country": "오키나와"
         },
         {
-          "country": "한국"
+          "country": "미야코지마"
         }
       ]
     }
@@ -171,17 +177,18 @@ const TripPage = () => {
           </IconButton>
         </div>
 
-        {/* 현재와 미래 여행 */}
+        {/* 현재 여행 */}
         {currentTrips.map((trip) => (
-          <span className='current-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
-            {trip.locations[0].country}
-          </span>
+          <div className='current-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-circle-image" />}
+          </div>
         ))}
 
+        {/* 미래 여행 */}
         {futureTrips.map((trip) => (
-          <span className='future-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
-            {trip.locations[0].country}
-          </span>
+          <div className='future-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-circle-image" />}
+          </div>
         ))}
       </div>
 
@@ -190,10 +197,16 @@ const TripPage = () => {
         {/* pastTrips 배열 순회 */}
         {pastTrips.map((trip) => (
           <div key={trip.id} className="past-trip" onClick={() => toGallery(trip.id)}>
-            <div>{trip.locations[0].country}</div>
-            <div>{dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.startDate, trip.endDate)}일</div>
-            <div>시작일 : {trip.startDate}</div>
-            <div>종료일 : {trip.endDate}</div>
+            {/* 이미지 표시 */}
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-image" />}
+            
+            {/* 텍스트와 AI 스케치 버튼 */}
+            <div className="past-trip-content">
+              <div className='location'>{trip.locations[0].country} {trip.locations[1]?.country ? `· ${trip.locations[1].country}` : ""}</div>
+              <div className='date-length'>{dayDifference(trip.start_date, trip.end_date) - 1}박 {dayDifference(trip.start_date, trip.end_date)}일</div>
+              <div className='date'>시작일 : {trip.start_date}</div>
+              <div className='date'>종료일 : {trip.end_date}</div>
+            </div>
 
             {/* AI 스케치 버튼 */}
             <IconButton className='sketch-btn' onClick={openModal}>
