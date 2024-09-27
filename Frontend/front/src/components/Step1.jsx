@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
+import { Chip, Stack } from '@mui/material';
 
 const StepOne = ({ formData, updateFormData }) => {
-  const [countryInput, setCountryInput] = useState(''); // 입력한 국가를 저장하는 상태
+  const [countryInput, setCountryInput] = useState('');
 
   // 국가 추가 함수
   const addCountry = () => {
-    if (countryInput && !formData.countries.includes(countryInput)) {
-      // 기존 국가 목록에 새로운 국가 추가
-      updateFormData({ countries: [...formData.countries, countryInput] });
-      setCountryInput(''); // 입력 필드 초기화
+    // formData.locations가 존재하지 않으면 빈 배열로 처리
+    const currentLocations = formData.locations || [];
+
+    if (countryInput && !currentLocations.some(loc => loc.country === countryInput)) {
+      updateFormData({
+        locations: [...currentLocations, { country: countryInput }],
+      });
+      setCountryInput('');
     }
   };
 
-  // 국가 삭제 함수
   const removeCountry = (index) => {
-    const updatedCountries = formData.countries.filter((_, i) => i !== index);
-    updateFormData({ countries: updatedCountries });
+    const updatedLocations = formData.locations.filter((_, i) => i !== index);
+    updateFormData({ locations: updatedLocations });
   };
 
   return (
@@ -34,30 +38,31 @@ const StepOne = ({ formData, updateFormData }) => {
       </div>
 
       {/* 선택된 국가 리스트 */}
-      <div className="chip-container">
-        {formData.countries && formData.countries.length > 0 && (
-          <ul>
-            {formData.countries.map((country, index) => (
-              <li key={index}>
-                {country} <button onClick={() => removeCountry(index)}>X</button>
-              </li>
-            ))}
-          </ul>
+      <Stack direction="row" spacing={1} flexWrap="wrap" className="chip-container">
+        {formData.locations && formData.locations.length > 0 && (
+          formData.locations.map((location, index) => (
+            <Chip
+              key={index}
+              label={location.country}
+              onDelete={() => removeCountry(index)}
+              variant="outlined"  // 테두리 있는 스타일
+              color="primary"     // 색상 설정
+            />
+          ))
         )}
-      </div>
-
+      </Stack>
       {/* 날짜 입력 */}
       <div className="second">
         <input
           type="date"
           placeholder="Start Date"
-          value={formData.dates.start}
+          value={formData.dates.start || ''}  // formData.dates.start가 없는 경우 빈 문자열 처리
           onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
         />
         <input
           type="date"
           placeholder="End Date"
-          value={formData.dates.end}
+          value={formData.dates.end || ''}  // formData.dates.end가 없는 경우 빈 문자열 처리
           onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
         />
       </div>

@@ -30,3 +30,4 @@ const TripFinishPage = () => {
 };
 
 export default TripFinishPage;
+ 

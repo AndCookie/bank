@@ -19,9 +19,8 @@ const TripCreatePage = () => {
     members: [],
     dates: { start: '', end: '' },
     tripName: '',
-    destination: '',
     account: '',
-    countries: [],
+    locations: [],
   });
 
   // 폼 데이터 업데이트 함수
@@ -36,7 +35,7 @@ const TripCreatePage = () => {
   const validateStep = () => {
     switch (step) {
       case 0: // Step 1: 국가, 날짜, 목적지 검증
-        if (!formData.countries.length || !formData.dates.start || !formData.dates.end) {
+        if (!formData.locations.length || !formData.dates.start || !formData.dates.end) {
           setError('국가, 날짜, 또는 목적지를 입력해주세요.'); // 에러 메시지 설정
           return false;
         }
@@ -59,12 +58,13 @@ const TripCreatePage = () => {
   };
 
   const nextStep = () => {
-    // 스텝별 데이터 검증 후 다음 스텝으로 이동
+    // 상태 확인 로그 추가
+    console.log('Current Form Data:', formData);
+    
     if (validateStep()) {
       setStep(step + 1);
     }
   };
-
   const prevStep = () => setStep(step - 1);
 
   const cancelTrip = () => setShowCancelModal(true);
