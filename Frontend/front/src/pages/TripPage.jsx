@@ -136,6 +136,8 @@ const TripPage = () => {
 
   // AI 스케치 모달 창
   const [isSketchOpen, setisSketchOpen] = useState(false);
+  const [sketchTripId, setSketchTripId] = useState(null);
+  const [sketchImageUrl, setSketchImageUrl] = useState('');
 
   const navigate = useNavigate();
 
@@ -151,10 +153,12 @@ const TripPage = () => {
     navigate(`/gallery/${tripId}`);
   };
 
-  const openModal = (event) => {
+  const openModal = (event, tripId, imageUrl) => {
     // 이벤트 버블링 방지
     event.stopPropagation();
     setisSketchOpen(true);
+    setSketchTripId(tripId);
+    setSketchImageUrl(imageUrl);
   }
 
   const closeModal = () => {
@@ -209,7 +213,7 @@ const TripPage = () => {
             </div>
 
             {/* AI 스케치 버튼 */}
-            <IconButton className='sketch-btn' onClick={openModal}>
+            <IconButton className='sketch-btn' onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
               <AddIcon />
             </IconButton>
           </div>
@@ -217,7 +221,7 @@ const TripPage = () => {
       </div>
 
       {/* AI 스케치 모달 창 */}
-      <SketchModal isOpen={isSketchOpen} onClose={closeModal} />
+      <SketchModal isOpen={isSketchOpen} onClose={closeModal} tripId={sketchTripId} imageUrl={sketchImageUrl} />
     </div>
   )
 }
