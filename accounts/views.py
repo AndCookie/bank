@@ -25,7 +25,7 @@ def kakao_login_success(request):
 
     token, created = Token.objects.get_or_create(user=user)
 
-    return Response({'token': token.key}, status=status.HTTP_202_ACCEPTED)
+    return Response(token.key, status=status.HTTP_202_ACCEPTED)
 
 
 @api_view(['POST'])
