@@ -41,13 +41,25 @@ def create_trip(request):
 @permission_classes([IsAuthenticated])
 def list(request):
     if request.method == 'GET':
+        current_date = timezone.now().date()
         trips = Trip.objects.filter(
             member__user=request.user,
         ).order_by('start_date')
-        serializer = TripSerializer(trips, many=True)
-        if serializer.data:
-            return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-        return Response({'error': "아무 여행도 없습니다."}, status=status.HTTP_204_NO_CONTENT)
+
+        past_trips = trips.filter(end_date__lt=current_date)
+        current_trips = trips.filter(start_date__lte=current_date, end_date__gte=current_date)
+        future_trips = trips.filter(start_date__gt=current_date)
+
+        past_serializer = TripSerializer(past_trips, many=True)
+        current_serializer = TripSerializer(current_trips, many=True)
+        future_serializer = TripSerializer(future_trips, many=True)
+
+        return Response({
+            'past_trips': past_serializer.data,
+            'current_trips': current_serializer.data,
+            'future_trips': future_serializer.data
+        }, status=status.HTTP_200_OK)
+
 
 
 @api_view(['GET'])

@@ -5,7 +5,7 @@ from .views import *
 app_name = 'trips'
 urlpatterns = [
     path('', create_trip), 
-    path('list/', finish), 
+    path('list/', list), 
     path('main/', trip_main), 
     path('member/', member), 
     path('budget/', budget), 
