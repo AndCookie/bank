@@ -38,32 +38,32 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   };
 
   const createImage = () => {
-    if (uploadedUrl.length > 0) {
-      resultImageUrl.value = null;
+    // if (uploadedUrl.length > 0) {
+    //   resultImageUrl.value = null;
 
-      try {
-        const formData = new FormData();
-        formData.append("image", selectedFile.value);
-        formData.append("index", 0); // Vintage Comic
-        console.log("API_KEY 되냐", stateStore.apiKey);
-        const responsePost = await axios.post(
-          "https://www.ailabapi.com/api/image/effects/ai-anime-generator",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              // "ailabapi-api-key": process.env.VUE_APP_AILAB_API_KEY,
-              "ailabapi-api-key": stateStore.apiKey,
-            },
-          }
-        );
+    //   try {
+    //     const formData = new FormData();
+    //     formData.append("image", selectedFile.value);
+    //     formData.append("index", 0); // Vintage Comic
+    //     console.log("API_KEY 되냐", stateStore.apiKey);
+    //     const responsePost = await axios.post(
+    //       "https://www.ailabapi.com/api/image/effects/ai-anime-generator",
+    //       formData,
+    //       {
+    //         headers: {
+    //           "Content-Type": "multipart/form-data",
+    //           // "ailabapi-api-key": process.env.VUE_APP_AILAB_API_KEY,
+    //           "ailabapi-api-key": stateStore.apiKey,
+    //         },
+    //       }
+    //     );
 
-        const taskId = responsePost.data.task_id;
-        await getResult(taskId);
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    //     const taskId = responsePost.data.task_id;
+    //     await getResult(taskId);
+    //   } catch (err) {
+    //     console.error(err);
+    //   }
+    // }
   };
 
   const saveImage = async () => {
@@ -84,7 +84,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     imageContent = <img src={sketchUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
   } else if (uploadedUrl.length > 0) {
     imageContent = <img src={uploadedUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
-  } else if (imageUrl.length > 0) {
+  } else if (imageUrl) {
     imageContent = <img src={imageUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
   }
 
