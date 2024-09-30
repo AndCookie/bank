@@ -71,7 +71,6 @@ def send_message(request):
     social = request.user.social_auth.get(provider='kakao')
     access_token =  social.extra_data['access_token']
 
-    # 친구의 uuid (friends_list에서 받아온 값)
     friend_uuid = request.data.get('uuid')
     friend_uuid = 'qZupnKWRppW5iLqKsoO3gbWEqJmom6-ZoJLx'  # 추후 수정해야함, 지금은 임광영
 
