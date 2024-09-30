@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import axiosInstance from '@/axios';
 import { usePastTripStore } from '@/stores/pastTripStore';
 import { useFutureTripStore } from '@/stores/futureTripStore';

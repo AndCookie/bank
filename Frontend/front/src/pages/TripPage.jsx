@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef, startTransition } from 'react';
 import { useQuery } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useRouteError } from 'react-router-dom';
 import '@/styles/TripPage.css';
 
+import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePastTripStore } from '@/stores/pastTripStore';
 import { useFutureTripStore } from '@/stores/futureTripStore';
@@ -19,6 +20,7 @@ import hwaseong from '@/assets/images/hwaseong.jpg';
 
 
 const TripPage = () => {
+  const fetchToken = useUserStore((state) => state.fetchToken);
   const fetchTrips = useTripStore((state) => state.fetchTrips);
 
   // const currentTrip = useTripStore((state) => state.currentTrip);
@@ -26,8 +28,17 @@ const TripPage = () => {
   // const futureTrips = useFutureTripStore((state) => state.futureTrips);
 
   useEffect(() => {
-    fetchTrips();
-  }, [fetchTrips]);
+    const fetchData = async () => {
+      try {
+        await fetchToken();
+        await fetchTrips();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [fetchToken, fetchTrips]);
 
   const currentTrips = [
     {
