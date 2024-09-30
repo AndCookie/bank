@@ -158,7 +158,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
       <Fade in={isOpen}>
         <div className='box'>
           <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
-          <div>AI 스케치</div>
+          <div className='modal-title'>AI 스케치</div>
 
           {/* AI 스케치 이미지 또는 업로드한 이미지 미리보기 */}
           {imageContent}
