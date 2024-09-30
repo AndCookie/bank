@@ -4,12 +4,17 @@
   left: 50%;
 
   width: 90%;
+  height: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 10px;
   box-shadow: 24px 24px 24px rgba(0, 0, 0, 0.2);
-  padding: 50px 25px;
+  padding: 10% 4%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .close-btn {
@@ -18,18 +23,150 @@
   right: 10px;
 }
 
+.modal-title {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* 파일 업로드 */
 .file-upload {
+  height:90%;
+  width: 85%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 8px;
-
+  margin: 8% auto;
   padding-left: 20px;
 }
 
 .save-btn {
   width: 70%;
-  background-color: #0471E9;
+  height: 22%;
+  background-color: #1976d2;
   border-radius: 50px !important;
+  font-family: "Spoqa Han Sans Neo";
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+/* 여행 정보 */
+.info-box {
+  position: relative;
+  top: 50%;
+  left: 50%;
+
+  width: 90%;
+  height: 80%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 24px 24px 24px rgba(0, 0, 0, 0.2);
+  padding: 13% 4% 8% 4%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.date {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 1% auto;
+  padding: 3%;
+  padding-bottom: 7%;
+  border-bottom: 1px dashed grey;
+  /* border: 1px solid black; */
+}
+
+.country {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 5% auto;
+  padding: 3%;
+  border-bottom: 1px dashed grey;
+  /* border: 1px solid black; */
+}
+
+.budget {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 1% auto 0 auto;
+  padding: 3% 3% 0 3%;
+  /* border: 1px solid black; */
+}
+
+.info-title {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.info-detail {
+  width: 80%;
+  font-size: 18px;
+  margin: 5% auto 2% auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  /* border: 1px solid blue; */
+}
+
+.full-date {
+  font-weight: 400 !important;
+  font-size: 16px;
+}
+
+.info-map {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: start;
+  margin: 0 0 7% 0;
+}
+
+.country-name {
+  min-width: 110px;
+  font-weight: 500;
+  /* border: 1px solid black; */
+}
+
+.time {
+  font-size: 17px;
+}
+
+.time-compare {
+  font-size: 12px;
+}
+
+.member {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: start;
+  margin: 2% 0;
+}
+
+.member-name {
+  min-width: 110px;
+  font-weight: 500;
+}
+
+.member-balance {
+  font-size: 15px;
 }

@@ -19,24 +19,24 @@ const SketchModal = ({ isOpen, onClose }) => {
     imageUrl: " ",
     locations: [
       {
-        "country": "기흥"
+        "country": "스페인"
       },
       {
-        "country": "역삼"
+        "country": "포르투갈"
       }
     ],
     members: [
       {
-        "member": "김신한",
+        "member": "박준영",
         "bank_account": "0880493544778029",
         "bank_name": "신한은행",
-        "balance": "7192236"
+        "balance": "여행 수락중"
       },
       {
-        "member": "박준영",
+        "member": "오승진",
         "bank_account": "0886984969930397",
         "bank_name": "신한은행",
-        "balance": "6848235"
+        "balance": "카드 연결중"
       },
       {
         "member": "이선재",
@@ -55,7 +55,13 @@ const SketchModal = ({ isOpen, onClose }) => {
         "bank_account": "0885969348355476",
         "bank_name": "신한은행",
         "balance": "6304116"
-      }
+      },
+      {
+        "member": "정지환",
+        "bank_account": "0886984969930399",
+        "bank_name": "신한은행",
+        "balance": "카드 연결중"
+      },
     ]
   };
 
@@ -73,30 +79,44 @@ const SketchModal = ({ isOpen, onClose }) => {
       }}
     >
       <Fade in={isOpen}>
-        <div className='box'>
+        <div className='info-box'>
           <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
 
-          <div>
-            <div>날짜</div>
-            <div>시작일 {tripDetailInfo.startDate}</div>
-            <div>종료일 {tripDetailInfo.endDate}</div>
+          <div className='date'>
+            <div className='info-title'>📅 &nbsp;날짜</div>
+            <div className='info-detail'>
+              <div className='start-date'>시작일 &nbsp;| &nbsp; <span className='full-date'>{tripDetailInfo.startDate}</span></div>
+              <div className='end-date'>종료일 &nbsp;| &nbsp; <span className='full-date'>{tripDetailInfo.endDate}</span></div>
+            </div>
           </div>
 
-          <div>
-            <div>국가</div>
-            {tripDetailInfo.locations.map((location, index) => (
-              <div key={index}>{location.country}</div>
-            ))}
+          <div className='country'>
+            <div className='info-title'>✈️ &nbsp;국가</div>
+            <div className="info-detail">
+              {tripDetailInfo.locations.map((location, index) => (
+                <div key={index} className='info-map'>
+                  <div className="country-name">{location.country}</div>
+                  <div className="country-time">
+                    <div className='time'>05:54:20 AM</div>
+                    <div className='time-compare'>한국대비 7시간 느림</div>
+                  </div>
+                </div>
+              )
+            )
+          }
+            </div>
           </div>
 
-          <div>
-            <div>예산</div>
-            {tripDetailInfo.members.map((member, index) => (
-              <div key={index}>
-                <span>{member.member}</span>
-                <span>{member.balance}</span>
-              </div>
-            ))}
+          <div className='budget'>
+            <div className='info-title'>💰 &nbsp;예산</div>
+            <div className="info-detail">
+              {tripDetailInfo.members.map((member, index) => (
+                <div key={index} className='member'>
+                  <div className='member-name'>{member.member}</div>
+                  <div className='member-balance'>{member.balance}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </Fade>
