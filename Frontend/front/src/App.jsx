@@ -12,6 +12,7 @@ import TripFinishPage from '@/pages/TripFinishPage';
 import GalleryPage from '@/pages/GalleryPage';
 import NotfoundPage from '@/pages/NotfoundPage';
 import ErrorModal from '@/components/ErrorModal';
+import LoadingPage from '@/pages/LoadingPage'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/gallery/:tripId" element={<GalleryPage />} />
         <Route path="/finish/:tripId" element={<TripFinishPage />} />
         <Route path="*" element={<NotfoundPage />} />
+        <Route path="/loading" element={<LoadingPage />} />
       </Routes>
     </div>
   )

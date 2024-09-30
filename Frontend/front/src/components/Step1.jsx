@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Chip, Stack } from '@mui/material';
+import './styles/Step1.css'
 
 const StepOne = ({ formData, updateFormData }) => {
   const [countryInput, setCountryInput] = useState('');

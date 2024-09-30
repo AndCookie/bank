@@ -6,17 +6,15 @@ import StepTwo from '../components/Step2';
 import StepThree from '../components/Step3';
 import StepFour from '../components/Step4';
 import '@/styles/TripCreatePage.css';
-import { useTripStore } from '../stores/tripStore';
 import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
 
 const TripCreatePage = () => {
   const [step, setStep] = useState(0);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const navigate = useNavigate();
-  const { setTrip, clearTrip: clearTripStore } = useTripStore();
   const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const [formData, setFormData] = useState({
-    locations : [],
+    locations: [],
     dates: { start: '', end: '' },
     members: [],
     tripName: '',
@@ -58,27 +56,32 @@ const TripCreatePage = () => {
   };
 
   const nextStep = () => {
-    // 상태 확인 로그 추가
-    console.log('Current Form Data:', formData);
-    
     if (validateStep()) {
       setStep(step + 1);
     }
   };
+
   const prevStep = () => setStep(step - 1);
 
   const cancelTrip = () => setShowCancelModal(true);
   const closeCancelModal = () => setShowCancelModal(false);
 
+  // formData를 초기 상태로 되돌림
   const clearTrip = () => {
-    clearTripStore(); // Zustand 스토어의 여행 데이터 초기화
-    setShowCancelModal(false);
-    navigate('/trip');
+    setFormData({
+      locations: [],
+      dates: { start: '', end: '' },
+      members: [],
+      tripName: '',
+      bankAccount: '',
+    });
+    setShowCancelModal(false); // 취소 모달 닫기
+    navigate('/trip'); // 페이지 이동
   };
 
   const saveTrip = () => {
     const { locations, dates, members, tripName, bankAccount } = formData;
-    setTrip(locations, dates.start, dates.end, members, tripName, bankAccount);
+    // Trip 저장 로직 처리
     navigate('/trip');
   };
 
@@ -120,6 +123,7 @@ const TripCreatePage = () => {
           </button>
         )}
       </div>
+
       {/* Cancel Modal */}
       {showCancelModal && (
         <div className="modal">

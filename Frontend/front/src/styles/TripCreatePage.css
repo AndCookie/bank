@@ -3,12 +3,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start; /* 전체 페이지에서 콘텐츠를 위쪽에 배치 */
   width: 100%;
   min-height: 100vh;
-  padding: 20px;
-  background-color: #f8f9fa;
+  padding: 10px;
+  background-color: #f8f9fa; /* 컨테이너 배경색 */
   box-sizing: border-box;
+}
+
+/* 헤더 부분 스타일: 아이콘을 상단에 고정 */
+.header {
+  position: fixed; /* 상단에 고정 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px; /* 헤더의 높이 설정 */
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px; /* 좌우 여백 설정 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* 상단 그림자 */
+  z-index: 100; /* 다른 요소들 위에 표시되도록 z-index 설정 */
 }
 
 /* 메인 폼 부분 스타일 */
@@ -19,49 +35,42 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-top: 80px; /* 헤더 높이(60px) + 여백을 고려한 패딩 설정 */
+  padding-bottom: 60px; /* 하단 버튼 고려한 여백 추가 */
 }
 
-.main input {
-  width: calc(100% - 60px); /* input이 버튼 크기만큼 줄어들도록 조정 */
-  max-width: 260px; /* 입력 필드 최대 너비 줄임 */
-  padding: 12px;
-  margin: 4px 0; /* 상하 간격을 줄임 */
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-/* 첫번째 부분 스타일 (입력 필드와 버튼) */
-.first {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 320px;
-  margin-bottom: 10px; /* 상하 간격을 조정 */
-}
-
-button.btn-add {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
+/* 아이콘 크기 및 색상 설정 */
+.header .btns {
   cursor: pointer;
-  margin-left: 8px;
-  width: 60px; /* 버튼 크기 설정 */
+  font-size: 24px; /* 컨테이너 높이에 맞는 적절한 크기 */
+  background: none; /* 배경색 없음 */
+  border: none; /* 테두리 없음 */
+  padding: 0; /* 추가 여백 없음 */
+  color: #007bff; /* 컨테이너 색상과 어울리는 아이콘 색상 */
 }
 
-/* 다음 버튼 스타일 */
+/* 아이콘 호버 시 색상 변경 */
+.header .btns:hover {
+  color: #0056b3; /* 호버 시 더 진한 색상 */
+}
+
+
+/* 하단에 버튼 고정 스타일 */
 .bottom {
   width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
   padding: 16px 0;
+  background-color: #f8f9fa; /* 컨테이너 배경색과 동일 */
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
 }
 
 button.next-btn {
   width: 100%;
-  max-width: 320px; /* 버튼 최대 너비 */
+  max-width: 320px;
   background-color: #007bff;
   color: white;
   padding: 12px;
@@ -77,43 +86,41 @@ button.next-btn:hover {
   background-color: #0056b3;
 }
 
-/* chip-container의 상하 간격을 줄임 */
-.chip-container {
+/* Cancel Modal 스타일 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  flex-wrap: wrap; /* 한 줄에 공간이 부족하면 다음 줄로 넘어가도록 설정 */
-  gap: 8px; /* 각 칩 사이 간격 */
-  margin-top: 10px; /* chip-container 상단 간격을 줄임 */
-  list-style-type: none; /* 기본 리스트 스타일 제거 */
-  padding: 0; /* 리스트의 기본 패딩 제거 */
-}
-
-/* Chip 스타일은 기존 유지 */
-.chip {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  padding: 8px 12px;
-  background-color: #e3f2fd;
-  border-radius: 16px;
-  font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.chip:hover {
-  background-color: #bbdefb;
+.modal-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
 }
 
-.chip button {
-  background: none;
+.modal-message {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.modal-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
   border: none;
-  color: #f44336;
-  margin-left: 8px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 14px;
-  transition: color 0.3s ease;
+  margin: 0 5px;
 }
 
-.chip button:hover {
-  color: #d32f2f;
+.modal-btn:hover {
+  background-color: #0056b3;
 }
