@@ -187,9 +187,12 @@ SOCIAL_AUTH_KAKAO_SCOPE = ['profile_nickname', 'profile_image', 'friends', 'talk
 
 
 if os.getenv('DJANGO_ENV') == 'production':
-    SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/auth/complete/kakao/'
+    SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/api/auth/complete/kakao/'
     # SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io/trip'
     SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5173/trip'
-else:
+    KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/api/auth/complete/kakao/'
+else:  # local
     SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000/api/auth/complete/kakao/'
-    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/accounts/kakao_login_success/'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/accounts/kakao_callback/'
+    KAKAO_REDIRECT_URI = 'http://localhost:8000/api/auth/complete/kakao/'
+
