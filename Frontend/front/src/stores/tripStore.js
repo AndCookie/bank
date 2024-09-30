@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import axiosInstance from '@/axios';
 import { usePastTripStore } from '@/stores/pastTripStore';
 import { useFutureTripStore } from '@/stores/futureTripStore';
 
 export const useTripStore = create((set) => ({
   // 현재 여행 정보
-  currentTrips: {},
+  currentTrip: {},
 
   // 현재 여행 정보 저장
-  setCurrentTrips: (tripInfo) => set(() => ({
-    currentTrips: Array.isArray(tripInfo)
+  setCurrentTrip: (tripInfo) => set(() => ({
+    currentTrip: Array.isArray(tripInfo)
       ? {
         id: tripInfo.id,
         startDate: tripInfo.start_date,
@@ -18,20 +19,54 @@ export const useTripStore = create((set) => ({
         imageUrl: tripInfo.image_url,
         locations: tripInfo.locations,
       }
-      : [],
+      : {},
   })),
 
   // 여행 정보 axios 요청
   fetchTrips: async () => {
     try {
-      const response = await axios.get('');
+      const response = await axiosInstance.get('/trips/list/');
       const { data } = response;
 
       // 과거, 현재, 미래 여행 정보 저장
       usePastTripStore.getState().setPastTrips(data.past);
-      useTripStore.getState().setCurrentTrips(data.current);
+      useTripStore.getState().setCurrentTrip(data.current);
       useFutureTripStore.getState().setFutureTrips(data.future);
     } catch (error) {
+      console.log(error)
+    }
+  },
+
+  // tripId에 따른 여행 상세 정보
+  tripDetailInfo: {},
+
+  // tripId에 따른 여행 상세 정보 저장
+  setTripDetailInfo: (tripInfo) => set(() => ({
+    tripDetailInfo: Array.isArray(tripInfo)
+      ? {
+        id: tripInfo.id,
+        startDate: tripInfo.start_date,
+        endDate: tripInfo.end_date,
+        imageUrl: tripInfo.image_url,
+        locations: tripInfo.locations,
+        members: tripInfo.members,
+      }
+      : {},
+  })),
+
+  // tripId에 따른 여행 상세 정보 axios 요청
+  fetchTripDetail: async (tripId) => {
+    try {
+      const response = await axiosInstance.get('/trips/detail/', {
+        params: {
+          tirp_id: tripId
+        }
+      });
+      const { data } = response;
+
+      // 여행 상세 정보 저장
+      useTripStore.getState().setTripDetailInfo(data);
+    } catch(error) {
       console.log(error)
     }
   },
