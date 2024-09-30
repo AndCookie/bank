@@ -59,7 +59,7 @@ export const useTripStore = create((set) => ({
     try {
       const response = await axiosInstance.get('/trips/detail/', {
         params: {
-          tirp_id: tripId
+          trip_id: tripId
         }
       });
       const { data } = response;

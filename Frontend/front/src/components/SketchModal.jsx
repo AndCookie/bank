@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import axiosInstance from '@/axios';
-import { Modal, Backdrop, Fade, Button } from '@mui/material';
+import { Modal, Backdrop, Fade, Button, CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -11,9 +11,13 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   // 새롭게 생성한 AI 스케치 이미지 url
   const [sketchUrl, setSketchUrl] = useState('');
 
-  // 업로드한 이미지명과 url
+  // 업로드한 이미지
   const [fileName, setFileName] = useState('');
+  const [uploadedImage, setUploadedImage] = useState('');
   const [uploadedUrl, setUploadedUrl] = useState('');
+
+  // 로딩 진행
+  const [loadingState, setLoadingState] = useState(false);
 
   // 이미지 url 초기화
   useEffect(() => {
@@ -21,6 +25,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
       setSketchUrl('');
       setFileName('');
       setUploadedUrl('');
+      setLoadingState(false);
     }
   }, [isOpen]);
 
@@ -28,6 +33,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     const file = event.target.files[0];
     if (file) {
       setFileName(file.name);
+      setUploadedImage(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -37,33 +43,71 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     }
   };
 
-  const createImage = () => {
-    // if (uploadedUrl.length > 0) {
-    //   resultImageUrl.value = null;
+  const createImage = async () => {
+    setLoadingState(true);
 
-    //   try {
-    //     const formData = new FormData();
-    //     formData.append("image", selectedFile.value);
-    //     formData.append("index", 0); // Vintage Comic
-    //     console.log("API_KEY 되냐", stateStore.apiKey);
-    //     const responsePost = await axios.post(
-    //       "https://www.ailabapi.com/api/image/effects/ai-anime-generator",
-    //       formData,
-    //       {
-    //         headers: {
-    //           "Content-Type": "multipart/form-data",
-    //           // "ailabapi-api-key": process.env.VUE_APP_AILAB_API_KEY,
-    //           "ailabapi-api-key": stateStore.apiKey,
-    //         },
-    //       }
-    //     );
+    if (uploadedImage) {
+      try {
+        const formData = new FormData();
+        formData.append("image", uploadedImage);
+        formData.append("index", 0); // Vintage Comic
+        const responsePost = await axios.post(
+          "https://www.ailabapi.com/api/image/effects/ai-anime-generator",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "ailabapi-api-key": "6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk",
+            },
+          }
+        );
 
-    //     const taskId = responsePost.data.task_id;
-    //     await getResult(taskId);
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // }
+        const taskId = responsePost.data.task_id;
+        await getResult(taskId);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingState(false);
+      }
+    }
+  };
+
+  const getResult = async (taskId) => {
+    return new Promise((resolve) => {
+      const intervalId = setInterval(async () => {
+        try {
+          const responseGet = await axios.get(
+            "https://www.ailabapi.com/api/common/query-async-task-result",
+            {
+              headers: {
+                "ailabapi-api-key": "6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk",
+              },
+              params: {
+                task_id: taskId,
+              },
+            }
+          );
+
+          const taskStatus = responseGet.data.task_status;
+
+          // 이미지 생성 완료
+          if (taskStatus === 2) {
+            setSketchUrl(responseGet.data.data.result_url);
+            clearInterval(intervalId);
+            resolve();
+          } else if (taskStatus === 1) {
+            console.log("Task is still processing.");
+          } else {
+            clearInterval(intervalId);
+            resolve();
+          }
+        } catch (error) {
+          clearInterval(intervalId);
+          console.error(error);
+          resolve();
+        }
+      }, 5000);
+    });
   };
 
   const saveImage = async () => {
@@ -89,7 +133,9 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   }
 
   let imageButton;
-  if (sketchUrl.length > 0) {
+  if (loadingState) {
+    imageButton = <CircularProgress size="50px" />;
+  } else if (sketchUrl.length > 0) {
     imageButton = <Button className='save-btn' variant='contained' size='large' onClick={saveImage}>사진 저장</Button>
   } else {
     imageButton = <Button className='save-btn' variant='contained' size='large' onClick={createImage}>사진 생성</Button>
@@ -118,13 +164,16 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
           {imageContent}
 
           {/* 이미지 업로드 버튼 */}
-          <div className='file-upload'>
-            <div>{fileName || '파일을 선택해주세요'}</div>
-            <Button component='label' startIcon={<CloudUploadIcon />}>
-              <input type="file" hidden onChange={uploadFile} />
-            </Button>
-          </div>
+          {!loadingState && (
+            <div className='file-upload'>
+              <div>{fileName || '파일을 선택해주세요'}</div>
+              <Button component='label' startIcon={<CloudUploadIcon />}>
+                <input type="file" hidden onChange={uploadFile} />
+              </Button>
+            </div>
+          )}
 
+          {/* 사진 생성 또는 저장 버튼 */}
           {imageButton}
         </div>
       </Fade>
