@@ -47,9 +47,18 @@ def friend(request):
         'Authorization': f'Bearer {access_token}'
     }
     response = requests.get(url, headers=headers)
-
+    data = []
+    for i in response.json()['elements']:
+        temp = {'profile_nickname': i['profile_nickname'], 
+                'profile_thumbnail_image': i['profile_thumbnail_image'], 
+                'id': i['id'], 
+                'uuid': i['uuid'], 
+                }
+        data.append(temp)
     if response.status_code == 200:
-        return Response(response.json(), status=status.HTTP_200_OK)
+        return Response(data, status=status.HTTP_200_OK)
+    if response.status_code == 401:
+        return Response({'error': "카카오 로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
     else:
         return Response({'error': [response.status_code, response.text]}, status=status.HTTP_400_BAD_REQUEST)
 
