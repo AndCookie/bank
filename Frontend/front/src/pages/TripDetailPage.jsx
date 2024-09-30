@@ -10,13 +10,139 @@ import { useTripStore } from '@/stores/tripStore';
 
 const TripDetailPage = () => {
   const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
+  const fetchPayments = useTripStore((state) => state.fetchPayments);
 
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  // const payments = useTripStore((state) => state.payments);
+
+  const payments = {
+    "data": [
+      {
+        "id": 339,
+        "is_completed": 1,
+        "amount": 300000,
+        "pay_date": "2024-08-19",
+        "pay_time": "00:00:00",
+        "brand_name": "Korean Air",
+        "category": "항공",
+        "bank_account": "0880493544778029",
+        "username": "김신한",
+        "calculates": [
+          {
+            "username": "김신한",
+            "cost": 60000
+          },
+          {
+            "username": "박준영",
+            "cost": 60000
+          },
+          {
+            "username": "이선재",
+            "cost": 60000
+          },
+          {
+            "username": "임광영",
+            "cost": 60000
+          },
+          {
+            "username": "정태완",
+            "cost": 60000
+          }
+        ]
+      },
+      {
+        "id": 85,
+        "is_completed": 0,
+        "amount": 60000,
+        "pay_date": "2024-08-19",
+        "pay_time": "15:54:35",
+        "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
+        "category": "관광",
+        "bank_account": "0886984969930397",
+        "username": "박준영"
+      },
+      {
+        "id": 90,
+        "is_completed": 0,
+        "amount": 1031997,
+        "pay_date": "2024-08-20",
+        "pay_time": "04:00:32",
+        "brand_name": "AIR FRANCE",
+        "category": "항공",
+        "bank_account": "0885399658115105",
+        "username": "이선재"
+      },
+      {
+        "id": 88,
+        "is_completed": 1,
+        "amount": 853111,
+        "pay_date": "2024-08-20",
+        "pay_time": "10:12:33",
+        "brand_name": "AIRBNB * HMFYA3QH3F",
+        "category": "숙소",
+        "bank_account": "0880493544778029",
+        "username": "김신한",
+        "calculates": [
+          {
+            "username": "김신한",
+            "cost": 300
+          },
+          {
+            "username": "박준영",
+            "cost": 300
+          },
+          {
+            "username": "이선재",
+            "cost": 300
+          },
+          {
+            "username": "임광영",
+            "cost": 300
+          },
+          {
+            "username": "정태완",
+            "cost": 300
+          }
+        ]
+      }
+    ],
+    "budget": {
+      "박준영": {
+        "initial_budget": 2000000,
+        "used_budget": 93122,
+        "remain_budget": 1906878
+      },
+      "이선재": {
+        "initial_budget": 1500000,
+        "used_budget": 93122,
+        "remain_budget": 1406878
+      },
+      "임광영": {
+        "initial_budget": 1500000,
+        "used_budget": 93122,
+        "remain_budget": 1406878
+      },
+      "정태완": {
+        "initial_budget": 2000000,
+        "used_budget": 93122,
+        "remain_budget": 1906878
+      },
+      "김신한": {
+        "initial_budget": 1000000,
+        "used_budget": 84409,
+        "remain_budget": 915591
+      }
+    }
+  };
 
   const { tripId } = useParams();
   useEffect(() => {
     fetchTripDetail(tripId);
-  }, [fetchTripDetail, tripId]);
+    fetchPayments(tripId);
+  }, [fetchTripDetail, fetchPayments, tripId]);
+
+  const paymentsData = payments.data;
+  const paymentsBudget = payments.budget;
 
   const tripDetailInfo = {
     id: tripId,
@@ -72,7 +198,6 @@ const TripDetailPage = () => {
 
   // 날짜 선택
   const [selectedDate, setSelectedDate] = useState(null);
-
 
   const navigate = useNavigate();
 
@@ -134,9 +259,9 @@ const TripDetailPage = () => {
 
       {/* 결제 내역 */}
       <div>
-        <button>정산</button>
-        <button>미정산</button>
-        <div onClick={openOngoingModal}>바르셀로나 공항버스</div>
+        {paymentsData.map((data) => (
+          <div key={data.id} onClick={openOngoingModal}>{data.amount}{data.brand_name}</div>
+        ))}
       </div>
 
       <button onClick={toFinish}>정산하기</button>
