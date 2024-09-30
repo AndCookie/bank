@@ -13,6 +13,7 @@ import requests
 from social_django.utils import load_strategy
 from social_core.backends.kakao import KakaoOAuth2
 import json
+from django.http import StreamingHttpResponse
 
 
 
@@ -20,6 +21,14 @@ User = get_user_model()
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+# def kakao_login_success(request):
+#     user = request.user
+#     user.backend = 'social_core.backends.kakao.KakaoOAuth2'
+#     auth_login(request, user)
+
+#     token, created = Token.objects.get_or_create(user=user)
+
+#     return Response(token.key, status=status.HTTP_202_ACCEPTED)
 def kakao_login_success(request):
     user = request.user
     user.backend = 'social_core.backends.kakao.KakaoOAuth2'
@@ -27,6 +36,12 @@ def kakao_login_success(request):
 
     token, created = Token.objects.get_or_create(user=user)
 
+    # 제너레이터 함수로 토큰을 한 번만 반환
+    def token_stream():
+        yield f"data: {token.key}\n\n"
+
+    response = StreamingHttpResponse(token_stream(), content_type='text/event-stream')
+    response['Cache-Control'] = 'no-cache'
     return Response(token.key, status=status.HTTP_202_ACCEPTED)
 
 
