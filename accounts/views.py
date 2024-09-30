@@ -12,6 +12,8 @@ from rest_framework.authtoken.models import Token
 import requests
 from social_django.utils import load_strategy
 from social_core.backends.kakao import KakaoOAuth2
+import json
+
 
 
 User = get_user_model()
@@ -63,13 +65,14 @@ def friend(request):
         return Response({'error': [response.status_code, response.text]}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def send_message(request):
     social = request.user.social_auth.get(provider='kakao')
     access_token =  social.extra_data['access_token']
 
     # 친구의 uuid (friends_list에서 받아온 값)
+    friend_uuid = request.data.get('uuid')
     friend_uuid = 'qZupnKWRppW5iLqKsoO3gbWEqJmom6-ZoJLx'  # 추후 수정해야함, 지금은 임광영
 
     url = "https://kapi.kakao.com/v1/api/talk/friends/message/send"
@@ -78,11 +81,20 @@ def send_message(request):
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
+    template_args = {
+        'trip_name': request.data.get('trip_name'), 
+        'trip_id': request.data.get('trip_id'), 
+    }
+    
+    template_args = {
+            'trip_name': "둠파디파", 
+            'trip_id': "5"
+        }
     # 메시지 템플릿 데이터
     data = {
         'receiver_uuids': f'["{friend_uuid}"]',  # 친구의 uuid 배열
         'template_id': '112658', 
-        'trip_name': "둠파디파"
+        'template_args': json.dumps(template_args), 
     }
 
     response = requests.post(url, headers=headers, data=data)
