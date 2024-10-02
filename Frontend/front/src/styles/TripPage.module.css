@@ -129,9 +129,9 @@
   font-weight: 600;
 }
 
-.date {
+.start-date, .end-date {
   font-size: 0.9rem;
-  padding: 5px;
+  padding: 2px;
   font-weight: 500;
 }
 
@@ -145,6 +145,7 @@
   padding: 5px;
   z-index: 2;
 }
+
 .sketch-btn {
   position: absolute !important;
   right: 0 !important;

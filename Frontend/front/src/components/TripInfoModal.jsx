@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { useTripStore } from '@/stores/tripStore';
 
-import './styles/Modal.css';
+import './styles/TripInfoModal.css';
 
 const SketchModal = ({ isOpen, onClose }) => {
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);

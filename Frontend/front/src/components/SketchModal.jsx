@@ -5,7 +5,7 @@ import { Modal, Backdrop, Fade, Button, CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import './styles/Modal.css';
+import './styles/SketchModal.css';
 
 const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   // 새롭게 생성한 AI 스케치 이미지 url
