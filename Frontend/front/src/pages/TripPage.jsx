@@ -208,8 +208,8 @@ const TripPage = () => {
             <div className="past-trip-content">
               <div className='location'>{trip.locations[0].country} {trip.locations[1]?.country ? `· ${trip.locations[1].country}` : ""}</div>
               <div className='date-length'>{dayDifference(trip.start_date, trip.end_date) - 1}박 {dayDifference(trip.start_date, trip.end_date)}일</div>
-              <div className='date'>시작일 : {trip.start_date}</div>
-              <div className='date'>종료일 : {trip.end_date}</div>
+              <div className='start-date'>시작일 : {trip.start_date}</div>
+              <div className='end-date'>종료일 : {trip.end_date}</div>
             </div>
 
             {/* AI 스케치 버튼 */}
