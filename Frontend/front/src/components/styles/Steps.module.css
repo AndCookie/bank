@@ -1,34 +1,45 @@
 /* main-container 스타일 */
 .mainContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start; /* 위에서부터 요소 정렬 */
-  padding: 20px;
   width: 100%;
-  height: 100%; /* TripCreatePage의 main 클래스가 이미 전체 화면을 차지하므로 height만 설정 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  margin: 0px auto;
+  padding: 0px;
   box-sizing: border-box;
 }
 
-/* 최상단 질문 위치 */
-.question {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px; /* 아래 필드와 간격 설정 */
-  text-align: center; /* 가운데 정렬 */
-  width: 100%;
+.first,
+.second {
+  margin: 0px 10px;
+  /* border: 2px solid blue; */
 }
 
-/* 국가 입력 필드 및 버튼 */
 .first {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 400px; /* 입력 필드의 최대 너비 */
-  margin-bottom: 16px; /* 간격을 조금 넓게 */
+  margin-top: 30px;
+  margin-bottom: 70px;
 }
 
-button.btnAdd {
+.second {
+  padding-bottom: 120px;
+}
+
+/* 질문 위치 */
+.question {
+  font-size: x-large;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-left: 15px;
+  width: 90%;
+}
+
+.subtitle {
+  font-size: small;
+  padding-left: 2px;
+}
+
+/* 추가 버튼 */
+/* button.btnAdd {
   background-color: #007bff;
   color: white;
   padding: 12px;
@@ -37,11 +48,20 @@ button.btnAdd {
   font-size: 16px;
   cursor: pointer;
   margin-left: 8px;
-  width: 80px; /* 버튼 크기 조정 */
+  width: 80px;
 }
 
 button.btnAdd:hover {
   background-color: #0056b3;
+} */
+
+.first input {
+  width: 75%;
+  padding: 10px 12px; /* 패딩을 조금 넓게 설정 */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-left: 15px;
 }
 
 /* chip-container */
@@ -49,22 +69,17 @@ button.btnAdd:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 8px; /* 칩 사이 간격 */
-  margin-top: 12px; /* 칩 상단 간격 */
-  width: 100%; /* 가로로 전체를 채움 */
-  max-width: 400px; /* 칩 컨테이너 최대 너비 */
+  margin: 12px 17px;
+  width: 91%; /* 가로로 전체를 채움 */
+  justify-content: flex-start;
+  align-items: flex-start;
+  /* border: 2px solid blue; */
 }
 
 /* 날짜 입력 필드 */
-.second {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 400px; /* 날짜 입력 필드 최대 너비 */
-  margin-top: 16px; /* 날짜 입력 필드 사이 간격 */
-}
-
 .second input {
-  width: 48%;
+  width: 42%;
+  margin: 10px;
   padding: 12px; /* 패딩을 조금 넓게 설정 */
   border: 1px solid #ddd;
   border-radius: 8px;
