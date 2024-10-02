@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import axios from 'axios';
 import axiosInstance from '@/axios';
 import { usePastTripStore } from '@/stores/pastTripStore';
 import { useFutureTripStore } from '@/stores/futureTripStore';
@@ -10,7 +9,7 @@ export const useTripStore = create((set) => ({
 
   // 현재 여행 정보 저장
   setCurrentTrip: (tripInfo) => set(() => ({
-    currentTrip: Array.isArray(tripInfo)
+    currentTrip: Array.isArray(tripInfo) && tripInfo.length > 0
       ? {
         id: tripInfo.id,
         startDate: tripInfo.start_date,
@@ -42,7 +41,7 @@ export const useTripStore = create((set) => ({
 
   // tripId에 따른 여행 상세 정보 저장
   setTripDetailInfo: (tripInfo) => set(() => ({
-    tripDetailInfo: Array.isArray(tripInfo)
+    tripDetailInfo: typeof tripInfo === 'object' && tripInfo !== null
       ? {
         id: tripInfo.id,
         startDate: tripInfo.start_date,
@@ -66,8 +65,35 @@ export const useTripStore = create((set) => ({
 
       // 여행 상세 정보 저장
       useTripStore.getState().setTripDetailInfo(data);
-    } catch(error) {
+    } catch (error) {
       console.log(error)
+    }
+  },
+
+  // tripId에 따른 여행 결제내역
+  payments: [],
+
+  // tripId에 따른 여행 결제내역 저장
+  setPayments: (paymentInfo) => set(() => ({
+    payments: Array.isArray(paymentInfo) && paymentInfo.length > 0
+      ? paymentInfo
+      : [],
+  })),
+
+  // tripId에 따른 여행 결제내역 axios 요청
+  fetchPayments: async (tripId) => {
+    try {
+      const response = await axiosInstance.get('/payments/list/', {
+        params: {
+          trip_id: tripId
+        }
+      });
+      const { data } = response;
+
+      // 여행 결제내역 저장
+      useTripStore.getState().setPayments(data);
+    } catch (error) {
+      console.log(error);
     }
   },
 }));
