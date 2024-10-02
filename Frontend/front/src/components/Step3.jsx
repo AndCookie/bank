@@ -7,7 +7,7 @@ const StepThree = ({ formData, updateFormData }) => {
       <input
         type="text"
         placeholder="Bank Account"
-        value={formData.bank_account}
+        value={formData.bankAccount}
         onChange={(e) => updateFormData({ bankAccount: e.target.value })}
       />
     </div>
