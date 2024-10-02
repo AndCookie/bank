@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './styles/Steps.css'
+import styles from './styles/Steps.module.css'
 
 const StepTwo = ({ formData, updateFormData }) => {
   const [memberEmail, setMemberEmail] = useState('');

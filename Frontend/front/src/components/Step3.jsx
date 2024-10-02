@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/Steps.css'
+import styles from './styles/Steps.module.css'
 
 const StepThree = ({ formData, updateFormData }) => {
   return (
