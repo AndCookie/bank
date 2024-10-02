@@ -11,23 +11,23 @@
   z-index: 1000;
 }
 
-.modal-container {
+.modalContainer {
   background: white;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
 }
 
-.modal-message {
+.modalMessage {
   margin-bottom: 20px;
 }
 
-.modal-btns {
+.modalBtns {
   display: flex;
   justify-content: center;
 }
 
-.modal-btn {
+.modalBtn {
   padding: 10px 20px;
   margin: 0 10px;
   background-color: #1976d2;
@@ -37,6 +37,6 @@
   cursor: pointer;
 }
 
-.modal-btn:hover {
+.modalBtn:hover {
   background-color: #145ea8;
 }

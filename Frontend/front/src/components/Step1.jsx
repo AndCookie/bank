@@ -10,7 +10,7 @@ const StepOne = ({ formData, updateFormData }) => {
     // formData.locations가 존재하지 않으면 빈 배열로 처리
     const currentLocations = formData.locations || [];
 
-    if (countryInput && !currentLocations.some(loc => loc.country === countryInput)) {
+    if (countryInput && !currentLocations.some((loc) => loc.country === countryInput)) {
       updateFormData({
         locations: [...currentLocations, { country: countryInput }],
       });
@@ -24,10 +24,10 @@ const StepOne = ({ formData, updateFormData }) => {
   };
 
   return (
-    <div className="main-container">
-      <h2 className="question">어디로 여행을 떠나시나요?</h2>
+    <div className={styles.mainContainer}>\
+      <h2 className={styles.question}>어디로 여행을 떠나시나요?</h2>
       {/* 국가 입력 */}
-      <div className="first">
+      <div className={styles.first}>
         <input
           type="text"
           placeholder="Add Country"
@@ -35,11 +35,11 @@ const StepOne = ({ formData, updateFormData }) => {
           onChange={(e) => setCountryInput(e.target.value)}
           onKeyUp={(e) => e.key === 'Enter' && addCountry()} // Enter 키로 국가 추가
         />
-        <button className="btn-add" onClick={addCountry}>+ 추가</button>
+        <button className={styles.btnAdd} onClick={addCountry}>+ 추가</button>
       </div>
 
       {/* 선택된 국가 리스트 */}
-      <Stack direction="row" spacing={1} flexWrap="wrap" className="chip-container">
+      <Stack direction="row" spacing={1} flexWrap="wrap" className={styles.chipContainer}>
         {formData.locations && formData.locations.length > 0 && (
           formData.locations.map((location, index) => (
             <Chip
@@ -53,7 +53,7 @@ const StepOne = ({ formData, updateFormData }) => {
         )}
       </Stack>
       {/* 날짜 입력 */}
-      <div className="second">
+      <div className={styles.second}>
         <input
           type="date"
           placeholder="Start Date"

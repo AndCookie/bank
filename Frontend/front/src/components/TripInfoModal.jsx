@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { useTripStore } from '@/stores/tripStore';
 
-import './styles/Modal.css';
+import styles from './styles/TripInfoModal.module.css';
 
 const SketchModal = ({ isOpen, onClose }) => {
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
@@ -65,8 +65,7 @@ const SketchModal = ({ isOpen, onClose }) => {
     ]
   };
 
-  if (!isOpen) return null;
-  return (
+  if (!isOpen) return null; return (
     <Modal
       open={isOpen}
       onClose={onClose}
@@ -79,41 +78,39 @@ const SketchModal = ({ isOpen, onClose }) => {
       }}
     >
       <Fade in={isOpen}>
-        <div className='info-box'>
-          <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
+        <div className={styles.infoBox}>
+          <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
 
-          <div className='date'>
-            <div className='info-title'>📅 &nbsp;날짜</div>
-            <div className='info-detail'>
-              <div className='start-date'>시작일 &nbsp;| &nbsp; <span className='full-date'>{tripDetailInfo.startDate}</span></div>
-              <div className='end-date'>종료일 &nbsp;| &nbsp; <span className='full-date'>{tripDetailInfo.endDate}</span></div>
+          <div className={styles.date}>
+            <div className={styles.infoTitle}>📅 &nbsp;날짜</div>
+            <div className={styles.infoDetail}>
+              <div className={styles.startDate}>시작일 &nbsp;| &nbsp; <span className={styles.fullDate}>{tripDetailInfo.startDate}</span></div>
+              <div className={styles.endDate}>종료일 &nbsp;| &nbsp; <span className={styles.fullDate}>{tripDetailInfo.endDate}</span></div>
             </div>
           </div>
 
-          <div className='country'>
-            <div className='info-title'>✈️ &nbsp;국가</div>
-            <div className="info-detail">
+          <div className={styles.country}>
+            <div className={styles.infoTitle}>✈️ &nbsp;국가</div>
+            <div className={styles.infoDetail}>
               {tripDetailInfo.locations.map((location, index) => (
-                <div key={index} className='info-map'>
-                  <div className="country-name">{location.country}</div>
-                  <div className="country-time">
-                    <div className='time'>05:54:20 AM</div>
-                    <div className='time-compare'>한국대비 7시간 느림</div>
+                <div key={index} className={styles.infoMap}>
+                  <div className={styles.countryName}>{location.country}</div>
+                  <div className={styles.countryTime}>
+                    <div className={styles.time}>05:54:20 AM</div>
+                    <div className={styles.timeCompare}>한국대비 7시간 느림</div>
                   </div>
                 </div>
-              )
-            )
-          }
+              ))}
             </div>
           </div>
 
-          <div className='budget'>
-            <div className='info-title'>💰 &nbsp;예산</div>
-            <div className="info-detail">
+          <div className={styles.budget}>
+            <div className={styles.infoTitle}>💰 &nbsp;예산</div>
+            <div className={styles.infoDetail}>
               {tripDetailInfo.members.map((member, index) => (
-                <div key={index} className='member'>
-                  <div className='member-name'>{member.member}</div>
-                  <div className='member-balance'>{member.balance}</div>
+                <div key={index} className={styles.member}>
+                  <div className={styles.memberName}>{member.member}</div>
+                  <div className={styles.memberBalance}>{member.balance}</div>
                 </div>
               ))}
             </div>
@@ -122,6 +119,7 @@ const SketchModal = ({ isOpen, onClose }) => {
       </Fade>
     </Modal>
   );
+
 }
 
 export default SketchModal;

@@ -5,7 +5,7 @@ import { Modal, Backdrop, Fade, Button, CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import './styles/Modal.css';
+import styles from './styles/SketchModal.module.css';
 
 const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   // 새롭게 생성한 AI 스케치 이미지 url
@@ -49,15 +49,15 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     if (uploadedImage) {
       try {
         const formData = new FormData();
-        formData.append("image", uploadedImage);
-        formData.append("index", 0); // Vintage Comic
+        formData.append('image', uploadedImage);
+        formData.append('index', 0); // Vintage Comic
         const responsePost = await axios.post(
-          "https://www.ailabapi.com/api/image/effects/ai-anime-generator",
+          'https://www.ailabapi.com/api/image/effects/ai-anime-generator',
           formData,
           {
             headers: {
-              "Content-Type": "multipart/form-data",
-              "ailabapi-api-key": "6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk",
+              'Content-Type': 'multipart/form-data',
+              'ailabapi-api-key': '6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk',
             },
           }
         );
@@ -77,10 +77,10 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
       const intervalId = setInterval(async () => {
         try {
           const responseGet = await axios.get(
-            "https://www.ailabapi.com/api/common/query-async-task-result",
+            'https://www.ailabapi.com/api/common/query-async-task-result',
             {
               headers: {
-                "ailabapi-api-key": "6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk",
+                'ailabapi-api-key': '6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk',
               },
               params: {
                 task_id: taskId,
@@ -96,7 +96,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
             clearInterval(intervalId);
             resolve();
           } else if (taskStatus === 1) {
-            console.log("Task is still processing.");
+            console.log('Task is still processing.');
           } else {
             clearInterval(intervalId);
             resolve();
@@ -136,9 +136,9 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
   if (loadingState) {
     imageButton = <CircularProgress size="50px" />;
   } else if (sketchUrl.length > 0) {
-    imageButton = <Button className='save-btn' variant='contained' size='large' onClick={saveImage}>사진 저장</Button>
+    imageButton = <Button className={styles.saveBtn} variant="contained" size="large" onClick={saveImage}>사진 저장</Button>;
   } else {
-    imageButton = <Button className='save-btn' variant='contained' size='large' onClick={createImage}>사진 생성</Button>
+    imageButton = <Button className={styles.saveBtn} variant="contained" size="large" onClick={createImage}>사진 생성</Button>;
   }
 
   if (!isOpen) return null;
@@ -156,18 +156,18 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
       }}
     >
       <Fade in={isOpen}>
-        <div className='box'>
-          <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
-          <div className='modal-title'>AI 스케치</div>
+        <div className={styles.box}>
+          <CloseIcon className={styles.closeBtn} fontSize="large" onClick={onClose} />
+          <div className={styles.modalTitle}>AI 스케치</div>
 
           {/* AI 스케치 이미지 또는 업로드한 이미지 미리보기 */}
           {imageContent}
 
           {/* 이미지 업로드 버튼 */}
           {!loadingState && (
-            <div className='file-upload'>
+            <div className={styles.fileUpload}>
               <div>{fileName || '파일을 선택해주세요'}</div>
-              <Button component='label' startIcon={<CloudUploadIcon />}>
+              <Button component="label" startIcon={<CloudUploadIcon />}>
                 <input type="file" hidden onChange={uploadFile} />
               </Button>
             </div>
@@ -179,6 +179,6 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
       </Fade>
     </Modal>
   );
-}
+};
 
 export default SketchModal;
