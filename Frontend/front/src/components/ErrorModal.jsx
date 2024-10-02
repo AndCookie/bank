@@ -1,20 +1,20 @@
 import React from 'react';
-import { useErrorStore } from '@/stores/errorStore'; // Error Store 가져오기
-import './styles/ErrorModal.css'
+import { useErrorStore } from '@/stores/errorStore';
+import styles from './styles/ErrorModal.module.css';
 
 const ErrorModal = () => {
   const { errorMessage, showErrorModal, clearError } = useErrorStore();
 
-  if (!showErrorModal) return null; // 모달을 보여줄 필요가 없으면 null 반환
+  if (!showErrorModal) return null;
 
   return (
-    <div className="modal">
-      <div className="modal-container">
-        <div className="modal-message">
+    <div className={styles.modal}>
+      <div className={styles.modalContainer}>
+        <div className={styles.modalMessage}>
           <span>{errorMessage}</span>
         </div>
-        <div className="modal-btns">
-          <button className="modal-btn" onClick={clearError}>
+        <div className={styles.modalBtns}>
+          <button className={styles.modalBtn} onClick={clearError}>
             닫기
           </button>
         </div>

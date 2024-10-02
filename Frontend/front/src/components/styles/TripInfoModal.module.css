@@ -17,19 +17,19 @@
   align-items: center;
 }
 
-.close-btn {
+.closeBtn {
   position: absolute;
   top: 10px;
   right: 10px;
 }
 
-.modal-title {
+.modalTitle {
   font-size: 26px;
   font-weight: bold;
 }
 
 /* 여행 정보 */
-.info-box {
+.infoBox {
   position: relative;
   top: 50%;
   left: 50%;
@@ -85,12 +85,12 @@
   /* border: 1px solid black; */
 }
 
-.info-title {
+.infoTitle {
   font-size: 24px;
   font-weight: bold;
 }
 
-.info-detail {
+.infoDetail {
   width: 80%;
   font-size: 18px;
   margin: 5% auto 2% auto;
@@ -101,12 +101,12 @@
   /* border: 1px solid blue; */
 }
 
-.full-date {
+.fullDate {
   font-weight: 400 !important;
   font-size: 16px;
 }
 
-.info-map {
+.infoMap {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -115,7 +115,7 @@
   margin: 0 0 7% 0;
 }
 
-.country-name {
+.countryName {
   min-width: 110px;
   font-weight: 500;
   /* border: 1px solid black; */
@@ -125,7 +125,7 @@
   font-size: 17px;
 }
 
-.time-compare {
+.timeCompare {
   font-size: 12px;
 }
 
@@ -139,11 +139,11 @@
   margin: 2% 0;
 }
 
-.member-name {
+.memberName {
   min-width: 110px;
   font-weight: 500;
 }
 
-.member-balance {
+.memberBalance {
   font-size: 15px;
 }

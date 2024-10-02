@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal, Box, Typography, Backdrop, Fade } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import './styles/Modal.css';
+import styles from './styles/Modal.module.css';
 
 const SketchModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
@@ -20,8 +20,8 @@ const SketchModal = ({ isOpen, onClose }) => {
       }}
     >
       <Fade in={isOpen}>
-        <div className='box'>
-          <CloseIcon className='close-btn' fontSize='large' onClick={onClose} />
+        <div className={styles.box}>
+          <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
           <div>
             진행 중인 여행 정산 정보
           </div>

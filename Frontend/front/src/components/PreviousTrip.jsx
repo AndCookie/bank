@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { format } from 'date-fns';
-import './styles/PreviousTrip.css'
+import styles from './styles/PreviousTrip.module.css';
 
 const TripDuration = ({ startDate, endDate }) => {
   const [duration, setDuration] = useState('');
@@ -22,12 +22,12 @@ const TripDuration = ({ startDate, endDate }) => {
   const formatDay = (date) => format(new Date(date), 'yyyy년 MM월 dd일');
 
   return (
-    <div className="trip date">
-      <div className="title">
+    <div className={styles.date}>
+      <div className={styles.title}>
         <div>날짜</div>
-        <div className="subtitle">{duration}</div>
+        <div className={styles.subtitle}>{duration}</div>
       </div>
-      <div className="content">
+      <div className={styles.content}>
         <div>시작일 &nbsp; | &nbsp; {formatDay(startDate)}</div>
         <div>종료일 &nbsp; | &nbsp; {formatDay(endDate)}</div>
       </div>
@@ -37,12 +37,12 @@ const TripDuration = ({ startDate, endDate }) => {
 
 const MemberList = ({ tripMembers }) => {
   return (
-    <div className="trip">
-      <div className="title">
+    <div className={styles.trip}>
+      <div className={styles.title}>
         <div>멤버</div>
-        <div className="subtitle">{tripMembers.length}명</div>
+        <div className={styles.subtitle}>{tripMembers.length}명</div>
       </div>
-      <div className="content">
+      <div className={styles.content}>
         <div>
           {tripMembers.map((member, index) => (
             <div key={index}>{member}</div>
@@ -50,24 +50,24 @@ const MemberList = ({ tripMembers }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 // 메인 컴포넌트
-const PreviousTip = () => {
+const PreviousTrip = () => {
   // 여행 날짜 더미 데이터
   const startDate = '2024-09-09';
   const endDate = '2024-09-15';
 
   // 여행 인원 더미 데이터
-  const tripMembers = ['강해린', '다니엘']
+  const tripMembers = ['강해린', '다니엘'];
 
   return (
     <>
       <TripDuration startDate={startDate} endDate={endDate} />
       <MemberList tripMembers={tripMembers} />
     </>
-  )
+  );
 }
 
-export default PreviousTip;
+export default PreviousTrip;

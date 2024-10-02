@@ -2,7 +2,7 @@ import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-import './styles/Chart.css';
+import styles from './styles/Chart.module.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -33,9 +33,9 @@ const Chart = () => {
   };
 
   return (
-    <div className="paymentTrip">
-      <div className="title">나의 지출</div>
-      <div className="content">
+    <div className={styles.paymentTrip}>
+      <div className={styles.title}>나의 지출</div>
+      <div className={styles.content}>
         <Doughnut data={data} options={options} />
       </div>
     </div>
