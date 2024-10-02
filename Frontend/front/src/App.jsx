@@ -25,7 +25,6 @@ function App() {
         <Route path="/trip/:tripId" element={<TripDetailPage />} />
         <Route path="/finish/:tripId" element={<TripFinishPage />} />
         <Route path="/gallery/:tripId" element={<GalleryPage />} />
-        <Route path="/finish/:tripId" element={<TripFinishPage />} />
         <Route path="*" element={<NotfoundPage />} />
         <Route path="/loading" element={<LoadingPage />} />
       </Routes>
