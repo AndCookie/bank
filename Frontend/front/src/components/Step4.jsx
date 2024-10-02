@@ -1,5 +1,6 @@
 import React from 'react';
 import axiosInstance from '@/axios.js'; // Axios 인스턴스 가져오기
+import './styles/Steps.css'
 
 const StepFour = ({ formData }) => {
   const handleSubmit = async () => {
