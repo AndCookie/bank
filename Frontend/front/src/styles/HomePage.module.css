@@ -1,4 +1,4 @@
-.main-container {
+.mainContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -12,7 +12,7 @@
 }
 
 .top, .middle, .bottom {
-  flex: 1; /* 각각 1/3씩 차지 */
+  flex: 1;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@
   width: 100%;
 }
 
-.main-img {
+.mainImg {
   width: 100%;
   height: auto;
   margin: 0;

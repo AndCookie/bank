@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, startTransition } from 'react';
 import { useQuery } from 'react-query';
 import { useNavigate, useRouteError } from 'react-router-dom';
-import '@/styles/TripPage.module.css';
+import styles from '@/styles/TripPage.module.css';
 
 import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
@@ -182,60 +182,55 @@ const TripPage = () => {
   }
 
   return (
-    <div className='main-container'>
+    <div className={styles.mainContainer}>
       {/* 좌우 스크롤 */}
-      <div className='d-flex upper'>
+      <div className={styles.upper}>
         {/* 사용자 프로필 */}
-        <div className='profile'>
-          <IconButton className='create-btn' onClick={toCreate}>
+        <div className={styles.profile}>
+          <IconButton className={styles.createButton} onClick={toCreate}>
             <AddIcon />
           </IconButton>
         </div>
 
         {/* 현재 여행 */}
         {currentTrips.map((trip) => (
-          <div className='current-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
-            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-circle-image" />}
+          <div className={styles.currentTrip} key={trip.id} onClick={() => toDetail(trip.id)}>
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
           </div>
         ))}
 
         {/* 미래 여행 */}
         {futureTrips.map((trip) => (
-          <div className='future-trip' key={trip.id} onClick={() => toDetail(trip.id)}>
-            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-circle-image" />}
+          <div className={styles.futureTrip} key={trip.id} onClick={() => toDetail(trip.id)}>
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
           </div>
         ))}
       </div>
 
       {/* 과거 여행 */}
-      <div className='past'>
-        {/* pastTrips 배열 순회 */}
+      <div className={styles.past}>
         {pastTrips.map((trip) => (
-          <div key={trip.id} className="past-trip" onClick={() => toGallery(trip.id)}>
-            {/* 이미지 표시 */}
-            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className="trip-image" />}
-            
-            {/* 텍스트와 AI 스케치 버튼 */}
-            <div className="past-trip-content">
-              <div className='location'>{trip.locations[0].country} {trip.locations[1]?.country ? `· ${trip.locations[1].country}` : ""}</div>
-              <div className='date-length'>{dayDifference(trip.start_date, trip.end_date) - 1}박 {dayDifference(trip.start_date, trip.end_date)}일</div>
-              <div className='date'>시작일 : {trip.start_date}</div>
-              <div className='date'>종료일 : {trip.end_date}</div>
+          <div key={trip.id} className={styles.pastTrip} onClick={() => toGallery(trip.id)}>
+            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripImage} />}
+            <div className={styles.pastTripContent}>
+              <div className={styles.location}>
+                {trip.locations[0].country} {trip.locations[1]?.country ? `· ${trip.locations[1].country}` : ""}
+              </div>
+              <div className={styles.dateLength}>{dayDifference(trip.start_date, trip.end_date) - 1}박 {dayDifference(trip.start_date, trip.end_date)}일</div>
+              <div className={styles.date}>시작일 : {trip.start_date}</div>
+              <div className={styles.date}>종료일 : {trip.end_date}</div>
             </div>
-
-            {/* AI 스케치 버튼 */}
-            <IconButton className='sketch-btn' onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
+            <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
               <AddIcon />
             </IconButton>
           </div>
         ))}
       </div>
 
-      {/* AI 스케치 모달 창 */}
       <SketchModal isOpen={isSketchOpen} onClose={closeModal} tripId={sketchTripId} imageUrl={sketchImageUrl} />
     </div>
-  )
-}
+  );
+};
 
 
 export default TripPage;

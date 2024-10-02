@@ -1,4 +1,4 @@
-.main-container {
+.mainContainer {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -11,41 +11,39 @@
 
 .upper {
   display: flex;
-  overflow-x: auto; /* 가로 스크롤 */
-  white-space: nowrap; /* 아이템들이 한 줄에 표시되도록 설정 */
+  overflow-x: auto;
+  white-space: nowrap;
   margin: 30px 20px 0px 20px;
   width: 90%;
   height: 100px;
   flex-shrink: 0;
   scrollbar-width: thin;
   scrollbar-color: #bababa transparent;
-  /* border: 1px solid black; */
 }
 
 .upper::-webkit-scrollbar {
-  height: 3px; /* 스크롤바의 높이 */
+  height: 3px;
   visibility: hidden;
 }
 
 .upper:hover::-webkit-scrollbar {
-  visibility: visible; /* 스크롤할 때만 보임 */
+  visibility: visible;
 }
 
 .upper::-webkit-scrollbar-thumb {
-  background-color: #bababa; /* 스크롤바 색상 */
-  border-radius: 5px; /* 스크롤바 모서리 둥글게 */
+  background-color: #bababa;
+  border-radius: 5px;
 }
 
 .profile,
-.current-trip,
-.future-trip {
+.currentTrip,
+.futureTrip {
   min-width: 70px;
   width: 70px;
   height: 70px;
   border-radius: 50%;
   border: 4px solid #757575;
   background-color: #D9D9D9;
-
   display: inline-flex;
   margin: 0px 9px;
   align-items: center;
@@ -56,55 +54,52 @@
   position: relative;
 }
 
-.create-btn {
+.createButton {
   position: absolute !important;
   right: 0 !important;
   bottom: 0 !important;
   transform: translate(25%, 25%) !important;
-
   color: black !important;
   background-color: #FFB7B7 !important;
   border-radius: 50% !important;
   padding: 5px !important;
+  z-index: 2;
 }
 
-
-.current-trip {
+.currentTrip {
   border-color: #FFB7B7;
 }
 
-.trip-circle-image {
+.tripCircleImage {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 이미지를 원 안에 꽉 채움 */
+  object-fit: cover;
   border-radius: 50%;
   opacity: 80%;
 }
 
-
-/* 과거 여행 */
 .past {
   width: 100%;
   margin-top: -20px;
   text-align: center;
 }
 
-.past-trip {
+.pastTrip {
   width: 100%;
   margin-top: 40px;
   position: relative;
   border-radius: 10px;
-  overflow: hidden; /* 이미지가 영역을 넘지 않도록 */
+  overflow: hidden;
 }
 
-.trip-image {
+.tripImage {
   width: 100%;
-  height: 250px; /* 고정 높이 대신 비율에 맞게 변경 */
+  height: 250px;
   object-fit: fill;
   opacity: 50%;
 }
 
-.past-trip-content {
+.pastTripContent {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -114,7 +109,6 @@
   text-align: center;
   z-index: 1;
   width: 100%;
-  /* border: 1px solid blue; */
 }
 
 .location {
@@ -123,7 +117,7 @@
   font-weight: 900;
 }
 
-.date-length {
+.dateLength {
   font-size: 1.2rem;
   padding-bottom: 10px;
   font-weight: 600;
@@ -135,24 +129,14 @@
   font-weight: 500;
 }
 
-.sketch-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
-  background-color: #757575;
-  border-radius: 50%;
-  padding: 5px;
-  z-index: 2;
-}
-.sketch-btn {
+.sketchBtn {
   position: absolute !important;
   right: 0 !important;
   top: 0 !important;
   transform: translate(-25%, 25%) !important;
-
   color: white !important;
   background-color: #757575 !important;
   border-radius: 50% !important;
+  z-index: 100;
   padding: 3px !important;
 }

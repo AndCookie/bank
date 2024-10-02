@@ -5,7 +5,7 @@ import StepOne from '../components/Step1';
 import StepTwo from '../components/Step2';
 import StepThree from '../components/Step3';
 import StepFour from '../components/Step4';
-import '@/styles/TripCreatePage.module.css';
+import styles from '@/styles/TripCreatePage.module.css';
 import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
 
 const TripCreatePage = () => {
@@ -101,48 +101,44 @@ const TripCreatePage = () => {
   };
 
   return (
-    <div className="container">
-      {/* Header */}
-      <div className="header my-2">
-        <div className="back">
-          {step > 0 && <MdArrowBack className="btns" size={30} onClick={prevStep} />}
-        </div>
-        <div className="cancel">
-          <MdClose className="btns" size={30} onClick={cancelTrip} />
-        </div>
-      </div>
-
-      {/* Main Form */}
-      <div className="main px-2">{renderStep()}</div>
-
-      {/* Next Button */}
-      <div className="bottom">
-        {step < 3 && (
-          <button className="next-btn" onClick={nextStep}>
-            다 &nbsp; 음
-          </button>
-        )}
-      </div>
-
-      {/* Cancel Modal */}
-      {showCancelModal && (
-        <div className="modal">
-          <div className="modal-container">
-            <div className="modal-message">
-              <span>여행 생성을 취소하시겠습니까?</span>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <div className={styles.back}>
+              {step > 0 && <MdArrowBack className={styles.btns} size={30} onClick={prevStep} />}
             </div>
-            <div className="modal-btns">
-              <button className="modal-btn" onClick={clearTrip}>
-                네
-              </button>
-              <button className="modal-btn" onClick={closeCancelModal}>
-                아니오
-              </button>
+            <div className={styles.cancel}>
+              <MdClose className={styles.btns} size={30} onClick={cancelTrip} />
             </div>
           </div>
+
+          <div className={styles.main}>{renderStep()}</div>
+
+          <div className={styles.bottom}>
+            {step < 3 && (
+              <button className={styles.nextBtn} onClick={nextStep}>
+                다 &nbsp; 음
+              </button>
+            )}
+          </div>
+
+        {showCancelModal && (
+          <div className={styles.modal}>
+            <div className={styles.modalContainer}>
+              <div className={styles.modalMessage}>
+                <span>여행 생성을 취소하시겠습니까?</span>
+              </div>
+              <div className={styles.modalBtns}>
+                <button className={styles.modalBtn} onClick={clearTrip}>
+                  네
+                </button>
+                <button className={styles.modalBtn} onClick={closeCancelModal}>
+                  아니오
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         </div>
-      )}
-    </div>
   );
 };
 
