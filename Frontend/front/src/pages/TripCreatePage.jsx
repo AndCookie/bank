@@ -5,7 +5,7 @@ import StepOne from '../components/Step1';
 import StepTwo from '../components/Step2';
 import StepThree from '../components/Step3';
 import StepFour from '../components/Step4';
-import '@/styles/TripCreatePage.css';
+import '@/styles/TripCreatePage.module.css';
 import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
 
 const TripCreatePage = () => {

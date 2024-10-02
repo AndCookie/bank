@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTripStore } from '@/stores/tripStore';
-import '@/styles/TripFinishPage.css';
+import '@/styles/TripFinishPage.module.css';
 import checkImage from '@/assets/images/check.png';
 
 const TripFinishPage = () => {

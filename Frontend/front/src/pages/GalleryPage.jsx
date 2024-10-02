@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import PreviousTrip from '../components/PreviousTrip';
 import Chart from '../components/Chart';
 
-import '@/styles/GalleryPage.css'
+import '@/styles/GalleryPage.module.css'
 
 const GalleryPage = () => {
   return (
