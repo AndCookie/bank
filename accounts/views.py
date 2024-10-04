@@ -88,8 +88,8 @@ def get_kakao_access_token(code):
     }
     data = {
         'grant_type': 'authorization_code',
-        'client_id': '<YOUR_KAKAO_CLIENT_ID>',
-        'redirect_uri': 'http://127.0.0.1:8000/api/auth/complete/kakao/',
+        'client_id': f'{settings.SOCIAL_AUTH_KAKAO_KEY}',
+        'redirect_uri': f'{settings.SOCIAL_AUTH_KAKAO_REDIRECT_URI}',
         'code': code,
     }
 
