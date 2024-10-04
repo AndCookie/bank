@@ -49,7 +49,9 @@ def signup(request):
 @api_view(['GET'])
 def kakao_callback(request):
     code = request.GET.get('code')
-    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
+    redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
+    # requests.post('http://127.0.0.1:8000/api/accounts/get_token/', data={'code':code})
+    return Response({"meesage": "카카오 로그인 성공"}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
