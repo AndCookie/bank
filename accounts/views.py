@@ -114,7 +114,7 @@ def get_token(request):
     auth_login(request, user)
     
     social = request.user.social_auth.get(provider='kakao')
-    user.extra_data['access_token'] = access_token
+    social.extra_data['access_token'] = access_token
     social.save()
 
     # 액세스 토큰을 반환
