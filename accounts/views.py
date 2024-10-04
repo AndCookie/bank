@@ -92,7 +92,7 @@ def get_kakao_access_token(code):
     data = {
         'grant_type': 'authorization_code',
         'client_id': f'{settings.SOCIAL_AUTH_KAKAO_KEY}',
-        'redirect_uri': f'{settings.SOCIAL_AUTH_KAKAO_REDIRECT_URI}',
+        # 'redirect_uri': f'{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}',
         'code': code,
     }
 
