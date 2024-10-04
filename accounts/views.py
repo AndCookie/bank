@@ -93,14 +93,23 @@ def get_token(request):
     access_token = get_kakao_access_token(code)
     if not access_token:
         return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
-    social = request.user.social_auth.get(provider='kakao')
-    social.extra_data['access_token'] = access_token
-    social.save()
     
     kakao_user_info = get_kakao_user_info(access_token)
     if not kakao_user_info:
         return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
-    
+
+    kakao_user_id = kakao_user_info['id']
+
+    try:
+        social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
+        user = social_user.user
+    except UserSocialAuth.DoesNotExist:
+        user = User.objects.create(username=f'kakao_{kakao_user_id}')
+        signup(kakao_user_info)
+        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
+        
+    user.extra_data['access_token'] = access_token
+    user.save()
     return Response({"token": access_token, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
