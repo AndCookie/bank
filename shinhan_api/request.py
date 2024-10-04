@@ -6,9 +6,9 @@ URL = "https://finopenapi.ssafy.io/ssafy/api/v1/"
 
 
 def get_response(response):
+    pprint(response)
     if "responseCode" in response:
         return {response['responseCode']: response['responseMessage']}
-    pprint(response)
     return response
 
 

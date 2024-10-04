@@ -24,32 +24,6 @@ from pprint import pprint
 User = get_user_model()
 
 
-def signup(kakao_user_info):
-    username = kakao_user_info['username']
-    id = kakao_user_info['id']
-    email = kakao_user_info['email']
-    data = {
-        "username": username, "password": id
-    }
-    serializer = UserCreationSerializer(data=data)
-    response = shinhan_signup(email)
-    flag = 1
-    if 'userKey' in response:
-        data['user_key'] = response['userKey']
-    else:
-        data['user_key'] = search(email)['userKey']
-        flag = 0
-
-    if serializer.is_valid(raise_exception=True):
-        user = serializer.save()
-        serializer = UserSerializer(user)
-        if flag:
-            create_demand_deposit_account(email)
-        return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
-    else:
-        return Response({"error": "이미 존재하는 사용자 이메일 혹은 닉네임입니다."}, status=status.HTTP_409_CONFLICT)
-
-
 @api_view(['GET'])
 def kakao_callback(request):
     code = request.GET.get('code')
@@ -73,7 +47,6 @@ def kakao_callback(request):
         user = social_user.user
     except UserSocialAuth.DoesNotExist:
         user = User.objects.create(username=f'kakao_{kakao_user_id}')
-        signup(kakao_user_info)
         UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
 
     auth_login(request, user)
@@ -81,7 +54,9 @@ def kakao_callback(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
-    return Response({'token': token.key}, status=status.HTTP_200_OK)
+    
+    create_account(request.user, kakao_user_id)
+    return Response({'token': token.key,  'user_info': kakao_user_info}, status=status.HTTP_200_OK)
     ######################
 
 
@@ -108,7 +83,7 @@ def get_token(request):
     except UserSocialAuth.DoesNotExist:
         # 새로운 사용자 생성 및 카카오 소셜 인증 생성
         user = User.objects.create(username=f'kakao_{kakao_user_id}')
-        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id, extra_data={'access_token': access_token})
+        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
 
     # 로그인 처리
     auth_login(request, user)
@@ -117,32 +92,25 @@ def get_token(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
-
+    if not request.user.user_key:
+        create_account(request.user, kakao_user_id)
     return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
-    # 액세스 토큰을 사용해 사용자 정보 조회
-    kakao_user_info = get_kakao_user_info(access_token)
-    if not kakao_user_info:
-        return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
 
-    kakao_user_id = kakao_user_info['id']
-
-    try:
-        social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
-        user = social_user.user
-    except UserSocialAuth.DoesNotExist:
-        user = User.objects.create(username=f'kakao_{kakao_user_id}')
-        signup(kakao_user_info)
-        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
-
-    auth_login(request, user)
-    social = request.user.social_auth.get(provider='kakao')
-    social.extra_data['access_token'] = access_token
-    social.save()
-    token, created = Token.objects.get_or_create(user=user)
-    
-    print(token)
-    return Response({"token": token.key}, status=status.HTTP_200_OK)
+def create_account(user, user_id):
+    email = f"{user_id}@naver.com"
+    response = shinhan_signup(email)
+    flag = 1
+    if 'userKey' in response:
+        user_key = response['userKey']
+    else:
+        user_key = search(email)['userKey']
+        flag = 0
+    user.email = email
+    user.user_key = user_key
+    user.save()
+    if flag:
+        create_demand_deposit_account(email)
 
 
 def get_kakao_access_token(code):

@@ -10,4 +10,5 @@ urlpatterns = [
     path('member/', member), 
     path('budget/', budget), 
     path('save_image/', save_image), 
+    # path('invite/', invite), 
 ]
