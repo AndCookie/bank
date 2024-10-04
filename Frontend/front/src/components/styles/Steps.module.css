@@ -85,3 +85,22 @@ button.btnAdd:hover {
   border-radius: 8px;
   font-size: 16px;
 }
+
+.dropdown {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.memberItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.profileImage {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
