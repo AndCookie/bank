@@ -7,6 +7,7 @@ from .serializers import TripCreateSerializer, TripSerializer, TripMainSerialize
 from .models import Trip, Member
 from django.utils import timezone
 from accounts.serializers import UserSerializer
+import requests, json
 
 
 User = get_user_model()
@@ -32,9 +33,73 @@ def create_trip(request):
         serializer = TripCreateSerializer(trip, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             trip = serializer.save()
+            send_message(request)
             return Response({"id": trip.pk}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def send_message(request):
+    social = request.user.social_auth.get(provider='kakao')
+    access_token =  social.extra_data['access_token']
+
+    friend_uuid = request.data.get('uuid')
+    friend_uuid = 'qZupnKWRppW5iLqKsoO3gbWEqJmom6-ZoJLx'  # 추후 수정해야함, 지금은 임광영
+
+    url = "https://kapi.kakao.com/v1/api/talk/friends/message/send"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    template_args = {
+        'trip_name': request.data.get('trip_name'), 
+        'trip_id': request.data.get('trip_id'), 
+    }
+    
+    template_args = {
+            'trip_name': "둠파디파", 
+            'trip_id': "5"
+        }
+    # 메시지 템플릿 데이터
+    data = {
+        'receiver_uuids': f'["{friend_uuid}"]',  # 친구의 uuid 배열
+        'template_id': '112658', 
+        'template_args': json.dumps(template_args), 
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        return Response({"message": "메시지가 성공적으로 전송되었습니다."}, status=status.HTTP_200_OK)
+    else:
+        return Response({"Error": response.status_code, "Error Message": response.text}, status=status.HTTP_403_FORBIDDEN)
+    
+
+def friend(request):
+    url = 'https://kapi.kakao.com/v1/api/talk/friends'
+    
+    social = request.user.social_auth.get(provider='kakao')
+    access_token =  social.extra_data['access_token']
+    
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+    response = requests.get(url, headers=headers)
+    data = []
+    for i in response.json()['elements']:
+        temp = {'profile_nickname': i['profile_nickname'], 
+                'profile_thumbnail_image': i['profile_thumbnail_image'], 
+                'id': i['id'], 
+                'uuid': i['uuid'], 
+                }
+        data.append(temp)
+    if response.status_code == 200:
+        return Response(data, status=status.HTTP_200_OK)
+    if response.status_code == 401:
+        return Response({'error': "카카오 로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
+    else:
+        return Response({'error': [response.status_code, response.text]}, status=status.HTTP_400_BAD_REQUEST)
         
 
 @api_view(['GET'])

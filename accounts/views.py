@@ -10,64 +10,53 @@ from shinhan_api.member import signup as shinhan_signup, search
 from shinhan_api.demand_deposit import create_demand_deposit_account
 from rest_framework.authtoken.models import Token
 import requests
-from social_django.utils import load_strategy
-from social_core.backends.kakao import KakaoOAuth2
-import json
 from django.shortcuts import redirect
 from django.conf import settings
 from social_django.models import UserSocialAuth
-from django.contrib.auth import authenticate
+from pprint import pprint
 
 
 User = get_user_model()
 
 
-@api_view(['POST'])
-def login(request):
-    user = authenticate(request, username=request.data.get('username'), password=request.data.get('username'))
-    
-    if user is not None:
-        auth_login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key}, status=status.HTTP_200_OK)
-    return Response({'error': "로그인 실패"}, status=status.HTTP_404_NOT_FOUND)
+def signup(kakao_user_info):
+    username = kakao_user_info['username']
+    id = kakao_user_info['id']
+    email = kakao_user_info['email']
+    data = {
+        "username": username, "password": id
+    }
+    serializer = UserCreationSerializer(data=data)
+    response = shinhan_signup(email)
+    flag = 1
+    if 'userKey' in response:
+        data['user_key'] = response['userKey']
+    else:
+        data['user_key'] = search(email)['userKey']
+        flag = 0
 
-
-@api_view(['POST'])
-def signup(request):
-    if request.method == "POST":
-        serializer = UserCreationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            auth_login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key}, status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if serializer.is_valid(raise_exception=True):
+        user = serializer.save()
+        serializer = UserSerializer(user)
+        if flag:
+            create_demand_deposit_account(email)
+        return Response({"data": serializer.data}, status=status.HTTP_201_CREATED)
+    else:
+        return Response({"error": "이미 존재하는 사용자 이메일 혹은 닉네임입니다."}, status=status.HTTP_409_CONFLICT)
 
 
 @api_view(['GET'])
 def kakao_callback(request):
     code = request.GET.get('code')
-    print(code)
-    # requests.post('http://127.0.0.1:8000/api/accounts/get_token/', data={'code':code})
-    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
-    # return Response({"meesage": "카카오 로그인 성공"}, status=status.HTTP_200_OK)
 
-
-@api_view(['POST'])
-def get_token(request):
-    code = request.data.get('code')
-    print("code:", code)
+    ######################
     # 인가 코드를 사용해 액세스 토큰 발급
     access_token = get_kakao_access_token(code)
-    print("access_token:", access_token)
     if not access_token:
         return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
     
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
-    print("kakao_user_info:", kakao_user_info)
     if not kakao_user_info:
         return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
 
@@ -78,10 +67,50 @@ def get_token(request):
         user = social_user.user
     except UserSocialAuth.DoesNotExist:
         user = User.objects.create(username=f'kakao_{kakao_user_id}')
+        signup(kakao_user_info)
         UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
 
     auth_login(request, user)
+    social = request.user.social_auth.get(provider='kakao')
+    social.extra_data['access_token'] = access_token
+    social.save()
     token, created = Token.objects.get_or_create(user=user)
+    return Response({'token': token.key}, status=status.HTTP_200_OK)
+    ######################
+    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
+
+
+@api_view(['POST'])
+def get_token(request):
+    code = request.data.get('code')
+    
+    # 인가 코드를 사용해 액세스 토큰 발급
+    access_token = get_kakao_access_token(code)
+    if not access_token:
+        return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
+
+    # 액세스 토큰을 사용해 사용자 정보 조회
+    kakao_user_info = get_kakao_user_info(access_token)
+    if not kakao_user_info:
+        return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
+
+    kakao_user_id = kakao_user_info['id']
+
+    try:
+        social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
+        user = social_user.user
+    except UserSocialAuth.DoesNotExist:
+        user = User.objects.create(username=f'kakao_{kakao_user_id}')
+        signup(kakao_user_info)
+        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
+
+    auth_login(request, user)
+    social = request.user.social_auth.get(provider='kakao')
+    social.extra_data['access_token'] = access_token
+    social.save()
+    token, created = Token.objects.get_or_create(user=user)
+    
+    print(token)
     return Response({"token": token.key}, status=status.HTTP_200_OK)
 
 
@@ -93,7 +122,6 @@ def get_kakao_access_token(code):
     data = {
         'grant_type': 'authorization_code',
         'client_id': f'{settings.SOCIAL_AUTH_KAKAO_KEY}',
-        # 'redirect_uri': f'{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}',
         'code': code,
     }
 
@@ -130,14 +158,13 @@ def logout(request):
 @permission_classes([IsAuthenticated])
 def friend(request):
     url = 'https://kapi.kakao.com/v1/api/talk/friends'
-    
     social = request.user.social_auth.get(provider='kakao')
-    access_token =  social.extra_data['access_token']
-    
+    access_token = social.extra_data['access_token']
     headers = {
         'Authorization': f'Bearer {access_token}'
     }
     response = requests.get(url, headers=headers)
+    pprint(response.json())
     data = []
     for i in response.json()['elements']:
         temp = {'profile_nickname': i['profile_nickname'], 
@@ -152,42 +179,3 @@ def friend(request):
         return Response({'error': "카카오 로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
     else:
         return Response({'error': [response.status_code, response.text]}, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def send_message(request):
-    social = request.user.social_auth.get(provider='kakao')
-    access_token =  social.extra_data['access_token']
-
-    friend_uuid = request.data.get('uuid')
-    friend_uuid = 'qZupnKWRppW5iLqKsoO3gbWEqJmom6-ZoJLx'  # 추후 수정해야함, 지금은 임광영
-
-    url = "https://kapi.kakao.com/v1/api/talk/friends/message/send"
-    headers = {
-        "Authorization": f"Bearer {access_token}",
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-
-    template_args = {
-        'trip_name': request.data.get('trip_name'), 
-        'trip_id': request.data.get('trip_id'), 
-    }
-    
-    template_args = {
-            'trip_name': "둠파디파", 
-            'trip_id': "5"
-        }
-    # 메시지 템플릿 데이터
-    data = {
-        'receiver_uuids': f'["{friend_uuid}"]',  # 친구의 uuid 배열
-        'template_id': '112658', 
-        'template_args': json.dumps(template_args), 
-    }
-
-    response = requests.post(url, headers=headers, data=data)
-
-    if response.status_code == 200:
-        return Response({"message": "메시지가 성공적으로 전송되었습니다."}, status=status.HTTP_200_OK)
-    else:
-        return Response({"Error": response.status_code, "Error Message": response.text}, status=status.HTTP_403_FORBIDDEN)
