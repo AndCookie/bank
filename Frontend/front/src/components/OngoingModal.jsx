@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import styles from './styles/Modal.module.css';
 
-const SketchModal = ({ isOpen, onClose }) => {
+const OngoingModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
@@ -31,4 +31,4 @@ const SketchModal = ({ isOpen, onClose }) => {
   );
 }
 
-export default SketchModal;
+export default OngoingModal;
