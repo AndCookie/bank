@@ -59,14 +59,15 @@ def get_token(request):
     # 인가 코드를 사용해 액세스 토큰 발급
     access_token = get_kakao_access_token(code)
     if not access_token:
-        return Response({"error": 'login_failed'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
     
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
+    print(kakao_user_info)
     if not kakao_user_info:
-        return Response({"error": 'login_failed'}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
 
-    kakao_user_id = kakao_user_info['id']  # 카카오에서 제공하는 고유 ID
+    kakao_user_id = kakao_user_info['id']
 
     try:
         social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
