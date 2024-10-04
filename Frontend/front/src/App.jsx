@@ -10,9 +10,10 @@ import TripCreatePage from '@/pages/TripCreatePage';
 import TripDetailPage from '@/pages/TripDetailPage';
 import TripFinishPage from '@/pages/TripFinishPage';
 import GalleryPage from '@/pages/GalleryPage';
-import NotfoundPage from '@/pages/NotfoundPage';
 import ErrorModal from '@/components/ErrorModal';
-import LoadingPage from '@/pages/LoadingPage'
+import LoadingPage from '@/pages/LoadingPage';
+import KakaoCallbackPage from '@/pages/KakaoCallbackPage';
+import NotfoundPage from '@/pages/NotfoundPage';
 
 function App() {
   return (
@@ -25,8 +26,9 @@ function App() {
         <Route path="/trip/:tripId" element={<TripDetailPage />} />
         <Route path="/finish/:tripId" element={<TripFinishPage />} />
         <Route path="/gallery/:tripId" element={<GalleryPage />} />
-        <Route path="*" element={<NotfoundPage />} />
         <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/kakao_callback" element={<KakaoCallbackPage />} />
+        <Route path="*" element={<NotfoundPage />} />
       </Routes>
     </div>
   )
