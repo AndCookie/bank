@@ -2,16 +2,85 @@ import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { useTripStore } from '@/stores/tripStore';
-
+import { useUserStore } from '@/stores/userStore';
+import { usePaymentStore } from '@/stores/paymentStore';
 import OngoingModal from '@/components/OngoingModal';
 
-const Payment = ({ payments, selectedDate }) => {
-  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+import Checkbox from '@mui/material/Checkbox';
 
+const Payment = ({ paymentsData, selectedDate }) => {
   const tripDetailInfo = {
     startDate: "2024-08-19",
+    members: [
+      {
+        "member": "김신한",
+        "bank_account": "0880493544778029",
+        "bank_name": "신한은행",
+        "balance": "7192236"
+      },
+      {
+        "member": "박준영",
+        "bank_account": "0886984969930397",
+        "bank_name": "신한은행",
+        "balance": "6848235"
+      },
+      {
+        "member": "이선재",
+        "bank_account": "0885399658115105",
+        "bank_name": "신한은행",
+        "balance": "9703466"
+      },
+      {
+        "member": "임광영",
+        "bank_account": "0882137908931580",
+        "bank_name": "신한은행",
+        "balance": "5359931"
+      },
+      {
+        "member": "정태완",
+        "bank_account": "0885969348355476",
+        "bank_name": "신한은행",
+        "balance": "6304116"
+      }
+    ]
   }
 
+  const userInfo = useUserStore((state) => state.userInfo);
+  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  const payments = usePaymentStore((state) => state.payments);
+  const setPayments = usePaymentStore((state) => state.setPayments);
+
+  // 최종 정산 금액
+  const [totalPayment, setTotalPayment] = useState(0);
+
+  
+  useEffect(() => {
+    // 인원별 정산 금액을 담기 위한 변수
+    const updatedPaymentsData = paymentsData.map((payment) => {
+      const membersData = tripDetailInfo.members.map(member => ({
+        cost: 0,
+        bank_account: member.bank_account
+      }));
+      
+      return {
+        ...payment,
+        bills: membersData
+      };
+    });
+    
+    setPayments(updatedPaymentsData)
+  }, [setPayments])
+  
+  // 정산 내역 클릭
+  const handleCheck = (checked, amount) => {
+    if (checked) {
+      setTotalPayment(prev => prev + amount);
+    } else {
+      setTotalPayment(prev => prev - amount);
+    }
+  };
+
+  // 정산 여부 판단
   const [isCompleted, setIsCompleted] = useState(0);
 
   // 필터링 된 결제 내역
@@ -51,8 +120,13 @@ const Payment = ({ payments, selectedDate }) => {
       </div>
 
       {filteredPayments.map((data) => (
-        <div key={data.id} onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
+        <div key={data.id} className="d-flex">
+          <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
+          <div>{data.username === userInfo.nickName && <Checkbox onChange={(e) => handleCheck(e.target.checked, data.amount)} />}</div>
+        </div>
       ))}
+
+      {totalPayment}원
 
       {/* 진행 중인 여행 정산 모달 창 */}
       <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} />

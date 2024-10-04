@@ -8,8 +8,12 @@ import TripInfoModal from '@/components/TripInfoModal';
 
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore'
+import { useUserStore } from "@/stores/userStore";
+
+import styles from '@/styles/TripDetailPage.module.css';
 
 const TripDetailPage = () => {
+  const userInfo = useUserStore((state) => state.userInfo);
   // const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
 
   const { tripId } = useParams();
@@ -222,7 +226,8 @@ const TripDetailPage = () => {
   return (
     <>
       <div className="d-flex">
-        <div>임광영 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
+        <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
+        <div>{userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
         <EditIcon onClick={openTripInfoModal} />
       </div>
 
@@ -246,7 +251,7 @@ const TripDetailPage = () => {
       </div>
 
       {/* 결제 내역 */}
-      <Payment payments={paymentsData} selectedDate={selectedDate} />
+      <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
 
       <button onClick={toFinish}>정산하기</button>
 
