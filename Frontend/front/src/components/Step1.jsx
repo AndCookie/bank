@@ -69,13 +69,13 @@ const StepOne = ({ formData, updateFormData }) => {
           <input
             type="date"
             placeholder="Start Date"
-            value={formData.dates.start || ''}  // formData.dates.start가 없는 경우 빈 문자열 처리
+            value={formData.start_date || ''}  // formData.dates.start가 없는 경우 빈 문자열 처리
             onChange={(e) => updateFormData({ dates: { ...formData.dates, start: e.target.value } })}
           />
           <input
             type="date"
             placeholder="End Date"
-            value={formData.dates.end || ''}  // formData.dates.end가 없는 경우 빈 문자열 처리
+            value={formData.end_date || ''}  // formData.dates.end가 없는 경우 빈 문자열 처리
             onChange={(e) => updateFormData({ dates: { ...formData.dates, end: e.target.value } })}
           />
         </div>

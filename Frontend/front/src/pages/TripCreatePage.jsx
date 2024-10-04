@@ -15,10 +15,11 @@ const TripCreatePage = () => {
   const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const [formData, setFormData] = useState({
     locations: [],
-    dates: { start: '', end: '' },
+    start_date: '',
+    end_date: '',
     members: [],
-    tripName: '',
-    bankAccount: '',
+    trip_name: '',
+    bank_account: '',
   });
 
   // 폼 데이터 업데이트 함수
