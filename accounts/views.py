@@ -13,6 +13,11 @@ import requests
 from django.shortcuts import redirect
 from django.conf import settings
 from social_django.models import UserSocialAuth
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # .env 파일 로드
+
 from pprint import pprint
 
 
@@ -48,36 +53,36 @@ def signup(kakao_user_info):
 @api_view(['GET'])
 def kakao_callback(request):
     code = request.GET.get('code')
-
-    # ######################
-    # # 인가 코드를 사용해 액세스 토큰 발급
-    # access_token = get_kakao_access_token(code)
-    # if not access_token:
-    #     return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
+    if os.getenv('DJANGO_ENV') == 'production':
+        return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
+    ######################
+    # 인가 코드를 사용해 액세스 토큰 발급
+    access_token = get_kakao_access_token(code)
+    if not access_token:
+        return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
     
-    # # 액세스 토큰을 사용해 사용자 정보 조회
-    # kakao_user_info = get_kakao_user_info(access_token)
-    # if not kakao_user_info:
-    #     return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
+    # 액세스 토큰을 사용해 사용자 정보 조회
+    kakao_user_info = get_kakao_user_info(access_token)
+    if not kakao_user_info:
+        return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
 
-    # kakao_user_id = kakao_user_info['id']
+    kakao_user_id = kakao_user_info['id']
 
-    # try:
-    #     social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
-    #     user = social_user.user
-    # except UserSocialAuth.DoesNotExist:
-    #     user = User.objects.create(username=f'kakao_{kakao_user_id}')
-    #     signup(kakao_user_info)
-    #     UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
+    try:
+        social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
+        user = social_user.user
+    except UserSocialAuth.DoesNotExist:
+        user = User.objects.create(username=f'kakao_{kakao_user_id}')
+        signup(kakao_user_info)
+        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
 
-    # auth_login(request, user)
-    # social = request.user.social_auth.get(provider='kakao')
-    # social.extra_data['access_token'] = access_token
-    # social.save()
-    # token, created = Token.objects.get_or_create(user=user)
-    # return Response({'token': token.key}, status=status.HTTP_200_OK)
-    # ######################
-    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
+    auth_login(request, user)
+    social = request.user.social_auth.get(provider='kakao')
+    social.extra_data['access_token'] = access_token
+    social.save()
+    token, created = Token.objects.get_or_create(user=user)
+    return Response({'token': token.key}, status=status.HTTP_200_OK)
+    ######################
 
 
 @api_view(['POST'])
@@ -88,7 +93,15 @@ def get_token(request):
     access_token = get_kakao_access_token(code)
     if not access_token:
         return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
-
+    social = request.user.social_auth.get(provider='kakao')
+    social.extra_data['access_token'] = access_token
+    social.save()
+    
+    kakao_user_info = get_kakao_user_info(access_token)
+    if not kakao_user_info:
+        return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
+    
+    return Response({"token": access_token, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
     if not kakao_user_info:
