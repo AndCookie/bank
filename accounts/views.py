@@ -94,6 +94,7 @@ def get_token(request):
     if not access_token:
         return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
     
+    # 발급받은 액세스 토큰으로 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
     if not kakao_user_info:
         return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
@@ -101,16 +102,24 @@ def get_token(request):
     kakao_user_id = kakao_user_info['id']
 
     try:
+        # 카카오 로그인된 유저가 있는지 확인
         social_user = UserSocialAuth.objects.get(provider='kakao', uid=kakao_user_id)
         user = social_user.user
     except UserSocialAuth.DoesNotExist:
+        # 새로운 사용자 생성 및 카카오 소셜 인증 생성
         user = User.objects.create(username=f'kakao_{kakao_user_id}')
-        signup(kakao_user_info)
-        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id)
-        
+        UserSocialAuth.objects.create(user=user, provider='kakao', uid=kakao_user_id, extra_data={'access_token': access_token})
+
+    # 로그인 처리
+    auth_login(request, user)
+    
+    social = request.user.social_auth.get(provider='kakao')
     user.extra_data['access_token'] = access_token
-    user.save()
+    social.save()
+
+    # 액세스 토큰을 반환
     return Response({"token": access_token, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
+
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
     if not kakao_user_info:
