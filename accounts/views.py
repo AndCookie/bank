@@ -116,9 +116,9 @@ def get_token(request):
     social = request.user.social_auth.get(provider='kakao')
     social.extra_data['access_token'] = access_token
     social.save()
+    token, created = Token.objects.get_or_create(user=user)
 
-    # 액세스 토큰을 반환
-    return Response({"token": access_token, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
+    return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
