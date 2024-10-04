@@ -15,7 +15,11 @@ const GalleryPage = () => {
 
   const { data, error, isLoading } = useQuery(
     ['payments', tripId], 
-    () => axiosInstance.get(`/payments/list/`).then(res => res.data.data),
+    () => axiosInstance.get(`/payments/list/`, {
+      params: {
+        tripId: tripId, // tripId를 params로 전달
+      }
+    }).then(res => res.data.data),
     {
       onSuccess: (fetchedData) => {
         addPayments(tripId, fetchedData); // 데이터가 로드되면 paymentStore에 저장

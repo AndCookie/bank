@@ -7,15 +7,14 @@ import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
 
 import { useTripStore } from '@/stores/tripStore';
+import { usePaymentStore } from '@/stores/paymentStore'
 
 const TripDetailPage = () => {
   // const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
-  // const fetchPayments = useTripStore((state) => state.fetchPayments);
 
   const { tripId } = useParams();
   // useEffect(() => {
   //   fetchTripDetail(tripId);
-  //   fetchPayments(tripId);
   // }, [fetchTripDetail, fetchPayments, tripId]);
 
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
