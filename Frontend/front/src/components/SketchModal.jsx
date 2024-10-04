@@ -51,8 +51,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
         const formData = new FormData();
         formData.append('image', uploadedImage);
         formData.append('index', 0); // Vintage Comic
-        const responsePost = await axios.post(
-          'https://www.ailabapi.com/api/image/effects/ai-anime-generator',
+        const responsePost = await axios.post('https://www.ailabapi.com/api/image/effects/ai-anime-generator',
           formData,
           {
             headers: {
@@ -76,8 +75,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     return new Promise((resolve) => {
       const intervalId = setInterval(async () => {
         try {
-          const responseGet = await axios.get(
-            'https://www.ailabapi.com/api/common/query-async-task-result',
+          const responseGet = await axios.get('https://www.ailabapi.com/api/common/query-async-task-result',
             {
               headers: {
                 'ailabapi-api-key': '6AQ1UN5DQTZkxnlMY3docjZF2zXop37Kqpwg4iJ4Cs5elrJGgiSHPbfVT8hLqfxk',
