@@ -49,7 +49,7 @@ def signup(request):
 @api_view(['GET'])
 def kakao_callback(request):
     code = request.GET.get('code')
-    return redirect(f'http://127.0.0.1:3000/kakao_callback?code={code}')
+    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?code={code}")
 
 
 @api_view(['POST'])
@@ -59,12 +59,12 @@ def get_token(request):
     # 인가 코드를 사용해 액세스 토큰 발급
     access_token = get_kakao_access_token(code)
     if not access_token:
-        return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?token=login_failed")
+        return Response({"error": 'login_failed'}, status=status.HTTP_204_NO_CONTENT)
     
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
     if not kakao_user_info:
-        return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?token=login_failed")
+        return Response({"error": 'login_failed'}, status=status.HTTP_204_NO_CONTENT)
 
     kakao_user_id = kakao_user_info['id']  # 카카오에서 제공하는 고유 ID
 
@@ -77,7 +77,7 @@ def get_token(request):
 
     auth_login(request, user)
     token, created = Token.objects.get_or_create(user=user)
-    return redirect(f"{settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL}/?token={token.key}")
+    return Response({"token": token.key}, status=status.HTTP_200_OK)
 
 
 def get_kakao_access_token(code):
