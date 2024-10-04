@@ -9,6 +9,14 @@ export const useUserStore = create((set) => ({
     userToken: token
   })),
 
-  userName: '',
-  profileImageUrl: '',
+  // 유저 정보
+  userInfo: {},
+
+  // 유저 정보 저장
+  setUserInfo: (userInfo) => set(() => ({
+    userInfo: {
+      nickName: userInfo.properties.nickname,
+      profileImage: userInfo.properties.profile_image,
+    }
+  })),
 }))

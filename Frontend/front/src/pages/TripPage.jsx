@@ -20,6 +20,7 @@ import hwaseong from '@/assets/images/hwaseong.jpg';
 
 
 const TripPage = () => {
+  const userInfo = useUserStore((state) => state.userInfo);
   const fetchTrips = useTripStore((state) => state.fetchTrips);
 
   // const currentTrip = useTripStore((state) => state.currentTrip);
@@ -185,6 +186,7 @@ const TripPage = () => {
       <div className={styles.upper}>
         {/* 사용자 프로필 */}
         <div className={styles.profile}>
+          {userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.tripCircleImage} />}
           <IconButton className={styles.createButton} onClick={toCreate}>
             <AddIcon />
           </IconButton>

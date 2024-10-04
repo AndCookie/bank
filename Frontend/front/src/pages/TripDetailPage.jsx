@@ -111,7 +111,7 @@ const TripDetailPage = () => {
         "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
         "category": "관광",
         "bank_account": "0886984969930397",
-        "username": "박준영"
+        "username": "임광영"
       },
       {
         "id": 90,

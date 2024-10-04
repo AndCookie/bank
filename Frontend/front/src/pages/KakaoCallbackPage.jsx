@@ -9,6 +9,7 @@ const KakaoCallbackPage = () => {
   const code = new URL(window.location.href).searchParams.get('code');
 
   const setUserToken = useUserStore((state) => state.setUserToken);
+  const setUserInfo = useUserStore((state) => state.setUserInfo);
 
   const navigate = useNavigate();
 
@@ -19,10 +20,11 @@ const KakaoCallbackPage = () => {
         const response = await axiosInstance.post('/accounts/get_token/', {
           code: code
         });
-        
+
         const { data } = response;
 
         setUserToken(data.token);
+        setUserInfo(data.user_info);
         navigate('/trip');
       } catch (error) {
         console.log(error)

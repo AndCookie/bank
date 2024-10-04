@@ -51,7 +51,7 @@ const Payment = ({ payments, selectedDate }) => {
       </div>
 
       {filteredPayments.map((data) => (
-        <div key={data.id} onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.brand_name} {data.is_completed}</div>
+        <div key={data.id} onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
       ))}
 
       {/* 진행 중인 여행 정산 모달 창 */}
