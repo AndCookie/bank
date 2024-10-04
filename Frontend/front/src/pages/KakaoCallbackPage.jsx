@@ -19,7 +19,7 @@ const KakaoCallbackPage = () => {
         const response = await axiosInstance.post('/accounts/get_token/', {
           code: code
         });
-
+        
         const { data } = response;
 
         setUserToken(data.token);
