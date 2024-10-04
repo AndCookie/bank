@@ -55,16 +55,16 @@ def kakao_callback(request):
 @api_view(['POST'])
 def get_token(request):
     code = request.data.get('code')
-    print(code)
+    print("code:", code)
     # 인가 코드를 사용해 액세스 토큰 발급
     access_token = get_kakao_access_token(code)
-    print(access_token)
+    print("access_token:", access_token)
     if not access_token:
         return Response({"error": 'access_token 발급 실패'}, status=status.HTTP_204_NO_CONTENT)
     
     # 액세스 토큰을 사용해 사용자 정보 조회
     kakao_user_info = get_kakao_user_info(access_token)
-    print(kakao_user_info)
+    print("kakao_user_info:", kakao_user_info)
     if not kakao_user_info:
         return Response({"error": 'user_info 조회 실패'}, status=status.HTTP_204_NO_CONTENT)
 
