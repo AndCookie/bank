@@ -177,7 +177,7 @@ CORS_ALLOW_CREDENTIALS = True
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    # 'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.kakao.KakaoOAuth2',
 )
 
@@ -188,11 +188,10 @@ SOCIAL_AUTH_KAKAO_SCOPE = ['profile_nickname', 'profile_image', 'friends', 'talk
 
 if os.getenv('DJANGO_ENV') == 'production':
     SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/api/auth/complete/kakao/'
-    # SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io/trip'
-    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5173/trip'
-    KAKAO_REDIRECT_URI = 'http://j11a204.p.ssafy.io/api/auth/complete/kakao/'
+    # SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io/kakao_callback'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5173/kakao_callback'
 else:  # local
     SOCIAL_AUTH_KAKAO_REDIRECT_URI = 'http://127.0.0.1:8000/api/auth/complete/kakao/'
-    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://127.0.0.1:8000/api/accounts/kakao_callback/'
-    KAKAO_REDIRECT_URI = 'http://localhost:8000/api/auth/complete/kakao/'
+    # SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://j11a204.p.ssafy.io/kakao_callback'
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5173/kakao_callback'
 
