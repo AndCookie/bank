@@ -20,7 +20,6 @@ import hwaseong from '@/assets/images/hwaseong.jpg';
 
 
 const TripPage = () => {
-  const fetchToken = useUserStore((state) => state.fetchToken);
   const fetchTrips = useTripStore((state) => state.fetchTrips);
 
   // const currentTrip = useTripStore((state) => state.currentTrip);
@@ -30,7 +29,6 @@ const TripPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchToken();
         await fetchTrips();
       } catch (error) {
         console.error(error);
@@ -38,7 +36,7 @@ const TripPage = () => {
     };
 
     fetchData();
-  }, [fetchToken, fetchTrips]);
+  }, [fetchTrips]);
 
   const currentTrips = [
     {
