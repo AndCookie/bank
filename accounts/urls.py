@@ -10,6 +10,5 @@ urlpatterns = [
     path('logout/', logout), 
     path('friend/', friend), 
     path('send_message/', send_message), 
-    path('kakao_callback/', kakao_callback), 
     path('get_token/', get_token), 
 ]
