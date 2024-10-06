@@ -53,31 +53,41 @@ const Payment = ({ paymentsData, selectedDate }) => {
   // 최종 정산 금액
   const [totalPayment, setTotalPayment] = useState(0);
 
-  
   useEffect(() => {
-    // 인원별 정산 금액을 담기 위한 변수
+    // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
     const updatedPaymentsData = paymentsData.map((payment) => {
       const membersData = tripDetailInfo.members.map(member => ({
         cost: 0,
         bank_account: member.bank_account
       }));
-      
+
       return {
         ...payment,
-        bills: membersData
+        bills: membersData,
+        checked: false,
       };
     });
-    
+
     setPayments(updatedPaymentsData)
   }, [setPayments])
-  
-  // 정산 내역 클릭
-  const handleCheck = (checked, amount) => {
-    if (checked) {
-      setTotalPayment(prev => prev + amount);
-    } else {
-      setTotalPayment(prev => prev - amount);
-    }
+
+  // 정산 내역 체크
+  const handleCheck = (paymentId, amount) => {
+    // 정산 체크 상태 변경을 담기 위한 임시 변수
+    const updatedPaymentsData = payments.map((payment) => {
+      if (payment.id === paymentId) {
+        const checked = !payment.checked;
+        if (checked) {
+          setTotalPayment(prev => prev + amount);
+        } else {
+          setTotalPayment(prev => prev - amount);
+        }
+        return { ...payment, checked: checked };
+      }
+      return payment;
+    });
+
+    setPayments(updatedPaymentsData);
   };
 
   // 정산 여부 판단
@@ -122,14 +132,14 @@ const Payment = ({ paymentsData, selectedDate }) => {
       {filteredPayments.map((data) => (
         <div key={data.id} className="d-flex">
           <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
-          <div>{data.username === userInfo.nickName && <Checkbox onChange={(e) => handleCheck(e.target.checked, data.amount)} />}</div>
+          <div>{data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}</div>
+
+          {/* 진행 중인 여행 정산 모달 창 */}
+          <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} />
         </div>
       ))}
 
       {totalPayment}원
-
-      {/* 진행 중인 여행 정산 모달 창 */}
-      <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} />
     </>
   )
 
