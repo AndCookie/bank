@@ -8,6 +8,12 @@ export const usePaymentStore = create((set, get) => ({
   setPayments: (paymentsInfo) => set(() => ({
     payments: paymentsInfo
   })),
+
+  // paymentId에 따른 결제 내역 조회하기
+  getPayment: (paymentId) => {
+    const payment = get().payments.find(payment => payment.id === paymentId);
+    return payment
+  },
   
   // payments에 데이터를 추가하는 함수
   // addPayments: (tripId, payments) => set((state) => ({

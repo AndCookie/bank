@@ -50,6 +50,12 @@ const Payment = ({ paymentsData, selectedDate }) => {
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
 
+  // 정산 여부 판단
+  const [isCompleted, setIsCompleted] = useState(0);
+
+  // 상세 결제 내역 Id
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+
   // 최종 정산 금액
   const [totalPayment, setTotalPayment] = useState(0);
 
@@ -58,7 +64,8 @@ const Payment = ({ paymentsData, selectedDate }) => {
     const updatedPaymentsData = paymentsData.map((payment) => {
       const membersData = tripDetailInfo.members.map(member => ({
         cost: 0,
-        bank_account: member.bank_account
+        member: member.member,
+        bankAccount: member.bank_account
       }));
 
       return {
@@ -70,6 +77,23 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
     setPayments(updatedPaymentsData)
   }, [setPayments])
+
+  // 필터링 된 결제 내역
+  const filteredPayments = payments.filter((payment) => {
+    // 전체 기간 조회
+    if (selectedDate === 'all') {
+      return true;
+      // 준비 기간 조회
+    } else if (selectedDate === 'prepare') {
+      return new Date(payment.pay_date) < tripDetailInfo.startDate;
+      // 특정 날짜 조회
+    } else {
+      return new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString();
+    }
+    // 정산 여부 조회
+  }).filter((payment) => {
+    return payment.is_completed === isCompleted;
+  });
 
   // 정산 내역 체크
   const handleCheck = (paymentId, amount) => {
@@ -90,31 +114,11 @@ const Payment = ({ paymentsData, selectedDate }) => {
     setPayments(updatedPaymentsData);
   };
 
-  // 정산 여부 판단
-  const [isCompleted, setIsCompleted] = useState(0);
-
-  // 필터링 된 결제 내역
-  const filteredPayments = payments.filter((payment) => {
-    // 전체 기간 조회
-    if (selectedDate === 'all') {
-      return true;
-      // 준비 기간 조회
-    } else if (selectedDate === 'prepare') {
-      return new Date(payment.pay_date) < tripDetailInfo.startDate;
-      // 특정 날짜 조회
-    } else {
-      return new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString();
-    }
-    // 정산 여부 조회
-  }).filter((payment) => {
-    return payment.is_completed === isCompleted;
-  });
-
   // 진행 중인 여행 정산 모달 창
   const [isOngoingOpen, setisOngoingOpen] = useState(false);
 
   const openOngoingModal = (paymentId) => {
-    console.log(paymentId)
+    setSelectedPaymentId(paymentId)
     setisOngoingOpen(true);
   }
 
@@ -133,13 +137,13 @@ const Payment = ({ paymentsData, selectedDate }) => {
         <div key={data.id} className="d-flex">
           <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
           <div>{data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}</div>
-
-          {/* 진행 중인 여행 정산 모달 창 */}
-          <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} />
         </div>
       ))}
 
       {totalPayment}원
+
+      {/* 진행 중인 여행 정산 모달 창 */}
+      <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
     </>
   )
 
