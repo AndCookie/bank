@@ -92,13 +92,13 @@ def get_token(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
-    if not request.user.user_key:
+    if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
     return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
 
 def create_account(user, user_id):
-    email = f"{user_id}@naver.com"
+    email = f"{user_id}@test6.com"
     response = shinhan_signup(email)
     flag = 1
     if 'userKey' in response:
@@ -111,6 +111,7 @@ def create_account(user, user_id):
     user.save()
     if flag:
         create_demand_deposit_account(email)
+    return 
 
 
 def get_kakao_access_token(code):

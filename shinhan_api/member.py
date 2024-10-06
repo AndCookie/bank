@@ -2,6 +2,7 @@ from shinhan_api.request import post
 from dotenv import load_dotenv
 import os
 
+# from request import post
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
@@ -32,5 +33,6 @@ def search(email):
     
 
 if __name__ == "__main__":
-    # signup("oodeng98@naver.com")
-    print(search("oodeng98@naver.com"))
+    email = 'jamie9@naver.com'
+    # signup(email)
+    search(email)

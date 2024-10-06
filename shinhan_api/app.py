@@ -10,7 +10,7 @@ def issued_api_key():
     앱 API KEY 발급
     """
     url = "edu/app/issuedApiKey/"
-    body = {"managerId": "oodeng98@naver.com"}
+    body = {"managerId": "jamie9@naver.com"}
     return post(url, body)
 
 

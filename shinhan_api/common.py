@@ -13,7 +13,7 @@ load_dotenv()
 API_KEY = os.getenv('API_KEY')
 
 
-def make_header(apiName, email="oodeng98@naver.com"):
+def make_header(apiName, email="jamie9@naver.com"):
     current_time = datetime.now()
     numeric_time = current_time.strftime("%Y%m%d%H%M%S") + f"{current_time.microsecond:06d}"
     common_body = {

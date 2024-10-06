@@ -27,12 +27,7 @@ def inquire_demand_deposit_list(email):
     """
     url = "edu/demandDeposit/inquireDemandDepositList"
     body = make_header(url.split('/')[-1], email)
-    response = post(url, body)
-    ret = []
-    for i in response['REC']:
-        if i['accountDescription'] == '1':
-            ret.append(i)
-    return ret[1:-1]
+    return post(url, body)
 
 
 def create_demand_deposit_account(email):
@@ -41,11 +36,11 @@ def create_demand_deposit_account(email):
     """
     url = "edu/demandDeposit/createDemandDepositAccount"
     accountTypeUniqueNos = []
-    for i in inquire_demand_deposit_list(email):
+    print(inquire_demand_deposit_account_list(email))
+    for i in inquire_demand_deposit_list(email)['REC']:
         accountTypeUniqueNos.append(i['accountTypeUniqueNo'])
-
     
-    for accountTypeUniqueNo in ["088-1-8447fb08f3ea43", random.choice(accountTypeUniqueNos)]:
+    for accountTypeUniqueNo in [random.choice(accountTypeUniqueNos), random.choice(accountTypeUniqueNos)]:
         body = make_header(url.split('/')[-1], email)
         body['accountTypeUniqueNo'] = accountTypeUniqueNo
         response = post(url, body)
@@ -193,7 +188,7 @@ def inquire_transaction_history(bank_account, transaction_unique_number, email):
     return post(url, body)
 
 
-def create_demand_deposit_for_each_bank():
+def create_demand_deposit_for_each_bank(email):
     rec =  [{'bankCode': '001', 'bankName': '한국은행'},
         {'bankCode': '002', 'bankName': '산업은행'},
         {'bankCode': '003', 'bankName': '기업은행'},
@@ -213,22 +208,23 @@ def create_demand_deposit_for_each_bank():
         {'bankCode': '090', 'bankName': '카카오뱅크'},
         {'bankCode': '999', 'bankName': '싸피은행'}]
     for i in rec:
-        create_demand_deposit("oodeng98@naver.com", i['bankCode'], i['bankName'])
+        print(create_demand_deposit(email, i['bankCode'], i['bankName']))
     
 
 
 if __name__ == "__main__":
-    # create_demand_deposit_for_each_bank()
+    email = 'jamie9@naver.com'
+    # create_demand_deposit_for_each_bank(email)
     # create_demand_deposit("oodeng98@naver.com")
-    # inquire_demand_deposit_list("oodeng98@naver.com")
+    print(inquire_demand_deposit_list(email))
     # create_demand_deposit_account("oodeng98@naver.com")
     # pprint(inquire_demand_deposit_account_list("email9629@naver.com")['REC'])
     # pprint(inquire_demand_deposit_account("email9629@naver.com", "0882943094128264")['REC'])
     # inquire_demand_deposit_account_holder_name()
     # pprint(inquire_demand_deposit_account_balance("email9629@naver.com", "0372462077415412"))
-    email = "email1@naver.com"
-    pprint(update_demand_deposit_account_withdrawal("0880493544778029", 5000000, email))
-    bank_account = "0882137908931580"
+    # email = "email1@naver.com"
+    # pprint(update_demand_deposit_account_withdrawal("0880493544778029", 5000000, email))
+    # bank_account = "0882137908931580"
     # update_demand_deposit_account_deposit(email, bank_account, "5000000")
     # pprint(inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance'])
     # pprint(update_demand_deposit_account_Transfer("email1@naver.com", "0817158183605808", "0880493544778029", 3000))
