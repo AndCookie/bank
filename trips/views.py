@@ -19,7 +19,7 @@ def create_trip(request):
         serializer = TripCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             trip = serializer.save()
-            Member.objects.create(trip=trip, user=request.user, bank_account=request.data.get('bank_account'), is_participate=True)
+            Member.objects.create(trip=trip, user=request.user, bank_account=request.data.get('bank_account'), is_participate=True, bank_name=request.data.get('bank_name'))
             return Response({"id": trip.pk}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -103,40 +103,8 @@ def detail(request):
         
         if not Member.objects.filter(trip=trip_id, user=request.user).exists():
             return Response({'error': "현재 사용자는 해당 여행에 참여하지 않았습니다."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = TripMainSerializer(trip)
+        serializer = TripMainSerializer(trip, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
-def member(request):
-    if request.method == 'GET':
-        email = request.GET.get('email')
-        if not email:
-            email = request.user.email
-
-        try:
-            user = User.objects.get(email=email)
-        except:
-            return Response({"error": "해당 이메일을 사용하는 사용자가 없습니다."}, status=status.HTTP_204_NO_CONTENT)
-        serializer = UserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    elif request.method == 'POST':
-        email = request.data.get('email')
-        trip_id = request.data.get('trip_id')
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response({'error': '해당 사용자를 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
-        trip = Trip.objects.get(pk=trip_id)
-        if Member.objects.filter(trip=trip, user=user).exists():
-            return Response({'error': '이 사용자는 이미 이 여행에 초대되었습니다.'}, status=status.HTTP_400_BAD_REQUEST)
-        Member.objects.create(trip=trip, user=user)
-        members = Member.objects.filter(trip=trip)
-        serializer = MemberDetailSerializer(members, many=True)
-        data = serializer.data
-        return Response(data, status=status.HTTP_201_CREATED)
     
     
 @api_view(['PUT'])
@@ -164,8 +132,19 @@ def save_image(request):
         return Response({'message': "image url이 성공적으로 저장되었습니다."}, status=status.HTTP_202_ACCEPTED)
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def invite(request, trip_id):
-    if request.method == 'GET':
-        member = Member.objects.get()
+def invite(request):
+    if request.method == 'POST':
+        try:
+            member = Member.objects.get(user=request.user, trip=request.data.get('trip_id'))
+            if member.is_participate:
+                return Response({"message": "이미 여행에 초대된 사용자입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
+            member.budget = request.data.get('budget')
+            member.bank_account = request.data.get('bank_account')
+            member.bank_name = request.data.get('bank_name')
+            member.is_participate = True
+            member.save()
+            return Response({"message": "여행 참가가 완료되었습니다."}, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response({'message': "해당 사용자는 여행에 초대되지 않았습니다."}, status=status.HTTP_204_NO_CONTENT)

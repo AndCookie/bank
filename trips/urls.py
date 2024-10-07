@@ -7,8 +7,7 @@ urlpatterns = [
     path('', create_trip), 
     path('list/', list), 
     path('detail/', detail), 
-    path('member/', member), 
     path('budget/', budget), 
     path('save_image/', save_image), 
-    path('invite/<int:trip_id>/', invite), 
+    path('invite/', invite), 
 ]

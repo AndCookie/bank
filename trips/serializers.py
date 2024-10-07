@@ -104,7 +104,7 @@ class MemberDetailSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source='user.user_id')
     class Meta:
         model = Member
-        fields = ['member', 'bank_account', 'is_participate', 'first_name', 'last_name', 'id']
+        fields = ['member', 'bank_account', 'bank_name', 'is_participate', 'first_name', 'last_name', 'id']
         
         
 class TripMainSerializer(serializers.ModelSerializer):
@@ -118,15 +118,15 @@ class TripMainSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['locations'] = LocationSerializer(instance.location_set.all().order_by('country', 'city'), many=True).data
         representation['members'] = MemberDetailSerializer(instance.member_set.all().order_by('user__username'), many=True).data
+        request = self.context.get('request')
         for member in representation['members']:
             bank_account = member['bank_account']
             is_participate = member['is_participate']
             if not is_participate:
                 continue
-            user = User.objects.get(username=member['member'])
-            member_account = account(user.email, bank_account)['REC']
-            member['bank_name'] = member_account['bankName']
-            member['balance'] = member_account['accountBalance']
+            if request.user.username == member['member']:
+                member_account = account(request.user.email, bank_account)['REC']
+                member['balance'] = member_account['accountBalance']
         return representation
     
     
@@ -152,3 +152,9 @@ def send_message(request, uuid_list, trip_name, trip_id):
         }
     response = requests.post(url, headers=headers, data=data)
     return
+
+
+class MemberUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ['id', 'budget', 'bank_account', "bank_name", "is_participate"]
