@@ -1,4 +1,6 @@
 import { React, useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -48,23 +50,54 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
   const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
 
   // 여행 멤버별 정산 금액 조정
-  const [finalPayments, setFinalPayments] = useState(
-    tripDetailInfo.members.map((member) => ({
-      cost: totalPayment / tripDetailInfo.members.length,
-      bank_account: member.bank_account
-    })));
+  const [finalPayments, setFinalPayments] = useState(null);
+
+  useEffect(() => {
+    setFinalPayments(
+      tripDetailInfo.members.map((member) => ({
+        cost: totalPayment / tripDetailInfo.members.length,
+        bank_account: member.bank_account
+      }))
+    );
+  }, [totalPayment, tripDetailInfo.members.length]);
 
   // 정산 체크한 내역
   const [checkedPayments, setCheckedPayments] = useState([]);
+
+  useEffect(() => {
+    setCheckedPayments(payments.filter(payment => payment.checked === true));
+  }, [payments, setCheckedPayments])
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
     return finalPayments.find(info => info.bank_account === bankAccount).cost;
   };
 
-  useEffect(() => {
-    setCheckedPayments(payments.filter(payment => payment.checked === true));
-  }, [payments, setCheckedPayments])
+  // 여행 멤버별 정산 금액 조정
+  const handleCostChange = (bankAccount, inputCost) => {
+    const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
+    const remainingTotalPayment = totalPayment - fixedCost;
+
+    // bankAccount의 cost를 변경하고, 나머지 멤버에게 cost 재분배
+    setFinalPayments(prevPayments => {
+      const otherMembers = prevPayments.filter(payment => payment.bank_account !== bankAccount);
+      const updatedPayments = prevPayments.map(payment => {
+        if (payment.bank_account === bankAccount) {
+          return { ...payment, cost: fixedCost };
+        } else {
+          return { ...payment, cost: parseInt(remainingTotalPayment / otherMembers.length) };
+        }
+      });
+      return updatedPayments;
+    });
+  };
+
+  const navigate = useNavigate();
+  const { tripId } = useParams();
+
+  const toFinish = () => {
+    navigate(`/finish/${tripId}`);
+  }
 
   if (!isOpen) return null;
 
@@ -97,10 +130,12 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
               <TextField
                 variant="outlined"
                 value={matchBankAccount(member.bank_account)}
-                
+                onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
               />
             </div>
           ))}
+
+          <button onClick={toFinish} >정산하기</button>
         </div>
       </Fade>
     </Modal>
