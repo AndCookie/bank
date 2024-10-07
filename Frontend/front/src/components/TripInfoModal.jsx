@@ -8,64 +8,10 @@ import { useTripStore } from '@/stores/tripStore';
 
 import styles from './styles/TripInfoModal.module.css';
 
-const SketchModal = ({ isOpen, onClose }) => {
-  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-
-  const { tripId } = useParams();
-  const tripDetailInfo = {
-    id: tripId,
-    startDate: "2024-08-19",
-    endDate: "2024-09-02",
-    imageUrl: " ",
-    locations: [
-      {
-        "country": "스페인"
-      },
-      {
-        "country": "포르투갈"
-      }
-    ],
-    members: [
-      {
-        "member": "박준영",
-        "bank_account": "0880493544778029",
-        "bank_name": "신한은행",
-        "balance": "여행 수락중"
-      },
-      {
-        "member": "오승진",
-        "bank_account": "0886984969930397",
-        "bank_name": "신한은행",
-        "balance": "카드 연결중"
-      },
-      {
-        "member": "이선재",
-        "bank_account": "0885399658115105",
-        "bank_name": "신한은행",
-        "balance": "9703466"
-      },
-      {
-        "member": "임광영",
-        "bank_account": "0882137908931580",
-        "bank_name": "신한은행",
-        "balance": "5359931"
-      },
-      {
-        "member": "정태완",
-        "bank_account": "0885969348355476",
-        "bank_name": "신한은행",
-        "balance": "6304116"
-      },
-      {
-        "member": "정지환",
-        "bank_account": "0886984969930399",
-        "bank_name": "신한은행",
-        "balance": "카드 연결중"
-      },
-    ]
-  };
-
-  if (!isOpen) return null; return (
+const TripInfoModal = ({ isOpen, onClose, tripDetailInfo }) => {
+  if (!isOpen) return null;
+  
+  return (
     <Modal
       open={isOpen}
       onClose={onClose}
@@ -122,4 +68,4 @@ const SketchModal = ({ isOpen, onClose }) => {
 
 }
 
-export default SketchModal;
+export default TripInfoModal;

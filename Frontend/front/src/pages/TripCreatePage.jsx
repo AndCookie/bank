@@ -15,10 +15,11 @@ const TripCreatePage = () => {
   const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const [formData, setFormData] = useState({
     locations: [],
-    dates: { start: '', end: '' },
+    start_date: '',
+    end_date: '',
     members: [],
-    tripName: '',
-    bankAccount: '',
+    trip_name: '',
+    bank_account: '',
   });
 
   // 폼 데이터 업데이트 함수
@@ -33,19 +34,19 @@ const TripCreatePage = () => {
   const validateStep = () => {
     switch (step) {
       case 0: // Step 1: 국가, 날짜, 목적지 검증
-        if (!formData.locations.length || !formData.dates.start || !formData.dates.end) {
+        if (!formData.locations.length || !formData.start_date || !formData.end_date) {
           setError('국가, 날짜, 또는 목적지를 입력해주세요.'); // 에러 메시지 설정
           return false;
         }
         return true;
       case 1: // Step 2: 여행 이름 및 멤버 검증
-        if (!formData.tripName || !formData.members.length) {
+        if (!formData.trip_name || !formData.members.length) {
           setError('여행 이름과 참여 인원을 입력해주세요.');
           return false;
         }
         return true;
       case 2: // Step 3: 정산 계좌 검증
-        if (!formData.account) {
+        if (!formData.bank_account) {
           setError('정산 계좌를 입력해주세요.');
           return false;
         }

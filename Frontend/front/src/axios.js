@@ -1,20 +1,21 @@
 import axios from 'axios';
+import { useUserStore } from '@/stores/userStore';
 
 // Axios 기본 설정
 const axiosInstance = axios.create({
-  baseURL: 'https://j11a204.p.ssafy.io/api', // 기본 URL 설정
-  timeout: 5000, // 타임아웃 설정
+  baseURL: 'https://j11a204.p.ssafy.io/api',
+  timeout: 5000,
   headers: {
-    'Content-Type': 'application/json', // 요청 헤더 기본 설정
+    'Content-Type': 'application/json',
   },
 });
 
-// 요청 인터셉터 (예: Authorization 헤더에 토큰 추가)
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // 로컬 스토리지에서 'token' 값을 가져옴
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`; // 가져온 토큰을 Authorization 헤더에 추가
+    // const token = useUserStore((state) => state.userToken);
+    const token = useUserStore.getState().userToken;
+    if (token.length > 0) {
+      config.headers.Authorization = `Token ${token}`;
     }
     return config;
   },

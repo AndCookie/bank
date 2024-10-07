@@ -1,41 +1,35 @@
-import { create } from 'zustand'
-import axiosInstance from '@/axios';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-export const useUserStore = create((set) => ({
-  // 토큰
-  userToken: '',
+export const useUserStore = create(
+  persist(
+    (set) => ({
+      // 토큰
+      userToken: '',
 
-  // 토큰 저장
-  setUserToken: (token) => set(() => ({
-    userToken: typeof tripInfo === 'string'
-      ? {
-        userToken: token
-      }
-      : '',
-  })),
+      // 토큰 저장
+      setUserToken: (token) => set(() => ({
+        userToken: token,
+      })),
 
-  // 토큰 발급
-  fetchToken: async () => {
-    try {
-      const response = await axiosInstance.get('/accounts/login/')
-      console.log(response)
-      
-      // const eventSourceToken = new EventSource('https://j11a204.p.ssafy.io/api/accounts/kakao_login_success/');
-      // eventSourceToken.onmessage = (event) => {
-      //   const data = JSON.parse(event.data);
-      //   useUserStore.getState().setUserToken(data);
-      //   eventSourceToken.close();
-      // };
+      // 유저 정보
+      userInfo: {},
 
-      // eventSourceToken.onerror = (error) => {
-      //   console.error(error);
-      //   eventSourceToken.close();
-      // };
-    } catch (error) {
-      console.log(error);
+      // 유저 정보 저장
+      setUserInfo: (userInfo) => set(() => ({
+        userInfo: {
+          nickName: userInfo.properties.nickname,
+          profileImage: userInfo.properties.profile_image,
+        },
+      })),
+    }),
+    {
+      name: 'user-storage', // localStorage에 저장될 key 이름
+      storage: {
+        getItem: (name) => JSON.parse(localStorage.getItem(name)),  // 역직렬화
+        setItem: (name, value) => localStorage.setItem(name, JSON.stringify(value)),  // 직렬화
+        removeItem: (name) => localStorage.removeItem(name),
+      },
     }
-  },
-
-  userName: '',
-  profileImageUrl: '',
-}))
+  )
+);

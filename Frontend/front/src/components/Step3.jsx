@@ -8,8 +8,8 @@ const StepThree = ({ formData, updateFormData }) => {
       <input
         type="text"
         placeholder="Bank Account"
-        value={formData.bankAccount}
-        onChange={(e) => updateFormData({ bankAccount: e.target.value })}
+        value={formData.bank_account}
+        onChange={(e) => updateFormData({ bank_account: e.target.value })}
       />
     </div>
   );

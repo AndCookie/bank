@@ -20,7 +20,7 @@ import hwaseong from '@/assets/images/hwaseong.jpg';
 
 
 const TripPage = () => {
-  const fetchToken = useUserStore((state) => state.fetchToken);
+  const userInfo = useUserStore((state) => state.userInfo);
   const fetchTrips = useTripStore((state) => state.fetchTrips);
 
   // const currentTrip = useTripStore((state) => state.currentTrip);
@@ -30,7 +30,6 @@ const TripPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await fetchToken();
         await fetchTrips();
       } catch (error) {
         console.error(error);
@@ -38,7 +37,7 @@ const TripPage = () => {
     };
 
     fetchData();
-  }, [fetchToken, fetchTrips]);
+  }, [fetchTrips]);
 
   const currentTrips = [
     {
@@ -187,6 +186,7 @@ const TripPage = () => {
       <div className={styles.upper}>
         {/* 사용자 프로필 */}
         <div className={styles.profile}>
+          {userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.tripCircleImage} />}
           <IconButton className={styles.createButton} onClick={toCreate}>
             <AddIcon />
           </IconButton>
