@@ -1,6 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
+import { MdArrowBack } from 'react-icons/md';
 import EditIcon from '@mui/icons-material/Edit';
 import styles from '@/styles/TripDetailPage.module.css'
 import Payment from "@/components/Payment";
@@ -218,30 +219,53 @@ const TripDetailPage = () => {
   }
 
   return (
-    <>
-      <div className="d-flex">
+    <div className={styles.container}>
+
+      {/* 뒤로가기 */}
+      <div className={styles.heaㄸder}>
+        <div className={styles.baㄸck}>
+          <MdArrowBack className={styles.btns} size={30} onClick="" />
+        </div>
+      </div>
+
+      {/* 프로필 */}
+      <div className={styles.profile}>
         <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
-        <div>{userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
+        <div className={styles.profileStatus}>
+          {userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 중 &nbsp;
+        </div>
         <EditIcon onClick={openTripInfoModal} />
       </div>
 
       {/* 여행 일자 */}
-      <div className="d-flex">
-        <div onClick={() => clickDate('all')}>
-          <div>A</div>
-          <div>ALL</div>
+      <div className={styles.pickContainer}>
+        <div className={styles.all} onClick={() => clickDate('all')}>
+          <div className={styles.upper}>&nbsp;</div>
+          <div className={styles.middle}>A</div>
+          <div className={styles.bottom}>ALL</div>
         </div>
-        <div onClick={() => clickDate('prepare')}>
-          <div>P</div>
-          <div>준비</div>
+        <div className={styles.prepare} onClick={() => clickDate('prepare')}>
+          <div className={styles.upper}>&nbsp;</div>
+          <div className={styles.middle}>P</div>
+          <div className={styles.bottom}>준비</div>
         </div>
-        {tripDays.map((date, index) => (
-          <div key={index} onClick={() => clickDate(date)}>
-            <div>{format(date, "EEE")}</div>
-            <div>{format(date, "d")}</div>
-            <div>{format(date, "M")}월</div>
-          </div>
-        ))}
+
+        {/* 구분선 */}
+        <div className={styles.line}>|</div>
+
+        {/* 날짜 스크롤 */}
+        <div className={styles.dayScroll}>
+          {tripDays.map((date, index) => (
+            <div className={styles.dayContainer} key={index} onClick={() => clickDate(date)}>
+              <div className={styles.upper}>{format(date, "EEE")}</div>
+              <div className={styles.middle}>{format(date, "d")}</div>
+              <div className={styles.bottom}>{format(date, "M")}월</div>
+            </div>
+          ))}
+        </div>
+
+        {/* 구분선 */}
+        <div className={styles.arrow}>|</div>
       </div>
 
       {/* 결제 내역 */}
@@ -249,7 +273,7 @@ const TripDetailPage = () => {
 
       {/* 여행 상세 정보 모달 창 */}
       <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
-    </>
+    </div>
   )
 }
 
