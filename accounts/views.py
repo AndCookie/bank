@@ -18,7 +18,7 @@ import os
 from dotenv import load_dotenv
 import requests, json
 
-load_dotenv()  # .env 파일 로드
+load_dotenv()
 
 
 User = get_user_model()
@@ -56,9 +56,7 @@ def kakao_callback(request):
     token, created = Token.objects.get_or_create(user=user)
     if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
-    else:
-        user_key = search(f"{kakao_user_id}ssafy@naver.com")['userKey']
-    return Response({'token': token.key,  'user_info': kakao_user_info}, status=status.HTTP_200_OK)
+    return Response({'token': token.key,  'user_info': kakao_user_info, 'user': request.user.username}, status=status.HTTP_200_OK)
     ######################
 
 
@@ -96,8 +94,6 @@ def get_token(request):
     token, created = Token.objects.get_or_create(user=user)
     if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
-    else:
-        user_key = search(f"{kakao_user_id}ssafy@naver.com")['userKey']
     return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
 
@@ -113,6 +109,7 @@ def create_account(user, user_id):
         flag = 0
     user.email = email
     user.user_key = user_key
+    user.user_id = user_id
     user.save()
     if flag:
         create_demand_deposit_account(email)

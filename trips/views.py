@@ -19,7 +19,7 @@ def create_trip(request):
         serializer = TripCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             trip = serializer.save()
-            Member.objects.create(trip=trip, user=request.user, bank_account=request.data.get('bank_account'))
+            Member.objects.create(trip=trip, user=request.user, bank_account=request.data.get('bank_account'), is_participate=True)
             return Response({"id": trip.pk}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -162,4 +162,10 @@ def save_image(request):
         trip.image_url = request.data.get('image_url')
         trip.save()
         return Response({'message': "image url이 성공적으로 저장되었습니다."}, status=status.HTTP_202_ACCEPTED)
-    
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def invite(request, trip_id):
+    if request.method == 'GET':
+        member = Member.objects.get()

@@ -41,15 +41,14 @@ class TripCreateSerializer(serializers.ModelSerializer):
         # 멤버 데이터 처리
         uuid_list = []
         for member_data in members_data:
-            id = member_data['id']
+            user_id = member_data['id']
             uuid = member_data['uuid']
             try:
-                user = User.objects.get(username=id)
+                user = User.objects.get(user_id=user_id)
                 if not uuid:  # 요청한 사용자인 경우
-                    Member.objects.create(trip=trip, user=user, bank_account=validated_data.pop('bank_account'), is_participate=True)
-                else:
-                    Member.objects.create(trip=trip, user=user)
-                    uuid_list.append(uuid)
+                    continue
+                Member.objects.create(trip=trip, user=user)
+                uuid_list.append(uuid)
             except User.DoesNotExist:
                 continue
         request = self.context.get('request')
@@ -100,9 +99,12 @@ class TripSerializer(serializers.ModelSerializer):
 
 class MemberDetailSerializer(serializers.ModelSerializer):
     member = serializers.CharField(source='user.username')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    id = serializers.CharField(source='user.user_id')
     class Meta:
         model = Member
-        fields = ['member', 'bank_account']
+        fields = ['member', 'bank_account', 'is_participate', 'first_name', 'last_name', 'id']
         
         
 class TripMainSerializer(serializers.ModelSerializer):
@@ -118,6 +120,9 @@ class TripMainSerializer(serializers.ModelSerializer):
         representation['members'] = MemberDetailSerializer(instance.member_set.all().order_by('user__username'), many=True).data
         for member in representation['members']:
             bank_account = member['bank_account']
+            is_participate = member['is_participate']
+            if not is_participate:
+                continue
             user = User.objects.get(username=member['member'])
             member_account = account(user.email, bank_account)['REC']
             member['bank_name'] = member_account['bankName']
