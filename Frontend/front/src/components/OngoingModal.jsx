@@ -62,7 +62,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
 
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
       setPartPayment((prev) => ({
         ...prev,
         bills: tripDetailInfo.members.map((member) => ({

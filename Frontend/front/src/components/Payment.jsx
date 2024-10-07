@@ -157,13 +157,13 @@ const Payment = ({ paymentsData, selectedDate }) => {
           <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
           <div>{data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}</div>
 
-          {/* 결제내역 상세 정보 모달 창 */}
-          <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
         </div>
       ))}
 
       <button>{totalAmount}원 정산하기</button>
 
+      {/* 결제내역 상세 정보 모달 창 */}
+      <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
     </>
   )
 }
