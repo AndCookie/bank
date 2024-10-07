@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 
-export const usePaymentStore = create((set) => ({
-  // 체크 여부가 추가된 결제 내역
+export const usePaymentStore = create((set, get) => ({
+  // 여행 멤버별 정산 금액과 체크 여부가 추가된 결제 내역
   payments: [],
 
-  // 체크 여부가 추가된 결제 내역 저장
+  // 여행 멤버별 정산 금액과 체크 여부가 추가된 결제 내역 저장
   setPayments: (paymentsInfo) => set(() => ({
     payments: paymentsInfo
   })),
@@ -21,12 +21,12 @@ export const usePaymentStore = create((set) => ({
   })),
 
   // 체크한 결제 내역 추가
-  addCalculatedPayments: (paymentId, bills) => set((state) => ({
+  addCalculatedPayments: (paymentId, amount, bills) => set((state) => ({
     calculatedPayments: {
       ...state.calculatedPayments,
       payments: [
         ...state.calculatedPayments.payments,
-        { payment_id: paymentId, bills }
+        { payment_id: paymentId, amount, bills }
       ]
     }
   })),
@@ -40,10 +40,10 @@ export const usePaymentStore = create((set) => ({
   })),
 
   // paymentId에 따른 결제 내역 조회하기
-  // getPayment: (paymentId) => {
-  //   const payment = get().payments.find(payment => payment.id === paymentId);
-  //   return payment
-  // },
+  getPayment: (paymentId) => {
+    const payment = get().payments.find(payment => payment.id === paymentId);
+    return payment
+  },
 
   // payments에 데이터를 추가하는 함수
   // addPayments: (tripId, payments) => set((state) => ({

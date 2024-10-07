@@ -8,7 +8,7 @@ import { usePaymentStore } from '@/stores/paymentStore';
 
 import styles from './styles/Modal.module.css';
 
-const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
+const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
   const tripDetailInfo = {
     startDate: "2024-08-19",
     members: [
@@ -46,20 +46,44 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
   }
 
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+
+  // 개별 결제 내역
+  const [partPayment, setPartPayment] = useState(0);
+  const getPayment = usePaymentStore((state) => state.getPayment);
+
   const payments = usePaymentStore((state) => state.payments);
-  const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
+  // const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
+
+  // 모달 창에 렌더링 되는 결제 금액
+  const [renderedAmount, setRenderedAmount] = useState(0);
 
   // 여행 멤버별 정산 금액 조정
   const [finalPayments, setFinalPayments] = useState(null);
 
   useEffect(() => {
+    if (isOpen) {
+      setPartPayment(getPayment(paymentId))
+    }
+  }, [setPartPayment, paymentId])
+
+  useEffect(() => {
+    if (isOpen) {
+      if (paymentId === 'adjust') {
+        setRenderedAmount(totalAmount);
+      } else {
+        setRenderedAmount(partPayment.amount);
+      }
+    }
+  }, [partPayment])
+
+  useEffect(() => {
     setFinalPayments(
       tripDetailInfo.members.map((member) => ({
-        cost: totalPayment / tripDetailInfo.members.length,
+        cost: totalAmount / tripDetailInfo.members.length,
         bank_account: member.bank_account
       }))
     );
-  }, [totalPayment, tripDetailInfo.members.length]);
+  }, [totalAmount, tripDetailInfo.members.length]);
 
   // 정산 체크한 내역
   const [checkedPayments, setCheckedPayments] = useState([]);
@@ -76,7 +100,7 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
-    const remainingTotalPayment = totalPayment - fixedCost;
+    const remainingTotalPayment = totalAmount - fixedCost;
 
     // bankAccount의 cost를 변경하고, 나머지 멤버에게 cost 재분배
     setFinalPayments(prevPayments => {
@@ -100,7 +124,6 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
   }
 
   if (!isOpen) return null;
-
   return (
     <Modal
       open={isOpen}
@@ -116,7 +139,7 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
       <Fade in={isOpen}>
         <div className={styles.box}>
           <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
-          <div>{totalPayment}원</div>
+          <div>{renderedAmount}원</div>
 
           {/* 정산 체크한 결제 내역 */}
           {checkedPayments.map((payment) => (
