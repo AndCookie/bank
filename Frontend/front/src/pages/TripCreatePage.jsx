@@ -20,6 +20,7 @@ const TripCreatePage = () => {
     members: [],
     trip_name: '',
     bank_account: '',
+    bank_name: '',
   });
 
   // 폼 데이터 업데이트 함수

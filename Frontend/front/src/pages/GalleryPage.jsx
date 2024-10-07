@@ -17,7 +17,7 @@ const GalleryPage = () => {
     ['payments', tripId], 
     () => axiosInstance.get(`/payments/list/`, {
       params: {
-        trip_id: tripId, // tripId를 params로 전달
+        trip_id: Number(tripId), // tripId를 params로 전달
       }
     }).then(res => res.data.data),
     {

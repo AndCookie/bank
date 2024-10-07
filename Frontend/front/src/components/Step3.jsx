@@ -22,8 +22,16 @@ const StepThree = ({ formData, updateFormData }) => {
   }, []);
 
   const handleAccountSelect = (e) => {
-    const selectedAccount = e.target.value;
-    updateFormData({ bank_account: selectedAccount });
+    const selectedAccountNo = e.target.value;
+    // 선택된 계좌 정보를 bankAccounts에서 찾음
+    const selectedAccount = bankAccounts.find(account => account.accountNo === selectedAccountNo);
+
+    if (selectedAccount) {
+      updateFormData({
+        bank_account: selectedAccount.accountNo, // 계좌 번호
+        bank_name: selectedAccount.bankName, // 은행 이름 추가
+      });
+    }
   };
 
   return (

@@ -2,16 +2,14 @@ import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import EditIcon from '@mui/icons-material/Edit';
-import styles from '@/styles/TripDetailPage.module.css'
+
 import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
 
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore'
-import { useUserStore } from "@/stores/userStore";
 
 const TripDetailPage = () => {
-  const userInfo = useUserStore((state) => state.userInfo);
   // const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
 
   const { tripId } = useParams();
@@ -113,7 +111,7 @@ const TripDetailPage = () => {
         "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
         "category": "관광",
         "bank_account": "0886984969930397",
-        "username": "임광영"
+        "username": "박준영"
       },
       {
         "id": 90,
@@ -206,6 +204,10 @@ const TripDetailPage = () => {
     setSelectedDate(date);
   }
 
+  const toFinish = () => {
+    navigate(`/finish/${tripId}`);
+  }
+
   // 여행 상세 정보 모달 창
   const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
 
@@ -220,8 +222,7 @@ const TripDetailPage = () => {
   return (
     <>
       <div className="d-flex">
-        <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
-        <div>{userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
+        <div>임광영 님은 {tripDetailInfo.locations[0].country} 여행 중</div>
         <EditIcon onClick={openTripInfoModal} />
       </div>
 
@@ -245,7 +246,9 @@ const TripDetailPage = () => {
       </div>
 
       {/* 결제 내역 */}
-      <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
+      <Payment payments={paymentsData} selectedDate={selectedDate} />
+
+      <button onClick={toFinish}>정산하기</button>
 
       {/* 여행 상세 정보 모달 창 */}
       <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
