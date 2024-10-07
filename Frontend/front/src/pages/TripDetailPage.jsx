@@ -206,10 +206,6 @@ const TripDetailPage = () => {
     setSelectedDate(date);
   }
 
-  const toFinish = () => {
-    navigate(`/finish/${tripId}`);
-  }
-
   // 여행 상세 정보 모달 창
   const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
 
@@ -250,8 +246,6 @@ const TripDetailPage = () => {
 
       {/* 결제 내역 */}
       <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
-
-      <button onClick={toFinish}>정산하기</button>
 
       {/* 여행 상세 정보 모달 창 */}
       <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />

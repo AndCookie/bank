@@ -18,6 +18,7 @@ export const useUserStore = create(
       // 유저 정보 저장
       setUserInfo: (userInfo) => set(() => ({
         userInfo: {
+          id: userInfo.id,
           nickName: userInfo.properties.nickname,
           profileImage: userInfo.properties.profile_image,
         },

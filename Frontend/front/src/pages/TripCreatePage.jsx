@@ -40,7 +40,7 @@ const TripCreatePage = () => {
         }
         return true;
       case 1: // Step 2: 여행 이름 및 멤버 검증
-        if (!formData.trip_name || !formData.members.length) {
+        if (!formData.trip_name) {
           setError('여행 이름과 참여 인원을 입력해주세요.');
           return false;
         }

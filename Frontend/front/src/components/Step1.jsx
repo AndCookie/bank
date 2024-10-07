@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { Chip, Stack } from '@mui/material';
-import styles from './styles/Steps.module.css'
+import { Chip } from '@mui/material';
+import styles from './styles/Steps.module.css';
+import { useErrorStore } from '@/stores/errorStore'; // 에러 스토어 가져오기
 
 const StepOne = ({ formData, updateFormData }) => {
   const [countryInput, setCountryInput] = useState('');
+  const setError = useErrorStore((state) => state.setError); // 에러 설정 함수
 
   // 국가 추가 함수
   const addCountry = () => {
-    // formData.locations가 존재하지 않으면 빈 배열로 처리
     const currentLocations = formData.locations || [];
 
     if (countryInput && !currentLocations.some((loc) => loc.country === countryInput)) {
@@ -21,6 +22,25 @@ const StepOne = ({ formData, updateFormData }) => {
   const removeCountry = (index) => {
     const updatedLocations = formData.locations.filter((_, i) => i !== index);
     updateFormData({ locations: updatedLocations });
+  };
+
+  // 날짜 변경 함수
+  const handleStartDateChange = (e) => {
+    const startDate = e.target.value;
+    if (formData.end_date && new Date(startDate) > new Date(formData.end_date)) {
+      setError('시작일이 종료일보다 늦습니다!'); // 에러 스토어에 오류 메시지 설정
+    } else {
+      updateFormData({ start_date: startDate });
+    }
+  };
+
+  const handleEndDateChange = (e) => {
+    const endDate = e.target.value;
+    if (formData.start_date && new Date(endDate) < new Date(formData.start_date)) {
+      setError('종료일이 시작일보다 빠릅니다!'); // 에러 스토어에 오류 메시지 설정
+    } else {
+      updateFormData({ end_date: endDate });
+    }
   };
 
   return (
@@ -37,11 +57,9 @@ const StepOne = ({ formData, updateFormData }) => {
             onChange={(e) => setCountryInput(e.target.value)}
             onKeyUp={(e) => e.key === 'Enter' && addCountry()} // Enter 키로 국가 추가
           />
-          {/* <button className={styles.btnAdd} onClick={addCountry}>+ 추가</button> */}
         </div>
 
         {/* 선택된 국가 리스트 */}
-        {/* <Stack direction="row" spacing={1} flexWrap="wrap" className={styles.chipContainer}> */}
         <div className={styles.chipContainer}>
           {formData.locations && formData.locations.length > 0 && (
             formData.locations.map((location, index) => (
@@ -55,9 +73,7 @@ const StepOne = ({ formData, updateFormData }) => {
             ))
           )}
         </div>
-        {/* </Stack> */}
       </div>
-
 
       <div className={styles.second}>
         <div className={styles.question}>
@@ -70,13 +86,13 @@ const StepOne = ({ formData, updateFormData }) => {
             type="date"
             placeholder="Start Date"
             value={formData.start_date || ''}  // formData.start_date가 없는 경우 빈 문자열 처리
-            onChange={(e) => updateFormData({ start_date: e.target.value })}  // start_date 업데이트
+            onChange={handleStartDateChange}  // start_date 유효성 검사 포함
           />
           <input
             type="date"
             placeholder="End Date"
             value={formData.end_date || ''}  // formData.end_date가 없는 경우 빈 문자열 처리
-            onChange={(e) => updateFormData({ end_date: e.target.value })}  // end_date 업데이트
+            onChange={handleEndDateChange}  // end_date 유효성 검사 포함
           />
         </div>
       </div>
