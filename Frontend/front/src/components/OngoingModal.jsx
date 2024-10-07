@@ -10,7 +10,6 @@ import styles from './styles/Modal.module.css';
 
 const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   const tripDetailInfo = {
-    startDate: "2024-08-19",
     members: [
       {
         "member": "김신한",
@@ -129,6 +128,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             {partPayment.pay_time}
           </div>
 
+          {/* 정산 멤버 */}
           <div>정산대상</div>
           {tripDetailInfo.members.map((member, index) => (
             <div key={index}>

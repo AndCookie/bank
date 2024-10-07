@@ -21,12 +21,12 @@ export const usePaymentStore = create((set, get) => ({
   })),
 
   // 체크한 결제 내역 추가
-  addFinalPayments: (paymentId, amount, bills) => set((state) => ({
+  addFinalPayments: (paymentId) => set((state) => ({
     finalPayments: {
       ...state.finalPayments,
       payments: [
         ...state.finalPayments.payments,
-        { payment_id: paymentId, amount, bills }
+        { payment_id: paymentId, bills: [] }
       ]
     }
   })),
@@ -36,6 +36,22 @@ export const usePaymentStore = create((set, get) => ({
     finalPayments: {
       ...state.finalPayments,
       payments: state.finalPayments.payments.filter(payment => payment.payment_id !== paymentId)
+    }
+  })),
+
+  // 체크한 결제 내역 업데이트
+  updateFinalPayments: (paymentId, updatedBills) => set((state) => ({
+    finalPayments: {
+      ...state.finalPayments,
+      payments: state.finalPayments.payments.map(payment => {
+        if (payment.payment_id === paymentId) {
+          return {
+            ...payment,
+            bills: updatedBills
+          };
+        }
+        return payment;
+      })
     }
   })),
 

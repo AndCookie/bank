@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/userStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 
 import OngoingModal from '@/components/OngoingModal';
+import AdjustModal from '@/components/AdjustModal';
 
 import Checkbox from '@mui/material/Checkbox';
 
@@ -61,10 +62,10 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
   // 정산 여부 판단
   const [isCompleted, setIsCompleted] = useState(0);
-
+  
   // 선택한 상세 결제 내역 Id
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
-
+    
   // 최종 정산 금액
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -115,12 +116,12 @@ const Payment = ({ paymentsData, selectedDate }) => {
           setTotalAmount(prev => prev + amount);
 
           // calculatedPayments에서 paymentId에 해당하는 데이터 추가
-          const bills = tripDetailInfo.members.map((member) => ({
-            cost: 0,
-            bank_account: member.bank_account,
-          }));
+          // const bills = tripDetailInfo.members.map((member) => ({
+          //   cost: 0,
+          //   bank_account: member.bank_account,
+          // }));
 
-          addFinalPayments(paymentId, amount, bills);
+          addFinalPayments(paymentId);
         } else {
           setTotalAmount(prev => prev - amount);
           removeFinalPayments(paymentId)
@@ -133,8 +134,20 @@ const Payment = ({ paymentsData, selectedDate }) => {
     setPayments(updatedPaymentsData);
   };
 
+  // 디버깅
+  useEffect(() => {
+    console.log(finalPayments);
+  }, [finalPayments])
+
+  useEffect(() => {
+    console.log(payments);
+  }, [payments])
+
   // 결제내역 상세 정보 모달 창
   const [isOngoingOpen, setisOngoingOpen] = useState(false);
+  
+  // 체크한 결제내역 정산 모달 창
+  const [isAdjustOpen, setisAdjustOpen] = useState(false);
 
   const openOngoingModal = (paymentId) => {
     setSelectedPaymentId(paymentId);
@@ -143,6 +156,14 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
   const closeOngoingModal = () => {
     setisOngoingOpen(false);
+  }
+
+  const openAdjustModal = () => {
+    setisAdjustOpen(true);
+  }
+
+  const closeAdjustModal = () => {
+    setisAdjustOpen(false);
   }
 
   return (
@@ -160,10 +181,13 @@ const Payment = ({ paymentsData, selectedDate }) => {
         </div>
       ))}
 
-      <button>{totalAmount}원 정산하기</button>
+      <button onClick={openAdjustModal}>{totalAmount}원 정산하기</button>
 
       {/* 결제내역 상세 정보 모달 창 */}
       <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
+
+      {/* 결제내역 상세 정보 모달 창 */}
+      <AdjustModal isOpen={isAdjustOpen} onClose={closeAdjustModal} totalAmount={totalAmount} />
     </>
   )
 }
