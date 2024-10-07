@@ -50,12 +50,33 @@ const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
   // 개별 결제 내역
   const [partPayment, setPartPayment] = useState(0);
   const getPayment = usePaymentStore((state) => state.getPayment);
+  const setPayments = usePaymentStore((state) => state.setPayments);
 
   const payments = usePaymentStore((state) => state.payments);
   // const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
 
+  useEffect(() => {
+    console.log(payments)
+  }, [payments])
+
   // 모달 창에 렌더링 되는 결제 금액
   const [renderedAmount, setRenderedAmount] = useState(0);
+
+  useEffect(() => {
+    if (isOpen && paymentId !== 'adjust') {
+      // paymentId에 해당하는 결제 내역
+      const updatedPayment = payments.find(ele => ele.id === paymentId);
+
+      const updatedBills = updatedPayment.bills.map(bill => ({
+        ...bill,
+        cost: parseInt(renderedAmount / updatedPayment.bills.length),
+      }));
+
+      setPayments(payments.map(ele =>
+        ele.id === paymentId ? { ...ele, bills: updatedBills } : ele
+      ));
+    }
+  }, [isOpen, paymentId])
 
   // 여행 멤버별 정산 금액 조정
   const [finalPayments, setFinalPayments] = useState(null);
@@ -76,26 +97,26 @@ const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
     }
   }, [partPayment])
 
-  useEffect(() => {
-    setFinalPayments(
-      tripDetailInfo.members.map((member) => ({
-        cost: totalAmount / tripDetailInfo.members.length,
-        bank_account: member.bank_account
-      }))
-    );
-  }, [totalAmount, tripDetailInfo.members.length]);
+  // useEffect(() => {
+  //   setPayments(
+  //     tripDetailInfo.members.map((member) => ({
+  //       cost: totalAmount / tripDetailInfo.members.length,
+  //       bank_account: member.bank_account
+  //     }))
+  //   );
+  // }, [totalAmount, tripDetailInfo.members.length]);
 
   // 정산 체크한 내역
-  const [checkedPayments, setCheckedPayments] = useState([]);
+  // const [checkedPayments, setCheckedPayments] = useState([]);
 
-  useEffect(() => {
-    setCheckedPayments(payments.filter(payment => payment.checked === true));
-  }, [payments, setCheckedPayments])
+  // useEffect(() => {
+  //   setCheckedPayments(payments.filter(payment => payment.checked === true));
+  // }, [payments, setCheckedPayments])
 
   // 여행 멤버별 정산 금액 매칭
-  const matchBankAccount = (bankAccount) => {
-    return finalPayments.find(info => info.bank_account === bankAccount).cost;
-  };
+  // const matchBankAccount = (bankAccount) => {
+  //   return finalPayments.find(info => info.bank_account === bankAccount).cost;
+  // };
 
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
@@ -116,12 +137,12 @@ const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
     });
   };
 
-  const navigate = useNavigate();
-  const { tripId } = useParams();
+  // const navigate = useNavigate();
+  // const { tripId } = useParams();
 
-  const toFinish = () => {
-    navigate(`/finish/${tripId}`);
-  }
+  // const toFinish = () => {
+  //   navigate(`/finish/${tripId}`);
+  // }
 
   if (!isOpen) return null;
   return (
@@ -142,9 +163,9 @@ const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
           <div>{renderedAmount}원</div>
 
           {/* 정산 체크한 결제 내역 */}
-          {checkedPayments.map((payment) => (
+          {/* {checkedPayments.map((payment) => (
             <div key={payment.id}>{payment.brand_name} {payment.pay_date} {payment.pay_time}</div>
-          ))}
+          ))} */}
 
           <div>정산대상</div>
           {tripDetailInfo.members.map((member, index) => (
@@ -152,13 +173,13 @@ const OngoingModal = ({ isOpen, onClose, paymentId, totalAmount }) => {
               {member.member}
               <TextField
                 variant="outlined"
-                value={matchBankAccount(member.bank_account)}
+                // value={matchBankAccount(member.bank_account)}
                 onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
               />
             </div>
           ))}
 
-          <button onClick={toFinish} >정산하기</button>
+          {/* <button onClick={toFinish} >정산하기</button> */}
         </div>
       </Fade>
     </Modal>
