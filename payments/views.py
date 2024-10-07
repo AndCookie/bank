@@ -64,7 +64,7 @@ def pay_list(request):
         serializer = PaymentDetailSerializer(payments, many=True)
         budget = {}
         for member in members:
-            username = member.user.username
+            user_id = member.user.user_id
             initial_budget = member.budget
             used_budget = sum(Calculate.objects.filter(
                 member=member,
@@ -72,9 +72,8 @@ def pay_list(request):
                 payment__pay_date__lte=end_date
                 ).values_list('cost', flat=True))
             remain_budget = initial_budget - used_budget
-            budget[username] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
-            serializer.data['budget'] = budget
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            budget[user_id] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
+        return Response({"payments_list": serializer.data, 'budget': budget}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

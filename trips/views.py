@@ -139,7 +139,7 @@ def invite(request):
         try:
             member = Member.objects.get(user=request.user, trip=request.data.get('trip_id'))
             if member.is_participate:
-                return Response({"message": "이미 여행에 초대된 사용자입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
+                return Response({"message": "이미 여행에 참가한 사용자입니다."}, status=status.HTTP_208_ALREADY_REPORTED)
             member.budget = request.data.get('budget')
             member.bank_account = request.data.get('bank_account')
             member.bank_name = request.data.get('bank_name')

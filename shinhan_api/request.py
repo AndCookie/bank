@@ -6,8 +6,8 @@ URL = "https://finopenapi.ssafy.io/ssafy/api/v1/"
 
 
 def get_response(response):
-    print('response')
-    pprint(response)
+    # print('response')
+    # pprint(response)
     if "responseCode" in response:
         return {response['responseCode']: response['responseMessage']}
     return response
@@ -15,7 +15,7 @@ def get_response(response):
 
 def post(url, body):
     url = URL + url
-    print(url, end=' ')
+    # print(url, end=' ')
     response = requests.post(url, json=body).json()
     return get_response(response)
 
