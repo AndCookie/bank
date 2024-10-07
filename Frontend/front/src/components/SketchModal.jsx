@@ -123,11 +123,11 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
 
   let imageContent;
   if (sketchUrl.length > 0) {
-    imageContent = <img src={sketchUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
+    imageContent = <img src={sketchUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '250px' }} />;
   } else if (uploadedUrl.length > 0) {
-    imageContent = <img src={uploadedUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
+    imageContent = <img src={uploadedUrl} alt="Uploaded" style={{ maxWidth: '100%', maxHeight: '250px' }} />;
   } else if (imageUrl) {
-    imageContent = <img src={imageUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '400px' }} />;
+    imageContent = <img src={imageUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '250px' }} />;
   }
 
   let imageButton;
@@ -158,8 +158,10 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
           <CloseIcon className={styles.closeBtn} fontSize="large" onClick={onClose} />
           <div className={styles.modalTitle}>AI 스케치</div>
 
-          {/* AI 스케치 이미지 또는 업로드한 이미지 미리보기 */}
-          {imageContent}
+          <div className={styles.content}>
+            {/* AI 스케치 이미지 또는 업로드한 이미지 미리보기 */}
+            {imageContent}
+          </div>
 
           {/* 이미지 업로드 버튼 */}
           {!loadingState && (
