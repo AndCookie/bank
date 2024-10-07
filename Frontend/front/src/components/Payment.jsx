@@ -135,10 +135,6 @@ const Payment = ({ paymentsData, selectedDate }) => {
     setisOngoingOpen(false);
   }
 
-  useEffect(() => {
-    console.log(calculatedPayments);
-  }, [calculatedPayments])
-
   return (
     <>
       <div>
