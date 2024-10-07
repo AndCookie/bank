@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import { MdArrowBack } from 'react-icons/md';
 import EditIcon from '@mui/icons-material/Edit';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import styles from '@/styles/TripDetailPage.module.css'
 import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
@@ -203,6 +204,11 @@ const TripDetailPage = () => {
 
   const navigate = useNavigate();
 
+  // 뒤로가기 버튼 클릭 시 이전 페이지로 이동
+  const goBack = () => {
+    navigate(-1); // 이전 페이지로 이동
+  }
+
   const clickDate = (date) => {
     setSelectedDate(date);
   }
@@ -222,9 +228,9 @@ const TripDetailPage = () => {
     <div className={styles.container}>
 
       {/* 뒤로가기 */}
-      <div className={styles.heaㄸder}>
-        <div className={styles.baㄸck}>
-          <MdArrowBack className={styles.btns} size={30} onClick="" />
+      <div className={styles.header}>
+        <div className={styles.back}>
+          <MdArrowBack className={styles.btns} size={30} onClick={goBack} />
         </div>
       </div>
 
@@ -241,12 +247,12 @@ const TripDetailPage = () => {
       <div className={styles.pickContainer}>
         <div className={styles.all} onClick={() => clickDate('all')}>
           <div className={styles.upper}>&nbsp;</div>
-          <div className={styles.middle}>A</div>
+          <div className={`${styles.middle} ${selectedDate === 'all' ? styles.pickCircle : ''}`}>A</div>
           <div className={styles.bottom}>ALL</div>
         </div>
         <div className={styles.prepare} onClick={() => clickDate('prepare')}>
           <div className={styles.upper}>&nbsp;</div>
-          <div className={styles.middle}>P</div>
+          <div className={`${styles.middle} ${selectedDate === 'prepare' ? styles.pickCircle : ''}`}>P</div>
           <div className={styles.bottom}>준비</div>
         </div>
 
@@ -258,14 +264,18 @@ const TripDetailPage = () => {
           {tripDays.map((date, index) => (
             <div className={styles.dayContainer} key={index} onClick={() => clickDate(date)}>
               <div className={styles.upper}>{format(date, "EEE")}</div>
-              <div className={styles.middle}>{format(date, "d")}</div>
+              <div className={`${styles.middle} ${isSameDay(selectedDate, date) ? styles.pickCircle : ''}`}>
+                {format(date, "d")}
+              </div>
               <div className={styles.bottom}>{format(date, "M")}월</div>
             </div>
           ))}
         </div>
 
         {/* 구분선 */}
-        <div className={styles.arrow}>|</div>
+        <div className={styles.arrow}>
+          <ChevronRightIcon />
+        </div>
       </div>
 
       {/* 결제 내역 */}
