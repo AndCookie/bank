@@ -21,8 +21,8 @@ export const usePaymentStore = create((set, get) => ({
   // })),
   
   // 특정 tripId에 맞는 payments를 가져오는 함수 (get을 사용)
-  // getPaymentsByTripId: (tripId) => {
-  //   const paymentData = get().payments.find(p => p.tripId === tripId);
-  //   return paymentData ? paymentData.payments : [];
-  // },
+  getPaymentsByTripId: (tripId) => {
+    const paymentData = get().payments.find(p => p.tripId === tripId);
+    return paymentData ? paymentData.payments : [];
+  },
 }));

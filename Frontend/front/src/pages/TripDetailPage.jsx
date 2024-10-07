@@ -10,8 +10,6 @@ import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore'
 import { useUserStore } from "@/stores/userStore";
 
-import styles from '@/styles/TripDetailPage.module.css';
-
 const TripDetailPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
   // const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
