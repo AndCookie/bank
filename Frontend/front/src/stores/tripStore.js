@@ -61,7 +61,7 @@ export const useTripStore = create((set) => ({
         }
       });
       const { data } = response;
-
+      console.log(data)
       // 여행 상세 정보 저장
       useTripStore.getState().setTripDetailInfo(data);
     } catch (error) {

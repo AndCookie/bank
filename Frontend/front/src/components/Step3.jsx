@@ -21,11 +21,16 @@ const StepThree = ({ formData, updateFormData }) => {
     fetchBankAccounts(); // 컴포넌트가 마운트될 때 계좌 목록 요청
   }, []);
 
-  const toggleAccount = (accountNo) => {
-    if (formData.bank_account === accountNo) {
-      updateFormData({ bank_account: '' }); // 선택 해제
-    } else {
-      updateFormData({ bank_account: accountNo }); // 계좌 선택
+  const handleAccountSelect = (e) => {
+    const selectedAccountNo = e.target.value;
+    // 선택된 계좌 정보를 bankAccounts에서 찾음
+    const selectedAccount = bankAccounts.find(account => account.accountNo === selectedAccountNo);
+
+    if (selectedAccount) {
+      updateFormData({
+        bank_account: selectedAccount.accountNo, // 계좌 번호
+        bank_name: selectedAccount.bankName, // 은행 이름 추가
+      });
     }
   };
 
