@@ -6,7 +6,8 @@ from .serializers import UserCreationSerializer, UserSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
-from shinhan_api.member import signup as shinhan_signup, search
+from shinhan_api.member import signup as shinhan_signup
+from shinhan_api.member import search
 from shinhan_api.demand_deposit import create_demand_deposit_account
 from rest_framework.authtoken.models import Token
 import requests
@@ -17,8 +18,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()  # .env 파일 로드
-
-from pprint import pprint
 
 
 User = get_user_model()
@@ -54,8 +53,10 @@ def kakao_callback(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
-    
-    create_account(request.user, kakao_user_id)
+    if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
+        create_account(request.user, kakao_user_id)
+    else:
+        user_key = search(f"{kakao_user_id}@test8.com")['userKey']
     return Response({'token': token.key,  'user_info': kakao_user_info}, status=status.HTTP_200_OK)
     ######################
 
@@ -92,14 +93,16 @@ def get_token(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
+    print(request.user.user_key, 'userkey')
     if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
     return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
 
 def create_account(user, user_id):
-    email = f"{user_id}@test6.com"
+    email = f"{user_id}ssafy@naver.com"
     response = shinhan_signup(email)
+    print(response)
     flag = 1
     if 'userKey' in response:
         user_key = response['userKey']
@@ -164,7 +167,6 @@ def friend(request):
         'Authorization': f'Bearer {access_token}'
     }
     response = requests.get(url, headers=headers)
-    pprint(response.json())
     data = []
     for i in response.json()['elements']:
         temp = {'profile_nickname': i['profile_nickname'], 

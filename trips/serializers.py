@@ -37,7 +37,7 @@ class TripCreateSerializer(serializers.ModelSerializer):
             Location.objects.create(trip=trip, **location_data)
 
         for member_data in members_data:
-            email = member_data['user']['email']
+            email = f"{member_data['user']['id']}ssafy@naver.com"
             bank_accounts = account_list(email)['REC']
             bank_account = ''
             for i in bank_accounts:

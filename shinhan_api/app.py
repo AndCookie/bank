@@ -26,4 +26,4 @@ def re_issued_api_key(email):
 if __name__ == "__main__":
     email = "jamie9@naver.com"
     # print(issued_api_key(email))
-    print(re_issued_api_key(email))
+    # print(re_issued_api_key(email))

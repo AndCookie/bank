@@ -36,7 +36,6 @@ def create_demand_deposit_account(email):
     """
     url = "edu/demandDeposit/createDemandDepositAccount"
     accountTypeUniqueNos = []
-    print(inquire_demand_deposit_account_list(email))
     for i in inquire_demand_deposit_list(email)['REC']:
         accountTypeUniqueNos.append(i['accountTypeUniqueNo'])
     
@@ -216,8 +215,8 @@ if __name__ == "__main__":
     email = 'jamie9@naver.com'
     # create_demand_deposit_for_each_bank(email)
     # create_demand_deposit("oodeng98@naver.com")
-    print(inquire_demand_deposit_list(email))
-    # create_demand_deposit_account("oodeng98@naver.com")
+    # pprint(inquire_demand_deposit_list(email))
+    create_demand_deposit_account("3719831726test@naver.com")
     # pprint(inquire_demand_deposit_account_list("email9629@naver.com")['REC'])
     # pprint(inquire_demand_deposit_account("email9629@naver.com", "0882943094128264")['REC'])
     # inquire_demand_deposit_account_holder_name()
