@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import Trip, Location, Member
 from django.contrib.auth import get_user_model
-from shinhan_api.demand_deposit import inquire_demand_deposit_account_list as account_list
 from shinhan_api.demand_deposit import inquire_demand_deposit_account as account
+import requests, json
 
 User = get_user_model()
 
@@ -11,45 +11,49 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = ['country']
 
-class MemberEmailSerializer(serializers.ModelSerializer):
-    email = serializers.CharField(source='user.email')
-    
+class MemberUUIDSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    uuid = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = Member
-        fields = ['email', 'bank_account']
-
+        fields = ['id', 'uuid', 'bank_account']
 
 class TripCreateSerializer(serializers.ModelSerializer):
     locations = LocationSerializer(many=True, write_only=True)
-    members = MemberEmailSerializer(many=True, write_only=True)
+    members = MemberUUIDSerializer(many=True, write_only=True)
+    bank_account = serializers.CharField()
 
     class Meta:
         model = Trip
-        fields = ['trip_name', 'start_date', 'end_date', 'locations', 'members']
+        fields = ['trip_name', 'start_date', 'end_date', 'bank_account', 'locations', 'members']
 
     def create(self, validated_data):
         locations_data = validated_data.pop('locations')
         members_data = validated_data.pop('members')
 
-        trip = Trip.objects.create(**validated_data)
+        trip = Trip.objects.create(start_date=validated_data.pop('start_date'), end_date=validated_data.pop('end_date'), trip_name=validated_data.pop('trip_name'))
 
+        # 위치 데이터 저장
         for location_data in locations_data:
             Location.objects.create(trip=trip, **location_data)
-
+        
+        # 멤버 데이터 처리
+        uuid_list = []
         for member_data in members_data:
-            email = f"{member_data['user']['id']}ssafy@naver.com"
-            bank_accounts = account_list(email)['REC']
-            bank_account = ''
-            for i in bank_accounts:
-                if i['bankName'] == "신한은행":
-                    bank_account = i['accountNo']
-                    break
+            id = member_data['id']
+            uuid = member_data['uuid']
             try:
-                user = User.objects.get(email=email)
-                Member.objects.create(trip=trip, user=user, bank_account=bank_account)
+                user = User.objects.get(username=id)
+                if not uuid:  # 요청한 사용자인 경우
+                    Member.objects.create(trip=trip, user=user, bank_account=validated_data.pop('bank_account'), is_participate=True)
+                else:
+                    Member.objects.create(trip=trip, user=user)
+                    uuid_list.append(uuid)
             except User.DoesNotExist:
-                continue  # 사용자 존재하지 않을 시 다음 멤버로 넘어감
-
+                continue
+        request = self.context.get('request')
+        send_message(request, uuid_list, trip.trip_name, trip.id)
         return trip
 
     def update(self, instance, validated_data):
@@ -119,3 +123,27 @@ class TripMainSerializer(serializers.ModelSerializer):
             member['bank_name'] = member_account['bankName']
             member['balance'] = member_account['accountBalance']
         return representation
+    
+    
+def send_message(request, uuid_list, trip_name, trip_id):
+    social = request.user.social_auth.get(provider='kakao')
+    access_token =  social.extra_data['access_token']
+
+    url = "https://kapi.kakao.com/v1/api/talk/friends/message/send"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    template_args = {
+        'trip_name': trip_name, 
+        'trip_id': trip_id, 
+    }
+
+    data = {
+            'receiver_uuids': json.dumps(uuid_list), 
+            'template_id': '112658', 
+            'template_args': json.dumps(template_args), 
+        }
+    response = requests.post(url, headers=headers, data=data)
+    return

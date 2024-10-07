@@ -14,7 +14,7 @@ class Member(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     budget = models.IntegerField(default=0)
     bank_account = models.CharField(max_length=30, default="")
-    is_participate = models.BooleanField(default=True)
+    is_participate = models.BooleanField(default=False)
     
     
 class Location(models.Model):

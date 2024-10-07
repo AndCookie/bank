@@ -16,6 +16,7 @@ from django.conf import settings
 from social_django.models import UserSocialAuth
 import os
 from dotenv import load_dotenv
+import requests, json
 
 load_dotenv()  # .env 파일 로드
 
@@ -56,7 +57,7 @@ def kakao_callback(request):
     if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
     else:
-        user_key = search(f"{kakao_user_id}@test8.com")['userKey']
+        user_key = search(f"{kakao_user_id}ssafy@naver.com")['userKey']
     return Response({'token': token.key,  'user_info': kakao_user_info}, status=status.HTTP_200_OK)
     ######################
 
@@ -93,9 +94,10 @@ def get_token(request):
     social.extra_data['access_token'] = access_token
     social.save()
     token, created = Token.objects.get_or_create(user=user)
-    print(request.user.user_key, 'userkey')
     if not request.user.user_key:  # 처음 로그인한 사람, 이미 로그인되어있는 사람은 user_key 다 있음
         create_account(request.user, kakao_user_id)
+    else:
+        user_key = search(f"{kakao_user_id}ssafy@naver.com")['userKey']
     return Response({"token": token.key, 'user_info': kakao_user_info}, status=status.HTTP_200_OK)
 
 
@@ -181,3 +183,35 @@ def friend(request):
         return Response({'error': "카카오 로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED)
     else:
         return Response({'error': [response.status_code, response.text]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_message(request):
+    social = request.user.social_auth.get(provider='kakao')
+    access_token =  social.extra_data['access_token']
+    url = "https://kapi.kakao.com/v1/api/talk/friends/message/send"
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    trip_name = request.data.get('trip_name')
+    trip_id = request.data.get('trip_id')
+    uuid_list = request.data.get('uuid_list')
+    
+    template_args = {
+        'trip_name': trip_name, 
+        'trip_id': trip_id, 
+    }
+    
+    # 메시지 템플릿 데이터
+    data = {
+        'receiver_uuids': f'{uuid_list}',  # 친구들의 uuid 배열
+        'template_id': '112658', 
+        'template_args': json.dumps(template_args), 
+    }
+
+    response = requests.post(url, headers=headers, data=data)
+    print(response)
+    return
