@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import EditIcon from '@mui/icons-material/Edit';
-
+import styles from '@/styles/TripDetailPage.module.css'
 import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
 
