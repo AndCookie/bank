@@ -26,7 +26,7 @@ const TripPage = () => {
   // const currentTrip = useTripStore((state) => state.currentTrip);
   const pastTrips = usePastTripStore((state) => state.pastTrips);
   const futureTrips = useFutureTripStore((state) => state.futureTrips);
-  const currentTrips = useTripStore((state) => state.currentTrip)
+  const currentTrip = useTripStore((state) => state.currentTrip)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -89,11 +89,9 @@ const TripPage = () => {
         </div>
 
         {/* 현재 여행 */}
-        {currentTrips.map((trip) => (
-          <div className={styles.currentTrip} key={trip.id} onClick={() => toDetail(trip.id)}>
-            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
+          <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
+            {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
           </div>
-        ))}
 
         {/* 미래 여행 */}
         {futureTrips.map((trip) => (
