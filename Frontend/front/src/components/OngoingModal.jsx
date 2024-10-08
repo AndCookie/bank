@@ -8,9 +8,8 @@ import { usePaymentStore } from '@/stores/paymentStore';
 
 import styles from './styles/Modal.module.css';
 
-const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
+const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   const tripDetailInfo = {
-    startDate: "2024-08-19",
     members: [
       {
         "member": "김신한",
@@ -46,61 +45,65 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
   }
 
   // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+
+  // 결제 내역 상세 정보
+  const [partPayment, setPartPayment] = useState({});
+  const getPartPayment = usePaymentStore((state) => state.getPartPayment);
+
   const payments = usePaymentStore((state) => state.payments);
-  const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
-
-  // 여행 멤버별 정산 금액 조정
-  const [finalPayments, setFinalPayments] = useState(null);
+  const setPayments = usePaymentStore((state) => state.setPayments);
 
   useEffect(() => {
-    setFinalPayments(
-      tripDetailInfo.members.map((member) => ({
-        cost: totalPayment / tripDetailInfo.members.length,
-        bank_account: member.bank_account
-      }))
-    );
-  }, [totalPayment, tripDetailInfo.members.length]);
+    if (isOpen) {
+      setPartPayment(getPartPayment(paymentId));
+    }
+  }, [paymentId, tripDetailInfo.members.length])
 
-  // 정산 체크한 내역
-  const [checkedPayments, setCheckedPayments] = useState([]);
-
+  // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
-    setCheckedPayments(payments.filter(payment => payment.checked === true));
-  }, [payments, setCheckedPayments])
+    if (isOpen && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
+      setPartPayment((prev) => ({
+        ...prev,
+        bills: tripDetailInfo.members.map((member) => ({
+          cost: parseInt(partPayment.amount / tripDetailInfo.members.length),
+          bank_account: member.bank_account
+        }))
+      }));
+    }
+  }, [partPayment.amount])
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
-    return finalPayments.find(info => info.bank_account === bankAccount).cost;
+    const targetBill = (partPayment.bills || []).find(bill => bill.bank_account === bankAccount);
+    return targetBill ? targetBill.cost : 0;
   };
 
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
-    const remainingTotalPayment = totalPayment - fixedCost;
+    const remainingCost = partPayment.amount - fixedCost;
 
-    // bankAccount의 cost를 변경하고, 나머지 멤버에게 cost 재분배
-    setFinalPayments(prevPayments => {
-      const otherMembers = prevPayments.filter(payment => payment.bank_account !== bankAccount);
-      const updatedPayments = prevPayments.map(payment => {
-        if (payment.bank_account === bankAccount) {
-          return { ...payment, cost: fixedCost };
+    setPartPayment((prevPayment) => {
+      const otherMembers = (prevPayment.bills).filter(bill => bill.bank_account !== bankAccount);
+      const updatedBills = (prevPayment.bills).map(bill => {
+        if (bill.bank_account === bankAccount) {
+          return { ...bill, cost: fixedCost };
         } else {
-          return { ...payment, cost: parseInt(remainingTotalPayment / otherMembers.length) };
+          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) };
         }
       });
-      return updatedPayments;
+      return { ...prevPayment, bills: updatedBills };
     });
   };
 
-  const navigate = useNavigate();
-  const { tripId } = useParams();
-
-  const toFinish = () => {
-    navigate(`/finish/${tripId}`);
-  }
+  // 모달 창이 닫힐 때 payments에 저장하기
+  useEffect(() => {
+    if (!isOpen) {
+      setPayments(payments.map((payment) => payment.id === partPayment.id ? partPayment : payment));
+    }
+  }, [isOpen])
 
   if (!isOpen) return null;
-
   return (
     <Modal
       open={isOpen}
@@ -116,13 +119,16 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
       <Fade in={isOpen}>
         <div className={styles.box}>
           <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
-          <div>{totalPayment}원</div>
+          <div>{partPayment.amount}원</div>
 
           {/* 정산 체크한 결제 내역 */}
-          {checkedPayments.map((payment) => (
-            <div key={payment.id}>{payment.brand_name} {payment.pay_date} {payment.pay_time}</div>
-          ))}
+          <div>
+            {partPayment.brand_name}
+            {partPayment.pay_date}
+            {partPayment.pay_time}
+          </div>
 
+          {/* 정산 멤버 */}
           <div>정산대상</div>
           {tripDetailInfo.members.map((member, index) => (
             <div key={index}>
@@ -134,8 +140,6 @@ const OngoingModal = ({ isOpen, onClose, totalPayment }) => {
               />
             </div>
           ))}
-
-          <button onClick={toFinish} >정산하기</button>
         </div>
       </Fade>
     </Modal>

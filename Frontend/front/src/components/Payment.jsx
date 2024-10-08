@@ -6,6 +6,8 @@ import { useUserStore } from '@/stores/userStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 
 import OngoingModal from '@/components/OngoingModal';
+import AdjustModal from '@/components/AdjustModal';
+
 import Checkbox from '@mui/material/Checkbox';
 
 const Payment = ({ paymentsData, selectedDate }) => {
@@ -19,33 +21,44 @@ const Payment = ({ paymentsData, selectedDate }) => {
   };
 
   const userInfo = useUserStore((state) => state.userInfo);
+  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
-  const calculatedPayments = usePaymentStore((state) => state.calculatedPayments);
-  const setCalculatedPayments = usePaymentStore((state) => state.setCalculatedPayments);
-  const addCalculatedPayments = usePaymentStore((state) => state.addCalculatedPayments);
-  const removeCalculatedPayments = usePaymentStore((state) => state.removeCalculatedPayments);
+
+  const finalPayments = usePaymentStore((state) => state.finalPayments);
+  const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
+  const addFinalPayments = usePaymentStore((state) => state.addFinalPayments);
+  const removeFinalPayments = usePaymentStore((state) => state.removeFinalPayments);
 
   // 정산 여부 판단
   const [isCompleted, setIsCompleted] = useState(0);
-
+  
+  // 선택한 상세 결제 내역 Id
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+    
   // 최종 정산 금액
-  const [totalPayment, setTotalPayment] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
-    // paymentsData가 유효할 경우에만 map 실행
-    if (paymentsData) {
-      const updatedPaymentsData = paymentsData.map((payment) => ({
-        ...payment,
-        checked: false,
+    setFinalPayments(tripDetailInfo.id);
+  }, [tripDetailInfo.id])
+
+  useEffect(() => {
+    // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
+    const updatedPaymentsData = paymentsData.map((payment) => {
+      const membersData = tripDetailInfo.members.map(member => ({
+        cost: 0,
+        bank_account: member.bank_account
       }));
-      setPayments(updatedPaymentsData);
-    }
-  }, [paymentsData, setPayments]);
-
-  useEffect(() => {
-    setCalculatedPayments(tripDetailInfo.id);
-  }, [tripDetailInfo.id, setCalculatedPayments]);
+      return {
+        ...payment,
+        bills: membersData,
+        checked: false,
+      };
+    });
+    setPayments(updatedPaymentsData)
+  }, [setPayments])
 
   // payments가 정의되어 있는지 체크하고 처리
   const filteredPayments = (payments || []).filter((payment) => {
@@ -64,15 +77,18 @@ const Payment = ({ paymentsData, selectedDate }) => {
       if (payment.id === paymentId) {
         const checked = !payment.checked;
         if (checked) {
-          setTotalPayment((prev) => prev + amount);
-          const bills = tripDetailInfo.members.map((member) => ({
-            cost: 0,
-            bank_account: member.bank_account,
-          }));
-          addCalculatedPayments(paymentId, bills);
+          setTotalAmount(prev => prev + amount);
+
+          // calculatedPayments에서 paymentId에 해당하는 데이터 추가
+          // const bills = tripDetailInfo.members.map((member) => ({
+          //   cost: 0,
+          //   bank_account: member.bank_account,
+          // }));
+
+          addFinalPayments(paymentId);
         } else {
-          setTotalPayment((prev) => prev - amount);
-          removeCalculatedPayments(paymentId);
+          setTotalAmount(prev => prev - amount);
+          removeFinalPayments(paymentId)
         }
         return { ...payment, checked };
       }
@@ -82,15 +98,36 @@ const Payment = ({ paymentsData, selectedDate }) => {
     setPayments(updatedPaymentsData);
   };
 
-  // 여행 상세 정보 모달 창
-  const [isOngoingOpen, setisOngoingOpen] = useState(false);
+  // 디버깅
+  useEffect(() => {
+    console.log(finalPayments);
+  }, [finalPayments])
 
-  const openOngoingModal = () => {
+  useEffect(() => {
+    console.log(payments);
+  }, [payments])
+
+  // 결제내역 상세 정보 모달 창
+  const [isOngoingOpen, setisOngoingOpen] = useState(false);
+  
+  // 체크한 결제내역 정산 모달 창
+  const [isAdjustOpen, setisAdjustOpen] = useState(false);
+
+  const openOngoingModal = (paymentId) => {
+    setSelectedPaymentId(paymentId);
     setisOngoingOpen(true);
   }
 
   const closeOngoingModal = () => {
     setisOngoingOpen(false);
+  }
+
+  const openAdjustModal = () => {
+    setisAdjustOpen(true);
+  }
+
+  const closeAdjustModal = () => {
+    setisAdjustOpen(false);
   }
 
   return (
@@ -102,19 +139,19 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
       {filteredPayments.map((data) => (
         <div key={data.id} className="d-flex">
-          <div>{data.pay_date} {data.amount} {data.username}</div>
-          <div>
-            {data.username === userInfo.nickName && (
-              <Checkbox
-                checked={data.checked}
-                onChange={() => handleCheck(data.id, data.amount)}
-              />
-            )}
-          </div>
+          <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
+          <div>{data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}</div>
+
         </div>
       ))}
 
-      <button onClick={() => console.log('정산하기')}>{totalPayment}원 정산하기</button>
+      <button onClick={openAdjustModal}>{totalAmount}원 정산하기</button>
+
+      {/* 결제내역 상세 정보 모달 창 */}
+      <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
+
+      {/* 결제내역 상세 정보 모달 창 */}
+      <AdjustModal isOpen={isAdjustOpen} onClose={closeAdjustModal} totalAmount={totalAmount} />
     </>
   );
 };
