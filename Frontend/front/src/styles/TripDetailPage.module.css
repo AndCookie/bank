@@ -146,3 +146,8 @@
   box-shadow: 0 0 0 2px #4b72e1; /* 기존 레이아웃에 영향을 주지 않는 border-like 효과 */
 }
 
+.payment {
+  height: calc(100vh - 250px);
+  /* border: 1px solid blue; */
+}
+
