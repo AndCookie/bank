@@ -132,7 +132,7 @@ const Payment = ({ paymentsData, selectedDate }) => {
   }
 
   return (
-    <>
+    <div className={styles.container}>
       {/* 탭 버튼 */}
       <div className={styles.tabContainer}>
         <button
@@ -149,6 +149,7 @@ const Payment = ({ paymentsData, selectedDate }) => {
         </button>
       </div>
 
+      {/* 결제 내역 */}
       {filteredPayments.map((data) => (
         <div key={data.id} className="d-flex">
           <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
@@ -164,7 +165,7 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
       {/* 결제내역 상세 정보 모달 창 */}
       <AdjustModal isOpen={isAdjustOpen} onClose={closeAdjustModal} totalAmount={totalAmount} />
-    </>
+    </div>
   );
 };
 

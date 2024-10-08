@@ -1,3 +1,8 @@
+.container {
+  height: 100%;
+  border: 1px solid black;
+}
+
 .tabContainer {
   display: flex;
   justify-content: space-around;
@@ -26,6 +31,10 @@
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+}
+
+.payContent {
+  
 }
 
 .settleButton {
