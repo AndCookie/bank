@@ -40,9 +40,9 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
         calculates = Calculate.objects.filter(payment=instance)
         if calculates.exists():
             representation['is_completed'] = 1 if all(c.is_complete for c in calculates) else 0
-            representation['calculates'] = CalculateSerializer(calculates, many=True).data
         else:
             representation['is_completed'] = 0
+        representation['calculates'] = CalculateSerializer(calculates, many=True).data
         return representation
 
 
