@@ -13,7 +13,7 @@ export const useFutureTripStore = create((set) => ({
         endDate: trip.end_date,
         tripName: trip.trip_name,
         locations: trip.locations,
-        image_url: trip.image_url
+        image_url: trip.image_url || 'https://tourimage.interpark.com/BBS/Tour/FckUpload/201701/6361922355950863130.jpg'
       }))
       : [],
   })),

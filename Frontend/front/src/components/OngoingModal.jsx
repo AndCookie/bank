@@ -57,7 +57,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
     if (isOpen) {
       setPartPayment(getPartPayment(paymentId));
     }
-  }, [paymentId, tripDetailInfo.members.length])
+  }, [isOpen])
 
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
