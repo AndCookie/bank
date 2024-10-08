@@ -35,7 +35,7 @@ class PaymentDetailSerializer(serializers.ModelSerializer):
         bank_account = representation['bank_account']
 
         user = Member.objects.filter(bank_account=bank_account).first().user
-        representation['username'] = user.username
+        representation['user_id'] = user.user_id
         
         calculates = Calculate.objects.filter(payment=instance)
         if calculates.exists():
