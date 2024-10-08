@@ -11,7 +11,7 @@
   background-color: white;
   border-radius: 10px;
   box-shadow: 24px 24px 24px rgba(0, 0, 0, 0.2);
-  padding: 8% 3%;
+  padding: 4% 3%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -41,6 +41,14 @@
   border-radius: 8px;
   margin: 8% auto;
   padding-left: 20px;
+}
+
+.fileName {
+  white-space: nowrap; /* 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 부분 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트를 ...으로 표시 */
+  max-width: 200px; /* 원하는 최대 너비 설정 */
+  display: inline-block; /* 한 줄로 표시되도록 보장 */
 }
 
 .saveBtn {

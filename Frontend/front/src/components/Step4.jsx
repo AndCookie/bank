@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/axios.js'; // Axios 인스턴스 가져오기
 import LoadingPage from '@/pages/LoadingPage';
+import loadingImg from '@/assets/images/load/loading.gif';
+import successImg from '@/assets/images/load/check.png';
 import { useErrorStore } from '@/stores/errorStore'; // 에러 스토어 가져오기
 import { useUserStore } from '@/stores/userStore'; // userStore 가져오기
 import styles from './styles/Steps.module.css';
 
-const StepFour = ({ formData }) => {
+const StepFour = ({ formData, onTripCreated }) => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
   const [isSuccess, setIsSuccess] = useState(false); // 성공 여부 상태 관리
   const setError = useErrorStore((state) => state.setError); // 에러 상태 설정 함수
@@ -14,7 +16,6 @@ const StepFour = ({ formData }) => {
   // 컴포넌트가 마운트될 때 여행 생성 요청을 자동으로 보냄
   useEffect(() => {
     const handleSubmit = async () => {
-      setIsLoading(true); // 로딩 시작
 
       // userInfo를 members에 추가 (uuid는 빈 문자열로 설정)
       const updatedFormData = {
@@ -31,34 +32,51 @@ const StepFour = ({ formData }) => {
       };
 
       try {
-        const response = await axiosInstance.post('/trips/', updatedFormData);
-        console.log('Trip Created:', response.data); // 성공 시 처리
-        setIsSuccess(true); // 성공 상태 설정
-        setIsLoading(false); // 로딩 종료
+        // 1.2초 후에 여행 생성 요청을 보냄
+        setTimeout(async () => {
+          const response = await axiosInstance.post('/trips/', updatedFormData);
+          console.log('Trip Created:', response.data);
+          setIsSuccess(true); // 성공 상태 설정
+          setIsLoading(false); // 로딩 완료
+
+          // 3초 후 여행 완료 콜백 호출
+          setTimeout(() => {
+            onTripCreated();
+          }, 2500); // 여행 생성 완료 3초간 표시
+        }, 1200); // 1.2초 지연
       } catch (error) {
-        console.error('Error creating trip:', error); // 에러 처리
-        setError('여행 생성에 실패했습니다. 다시 시도해주세요.'); // 에러 상태 업데이트
-        setIsLoading(false); // 로딩 종료
+        console.error('Error creating trip:', error);
+        setError('여행 생성에 실패했습니다. 다시 시도해주세요.');
+        setIsLoading(false);
       }
     };
 
+    setIsLoading(true); // "여행 생성 중" 상태 설정
     handleSubmit(); // 여행 생성 요청 실행
-  }, [formData, userInfo, setError]);
+  }, [formData, userInfo, setError, onTripCreated]);
 
-  if (isLoading) {
-    return <LoadingPage />; // 로딩 페이지 출력
-  }
+  // if (isLoading) {
+  //   return <LoadingPage />; // 로딩 페이지 출력
+  // }
 
   return (
-    <div>
-      <h2>Step 4: Review and Submit</h2>
-      {isSuccess ? (
-        <p>여행 생성 완료!</p> // 성공 시 메시지 출력
+    <div className={styles.container}>
+      {isLoading ? (
+        <div className={styles.sixth}>
+          <img src={loadingImg} className={styles.loadingImg} alt="여행 생성 중..." />
+          <p className={styles.loadingMsg}>여행 생성 중..</p>
+        </div>
+      ) : isSuccess ? (
+        <div className={styles.sixth}>
+          <img src={successImg} className={styles.successImg} alt="여행 생성 완료" />
+          <p className={styles.successMsg}>여행 생성 완료!</p>
+        </div>
       ) : (
-        <p>여행 생성 중 문제가 발생했습니다.</p> // 실패 시 기본 메시지 출력
+        <p>여행 생성 중 문제가 발생했습니다.</p> // 에러 처리
       )}
     </div>
   );
 };
+
 
 export default StepFour;

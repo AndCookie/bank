@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/TripFinishPage.module.css';
-import checkImage from '@/assets/images/check.png';
+import checkImage from '@/assets/images/load/check.png';
 import axiosInstance from '@/axios.js';
 import { useTripStore } from '@/stores/tripStore';
 import LoadingPage from '@/pages/LoadingPage'; // LoadingPage 컴포넌트 가져오기
