@@ -7,6 +7,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import styles from '@/styles/TripDetailPage.module.css'
 import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
+import LoadingPage from '@/pages/LoadingPage'
 
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore'
@@ -14,62 +15,20 @@ import { useUserStore } from "@/stores/userStore";
 
 const TripDetailPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
-  // const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
+  const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
 
   const { tripId } = useParams();
-  // useEffect(() => {
-  //   fetchTripDetail(tripId);
-  // }, [fetchTripDetail, fetchPayments, tripId]);
-
-  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTripDetail(tripId); // fetchTripDetail 함수 호출
+      setLoading(false); // 데이터를 다 불러오면 로딩 종료
+    };
+    
+    fetchData();
+  }, [fetchTripDetail, tripId]);
+  const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  const [loading, setLoading] = useState(true);
   // const payments = useTripStore((state) => state.payments);
-
-  const tripDetailInfo = {
-    id: tripId,
-    startDate: "2024-08-19",
-    endDate: "2024-09-02",
-    imageUrl: " ",
-    locations: [
-      {
-        "country": "기흥"
-      },
-      {
-        "country": "역삼"
-      }
-    ],
-    members: [
-      {
-        "member": "김신한",
-        "bank_account": "0880493544778029",
-        "bank_name": "신한은행",
-        "balance": "7192236"
-      },
-      {
-        "member": "박준영",
-        "bank_account": "0886984969930397",
-        "bank_name": "신한은행",
-        "balance": "6848235"
-      },
-      {
-        "member": "이선재",
-        "bank_account": "0885399658115105",
-        "bank_name": "신한은행",
-        "balance": "9703466"
-      },
-      {
-        "member": "임광영",
-        "bank_account": "0882137908931580",
-        "bank_name": "신한은행",
-        "balance": "5359931"
-      },
-      {
-        "member": "정태완",
-        "bank_account": "0885969348355476",
-        "bank_name": "신한은행",
-        "balance": "6304116"
-      }
-    ]
-  };
 
   const payments = {
     "data": [
@@ -222,6 +181,10 @@ const TripDetailPage = () => {
 
   const closeTripInfoModal = () => {
     setisTripInfoOpen(false);
+  }
+
+  if (loading) {
+    return <LoadingPage />;
   }
 
   return (
