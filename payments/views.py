@@ -10,7 +10,6 @@ from shinhan_api.demand_deposit import update_demand_deposit_account_withdrawal 
 from shinhan_api.demand_deposit import update_demand_deposit_account_Transfer as transfer
 from shinhan_api.demand_deposit import inquire_demand_deposit_account_balance as balance
 from chatgpt_api.api import categorize
-from datetime import datetime
 
 
 User = get_user_model()
@@ -173,11 +172,8 @@ def prepare(request):
         data = request.data
         
         trip = Trip.objects.get(id=trip_id)
-        # pay_date
         data['pay_date'] = trip.start_date
-        # pay_time
         data['pay_time'] = '00:00:00'
-        # bank_account
         data['bank_account'] = Member.objects.get(trip=trip, user=request.user).bank_account
         serializer = PaymentCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
