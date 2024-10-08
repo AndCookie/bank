@@ -166,7 +166,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
           {/* 이미지 업로드 버튼 */}
           {!loadingState && (
             <div className={styles.fileUpload}>
-              <div>{fileName || '파일을 선택해주세요'}</div>
+              <div className={styles.fileName}>{fileName || '파일을 선택해주세요'}</div>
               <Button component="label" startIcon={<CloudUploadIcon />}>
                 <input type="file" hidden onChange={uploadFile} />
               </Button>
