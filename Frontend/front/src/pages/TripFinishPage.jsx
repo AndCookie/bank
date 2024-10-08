@@ -92,7 +92,7 @@ return (
         renderBudgetInfo()
       )} */}
   </>
-);
+  );
 };
 
 export default TripFinishPage;

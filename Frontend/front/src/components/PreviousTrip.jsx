@@ -6,10 +6,10 @@ import styles from './styles/PreviousTrip.module.css';
 
 const PreviousTrip = () => {
   const { tripId } = useParams(); // URL에서 tripId 추출
-  const [selectedTrip, setSelectedTrip] = useState(null); // 선택된 여행 데이터 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-  const [duration, setDuration] = useState(''); // 여행 기간
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [duration, setDuration] = useState('');
 
   // 여행 상세 정보를 가져오는 함수
   useEffect(() => {
