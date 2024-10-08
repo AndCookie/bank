@@ -5,7 +5,7 @@ import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material
 import CloseIcon from '@mui/icons-material/Close';
 
 import { usePaymentStore } from '@/stores/paymentStore';
-
+import axiosInstance from '@/axios.js';
 import styles from './styles/Modal.module.css';
 
 const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
@@ -111,6 +111,14 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
     return renderedMemberInfo.find((info) => info.bankAccount === bankAccount).cost;
   };
 
+  
+  const navigate = useNavigate();
+  const { tripId } = useParams();
+
+  const goFinish = () => {    
+    navigate(`/finish/${tripId}`)
+  }
+
   if (!isOpen) return null;
   return (
     <Modal
@@ -150,6 +158,8 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
               />
             </div>
           ))}
+
+          <button onClick={goFinish}>정산하기</button>
         </div>
       </Fade>
     </Modal>
