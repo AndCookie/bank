@@ -66,16 +66,6 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
     };
   }));
 
-  useEffect(() => {
-    if (isOpen) {
-      console.log('FINAL', finalPayments)
-    }
-  }, [finalPayments, isOpen])
-
-  useEffect(() => {
-    console.log(renderedMemberInfo)
-  }, [renderedMemberInfo])
-
   // 결제 내역 정보 렌더링
   useEffect(() => {
     if (isOpen) {

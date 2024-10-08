@@ -71,7 +71,7 @@ const TripDetailPage = () => {
     ]
   };
 
-  const payments = {
+  const paymentsDummyData = {
     "data": [
       {
         "id": 339,
@@ -191,8 +191,34 @@ const TripDetailPage = () => {
     }
   };
 
-  const paymentsData = payments.data;
-  const paymentsBudget = payments.budget;
+  const paymentsData = paymentsDummyData.data;
+  const paymentsBudget = paymentsDummyData.budget;
+
+  const payments = usePaymentStore((state) => state.payments);
+  const setPayments = usePaymentStore((state) => state.setPayments);
+
+  const finalPayments = usePaymentStore((state) => state.finalPayments);
+  const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
+
+  useEffect(() => {
+    setFinalPayments(tripDetailInfo.id);
+  }, [])
+
+  useEffect(() => {
+    // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
+    const updatedPaymentsData = paymentsData.map((payment) => {
+      const membersData = tripDetailInfo.members.map(member => ({
+        cost: 0,
+        bank_account: member.bank_account
+      }));
+      return {
+        ...payment,
+        bills: membersData,
+        checked: false,
+      };
+    });
+    setPayments(updatedPaymentsData)
+  }, [])
 
   const tripDays = eachDayOfInterval({
     start: new Date(tripDetailInfo.startDate),
@@ -279,7 +305,7 @@ const TripDetailPage = () => {
       </div>
 
       {/* 결제 내역 */}
-      <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
+      <Payment selectedDate={selectedDate} />
 
       {/* 여행 상세 정보 모달 창 */}
       <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
