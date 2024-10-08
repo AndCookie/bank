@@ -58,10 +58,13 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const [renderedInfo, setRenderedInfo] = useState([]);
 
   // 렌더링 되는 멤버별 정산 내역 정보
-  const [renderedMemberInfo, setRenderedMemberInfo] = useState(tripDetailInfo.members.reduce((acc, member) => {
-    acc[String(member.bank_account)] = 0;
-    return acc;
-  }, {}));
+  const [renderedMemberInfo, setRenderedMemberInfo] = useState(tripDetailInfo.members.map(member => {
+    return {
+      // member: member.member,
+      bankAccount: member.bank_account,
+      cost: 0
+    };
+  }));
 
   useEffect(() => {
     if (isOpen) {
@@ -93,29 +96,29 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   // 멤버별 정산 내역 정보 렌더링
   useEffect(() => {
     if (isOpen) {
+      setRenderedMemberInfo(tripDetailInfo.members.map(member => {
+        return {
+          bankAccount: member.bank_account,
+          cost: 0
+        };
+      }));
+
       finalPayments.payments.forEach((finalPayment) => {
         const updatedBills = payments.find((payment) => payment.id === finalPayment.payment_id).bills;
         updateFinalPayments(finalPayment.payment_id, updatedBills)
 
-        updatedBills.forEach((bill) => {
-          console.log(bill)
-          setRenderedMemberInfo((prevState) => {
-            const newState = { ...prevState };
-            if (newState[bill.bank_account] !== undefined) {
-              newState[bill.bank_account] += bill.cost;
-            }
-            return newState;
-          });
-        })
+        updatedBills.forEach(bill => {
+          renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+        });
       })
     }
-  }, [payments, isOpen])
+  }, [isOpen])
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
-    console.log(bankAccount)
-    console.log(renderedMemberInfo)
-    return renderedMemberInfo[bankAccount]
+    // console.log(bankAccount)
+    // console.log(renderedMemberInfo)
+    return renderedMemberInfo.find((info) => info.bankAccount === bankAccount).cost;
   };
 
   if (!isOpen) return null;
