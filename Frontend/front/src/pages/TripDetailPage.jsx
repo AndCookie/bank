@@ -30,7 +30,7 @@ const TripDetailPage = () => {
   const [loading, setLoading] = useState(true);
   // const payments = useTripStore((state) => state.payments);
 
-  const payments = {
+  const paymentsDummyData = {
     "data": [
       {
         "id": 339,
@@ -150,8 +150,36 @@ const TripDetailPage = () => {
     }
   };
 
-  const paymentsData = payments.data;
-  const paymentsBudget = payments.budget;
+  const paymentsData = paymentsDummyData.data;
+  const paymentsBudget = paymentsDummyData.budget;
+
+  const payments = usePaymentStore((state) => state.payments);
+  const setPayments = usePaymentStore((state) => state.setPayments);
+
+  const finalPayments = usePaymentStore((state) => state.finalPayments);
+  const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
+
+  useEffect(() => {
+    setFinalPayments(tripDetailInfo.id);
+  }, [])
+
+  useEffect(() => {
+    // tripDetailInfo.members가 존재하는지 확인하고 실행
+    if (tripDetailInfo.members && tripDetailInfo.members.length > 0) {
+      const updatedPaymentsData = paymentsData.map((payment) => {
+        const membersData = tripDetailInfo.members.map(member => ({
+          cost: 0,
+          bank_account: member.bank_account
+        }));
+        return {
+          ...payment,
+          bills: membersData,
+          checked: false,
+        };
+      });
+      setPayments(updatedPaymentsData);
+    }
+  }, [tripDetailInfo]); 
 
   const tripDays = eachDayOfInterval({
     start: new Date(tripDetailInfo.startDate),

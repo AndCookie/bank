@@ -10,7 +10,7 @@ import AdjustModal from '@/components/AdjustModal';
 
 import Checkbox from '@mui/material/Checkbox';
 
-const Payment = ({ paymentsData, selectedDate }) => {
+const Payment = ({ selectedDate }) => {
   const { tripId } = useParams();
   const tripDetailInfo = {
     id: tripId,
@@ -26,8 +26,8 @@ const Payment = ({ paymentsData, selectedDate }) => {
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
 
-  const finalPayments = usePaymentStore((state) => state.finalPayments);
-  const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
+  // const finalPayments = usePaymentStore((state) => state.finalPayments);
+  // const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
   const addFinalPayments = usePaymentStore((state) => state.addFinalPayments);
   const removeFinalPayments = usePaymentStore((state) => state.removeFinalPayments);
 
@@ -40,25 +40,25 @@ const Payment = ({ paymentsData, selectedDate }) => {
   // 최종 정산 금액
   const [totalAmount, setTotalAmount] = useState(0);
 
-  useEffect(() => {
-    setFinalPayments(tripDetailInfo.id);
-  }, [tripDetailInfo.id])
+  // useEffect(() => {
+  //   setFinalPayments(tripDetailInfo.id);
+  // }, [])
 
-  useEffect(() => {
-    // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
-    const updatedPaymentsData = paymentsData.map((payment) => {
-      const membersData = tripDetailInfo.members.map(member => ({
-        cost: 0,
-        bank_account: member.bank_account
-      }));
-      return {
-        ...payment,
-        bills: membersData,
-        checked: false,
-      };
-    });
-    setPayments(updatedPaymentsData)
-  }, [setPayments])
+  // useEffect(() => {
+  //   // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
+  //   const updatedPaymentsData = paymentsData.map((payment) => {
+  //     const membersData = tripDetailInfo.members.map(member => ({
+  //       cost: 0,
+  //       bank_account: member.bank_account
+  //     }));
+  //     return {
+  //       ...payment,
+  //       bills: membersData,
+  //       checked: false,
+  //     };
+  //   });
+  //   setPayments(updatedPaymentsData)
+  // }, [paymentsData])
 
   // payments가 정의되어 있는지 체크하고 처리
   const filteredPayments = (payments || []).filter((payment) => {
@@ -98,15 +98,6 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
     setPayments(updatedPaymentsData);
   };
-
-  // 디버깅
-  useEffect(() => {
-    console.log(finalPayments);
-  }, [finalPayments])
-
-  useEffect(() => {
-    console.log(payments);
-  }, [payments])
 
   // 결제내역 상세 정보 모달 창
   const [isOngoingOpen, setisOngoingOpen] = useState(false);

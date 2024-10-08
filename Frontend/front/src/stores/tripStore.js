@@ -15,7 +15,7 @@ export const useTripStore = create((set) => ({
         startDate: tripInfo[0].start_date,
         endDate: tripInfo[0].end_date,
         tripName: tripInfo[0].trip_name,
-        imageUrl: tripInfo[0].image_url,
+        imageUrl: tripInfo[0].image_url ,
         locations: tripInfo[0].locations,
       }
       : {},
