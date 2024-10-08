@@ -66,10 +66,54 @@ const TripDetailPage = () => {
         ]
       },
       {
+        "id": 79,
+        "is_completed": 0,
+        "amount": 500,
+        "pay_date": "2024-08-17",
+        "pay_time": "15:54:35",
+        "brand_name": "공항버스 선예매",
+        "category": "교통",
+        "bank_account": "0886984969930397",
+        "username": "임광영"
+      },
+      {
+        "id": 80,
+        "is_completed": 0,
+        "amount": 10000,
+        "pay_date": "2024-08-19",
+        "pay_time": "15:54:35",
+        "brand_name": "냠",
+        "category": "식비",
+        "bank_account": "0886984969930397",
+        "username": "이선재"
+      },
+      {
+        "id": 81,
+        "is_completed": 0,
+        "amount": 500,
+        "pay_date": "2024-08-19",
+        "pay_time": "15:54:35",
+        "brand_name": "공항버스 선예매",
+        "category": "교통",
+        "bank_account": "0886984969930397",
+        "username": "임광영"
+      },
+      {
+        "id": 83,
+        "is_completed": 0,
+        "amount": 10000,
+        "pay_date": "2024-08-26",
+        "pay_time": "15:54:35",
+        "brand_name": "냠",
+        "category": "식비",
+        "bank_account": "0886984969930397",
+        "username": "임광영"
+      },
+      {
         "id": 85,
         "is_completed": 0,
         "amount": 60000,
-        "pay_date": "2024-08-19",
+        "pay_date": "2024-08-27",
         "pay_time": "15:54:35",
         "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
         "category": "관광",

@@ -1,12 +1,12 @@
 .container {
   height: 100%;
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 
 .tabContainer {
   display: flex;
   justify-content: space-around;
-  margin: 20px 0;
+  margin: 20px 0 5px 0;
   border-bottom: 2px solid #ccc;
 }
 
@@ -27,15 +27,29 @@
 }
 
 .payContainer {
-  height: calc(100% - 150px);
-  border: 1px solid blue;
+  height: calc(100% - 130px);
+  overflow-y: auto;
+  /* border: 1px solid blue; */
 }
 
-.paymentItem {
+/* .paymentItem {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
+} */
+
+.dateGroup {
+  /* border: 1px solid black; */
+  padding: 3% 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.dateHeader {
+  padding-left: 3%;
+  background-color: #ddd;
+  border-radius: 10px;
+  font-size: 0.8rem;
 }
 
 .payContent {
@@ -43,36 +57,84 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  height: 100px;
+  height: 70px;
   margin: auto;
+  /* border: 1px solid blue; */
 }
 
-.adjustContainer {
-  height: 65px;
+div.pay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  margin: auto;
+  /* border: 1px solid black; */
+}
+
+.categoryArea {
+  height: 100%;
+  width: 20%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid green;
+  margin: auto;
+  /* border: 1px solid green; */
 }
 
-.adjustBackground {
+.costArea {
+  height: 100%;
   width: 80%;
-  height: 60%;
-  background-color: lightgrey;
-  border-radius: 30px;
-  margin: 8px 20px;
-  border: none;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-  position: relative;
-  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: auto;
+  padding-left: 5%;
+  /* border: 1px solid red; */
 }
+
+.amount {
+  font-size: 1.1rem;
+  /* color: rgb(214, 72, 72); */
+  color: rgb(78, 160, 120);
+}
+
+.amount.completed {
+  color: gray; /* 정산 완료일 때 회색 */
+}
+
+.brandName {
+  font-size: 0.8rem;
+  font-weight: 300;
+  white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트에 '...' 표시 */
+  /* text-overflow: clip; */
+  max-width: 97%; /* 요소의 최대 너비를 지정 */
+}
+
+.checkArea {
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+/* 정산하기 */
+.adjustContainer {
+  margin-top: 10px;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 
 .adjustBtn {
-  width: 60%;
-  height: 100%;
+  width: 80%;
+  height: 70%;
   background-color: #4b72e1;
   border-radius: 30px;
   color: white;
@@ -82,12 +144,10 @@
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-  transition: transform 0.3s ease; /* 슬라이딩 애니메이션 */
-  position: relative;
-  z-index: 1;
+
 }
 
-.slideBtn {
+/* .slideBtn {
   width: 40%;
   height: 100%;
   border-radius: 30px;
@@ -101,7 +161,7 @@
   position: absolute;
   right: 0;
   z-index: 0;
-}
+} */
 
 /* 
 .settleButton {
