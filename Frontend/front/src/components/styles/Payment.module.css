@@ -1,3 +1,8 @@
+.container {
+  height: 100%;
+  border: 1px solid black;
+}
+
 .tabContainer {
   display: flex;
   justify-content: space-around;
@@ -21,6 +26,11 @@
   border-bottom: 2px solid black;
 }
 
+.payContainer {
+  height: calc(100% - 150px);
+  border: 1px solid blue;
+}
+
 .paymentItem {
   display: flex;
   justify-content: space-between;
@@ -28,6 +38,72 @@
   border-bottom: 1px solid #ddd;
 }
 
+.payContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100px;
+  margin: auto;
+}
+
+.adjustContainer {
+  height: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid green;
+}
+
+.adjustBackground {
+  width: 80%;
+  height: 60%;
+  background-color: lightgrey;
+  border-radius: 30px;
+  margin: 8px 20px;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.adjustBtn {
+  width: 60%;
+  height: 100%;
+  background-color: #4b72e1;
+  border-radius: 30px;
+  color: white;
+  padding: 8px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: transform 0.3s ease; /* 슬라이딩 애니메이션 */
+  position: relative;
+  z-index: 1;
+}
+
+.slideBtn {
+  width: 40%;
+  height: 100%;
+  border-radius: 30px;
+  color: rgb(78, 78, 78);
+  padding: 8px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  position: absolute;
+  right: 0;
+  z-index: 0;
+}
+
+/* 
 .settleButton {
   margin-top: 20px;
   padding: 10px 20px;
@@ -37,4 +113,4 @@
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
-}
+} */

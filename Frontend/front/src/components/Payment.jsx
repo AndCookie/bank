@@ -7,6 +7,7 @@ import { usePaymentStore } from '@/stores/paymentStore';
 import styles from './styles/Payment.module.css';
 import OngoingModal from '@/components/OngoingModal';
 import AdjustModal from '@/components/AdjustModal';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import Checkbox from '@mui/material/Checkbox';
 
@@ -123,7 +124,7 @@ const Payment = ({ selectedDate }) => {
   }
 
   return (
-    <>
+    <div className={styles.container}>
       {/* 탭 버튼 */}
       <div className={styles.tabContainer}>
         <button
@@ -140,22 +141,45 @@ const Payment = ({ selectedDate }) => {
         </button>
       </div>
 
-      {filteredPayments.map((data) => (
-        <div key={data.id} className="d-flex">
-          <div onClick={() => openOngoingModal(data.id)}>{data.pay_date} {data.amount} {data.username}</div>
-          <div>{data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}</div>
-
+      {/* 결제 내역 */}
+      <div className={styles.payContainer}>
+        {filteredPayments.map((data) => (
+          <div key={data.id} className={styles.payContent}>
+            <div className={styles.pay} onClick={() => openOngoingModal(data.id)}>
+              <div className={styles.categoryArea}>
+                {data.category}
+              </div>
+              <div className={styles.costArea}>
+                {data.amount}
+              </div>
+              <div className={styles.dateArea}>
+                {data.pay_date}
+              </div>
+            </div>
+            <div className={styles.checkArea}>
+              {data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className={styles.adjustContainer}>
+        <div className={styles.adjustBackground}>
+          <button className={styles.adjustBtn} onClick={openAdjustModal}>
+            {totalAmount}원 정산하기
+          </button>
+          {/* <button className="slidBtn">
+            <ChevronRightIcon />
+          </button> */}
         </div>
-      ))}
-
-      <button onClick={openAdjustModal}>{totalAmount}원 정산하기</button>
+      </div>
 
       {/* 결제내역 상세 정보 모달 창 */}
       <OngoingModal isOpen={isOngoingOpen} onClose={closeOngoingModal} paymentId={selectedPaymentId} />
 
       {/* 결제내역 상세 정보 모달 창 */}
       <AdjustModal isOpen={isAdjustOpen} onClose={closeAdjustModal} totalAmount={totalAmount} />
-    </>
+    </div>
   );
 };
 

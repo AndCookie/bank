@@ -77,10 +77,21 @@ const TripDetailPage = () => {
         "username": "임광영"
       },
       {
+        "id": 1,
+        "is_completed": 0,
+        "amount": 1000000,
+        "pay_date": "2024-08-19",
+        "pay_time": "15:54:35",
+        "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
+        "category": "관광",
+        "bank_account": "0886984969930397",
+        "username": "임광영"
+      },
+      {
         "id": 90,
         "is_completed": 0,
         "amount": 1031997,
-        "pay_date": "2024-08-20",
+        "pay_date": "2024-08-27",
         "pay_time": "04:00:32",
         "brand_name": "AIR FRANCE",
         "category": "항공",
@@ -270,7 +281,9 @@ const TripDetailPage = () => {
       </div>
 
       {/* 결제 내역 */}
-      <Payment selectedDate={selectedDate} />
+      <div className={styles.payment}>
+        <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
+      </div>
 
       {/* 여행 상세 정보 모달 창 */}
       <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
