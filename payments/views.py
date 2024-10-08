@@ -84,8 +84,8 @@ def adjustment(request):
         payments = request.data.get('payments')
         for payment in payments:    
             payment_id = payment.get('payment_id')
-            if Calculate.objects.filter(payment_id=payment_id).exists():
-                return Response({'error': "이미 정산이 완료된 정산이 포함되었습니다."}, status=status.HTTP_403_FORBIDDEN)
+            # if Calculate.objects.filter(payment_id=payment_id).exists():
+            #     return Response({'error': "이미 정산이 완료된 정산이 포함되었습니다."}, status=status.HTTP_403_FORBIDDEN)
             bank_account = Payment.objects.get(id=payment_id).bank_account
             if not Member.objects.filter(bank_account=bank_account, user=request.user).exists():
                 return Response({'error': "현재 사용자는 해당 계좌를 사용하고 있지 않습니다."}, status=status.HTTP_401_UNAUTHORIZED)
