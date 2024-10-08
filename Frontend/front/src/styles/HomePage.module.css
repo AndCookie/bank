@@ -88,4 +88,10 @@
   cursor: pointer;
   margin-bottom: 5%;
   font-weight: bold;
+  height: 50px;
+}
+
+.login button img {
+  height: 100%;
+  padding-right: 5px;
 }

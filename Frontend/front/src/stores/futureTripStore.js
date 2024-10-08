@@ -13,6 +13,7 @@ export const useFutureTripStore = create((set) => ({
         endDate: trip.end_date,
         tripName: trip.trip_name,
         locations: trip.locations,
+        image_url: trip.image_url
       }))
       : [],
   })),

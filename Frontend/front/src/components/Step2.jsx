@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '@/axios'; // axiosInstance import
+import { Chip, Avatar } from '@mui/material'; // Chip과 Avatar 컴포넌트 import
 import styles from './styles/Steps.module.css';
+import kakao from '@/assets/images/kakao.png';
 
 const StepTwo = ({ formData, updateFormData }) => {
   const [friends, setFriends] = useState([]); // friends 데이터 관리할 상태
@@ -43,61 +45,77 @@ const StepTwo = ({ formData, updateFormData }) => {
   };
 
   return (
-    <div>
-      <h2>멤버 선택하기</h2>
+    <div className={styles.mainContainer}>
 
-      {/* 친구 초대하기 버튼 */}
-      <button onClick={handleDropdownToggle} className={styles.inviteButton}>
-        친구 초대하기
-      </button>
-
-      {/* 드롭다운 형식으로 친구 선택 */}
-      {showDropdown && (
-        <div className={styles.dropdownContainer}>
-          <h3>친구 목록</h3>
-          <div className={styles.friendListContainer}>
-            {friends.length > 0 ? (
-              <ul className={styles.friendList}>
-                {friends.map((friend, index) => {
-                  const isSelected = formData.members.some(member => member.profile_nickname === friend.profile_nickname);
-                  return (
-                    <li 
-                      key={index}
-                      className={`${styles.friendItem} ${isSelected ? styles.selected : ''}`} // 선택 시 스타일 변경
-                      onClick={() => toggleMember(friend)}
-                    >
-                      <img src={friend.profile_thumbnail_image} alt={friend.profile_nickname} className={styles.friendImage} />
-                      {friend.profile_nickname}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <p>친구 목록을 불러오는 중입니다...</p>
-            )}
-          </div>
+      <div className={styles.third}>
+        <div className={styles.question}>어떤 여행을 떠나시나요?</div>
+        
+        <div className={styles.nickname}>
+          {/* 여행 이름 입력 */}
+          <input
+            type="text"
+            placeholder="여행 별칭 입력"
+            value={formData.trip_name}
+            onChange={(e) => updateFormData({ trip_name: e.target.value })}
+          />
         </div>
-      )}
+      </div>
 
-      {/* 선택된 멤버 리스트 및 프로필 사진 */}
-      <h3>선택된 멤버</h3>
-      <ul>
-        {formData.members.map((member, index) => (
-          <li key={index} className={styles.memberItem}>
-            <img src={member.profile_thumbnail_image} alt={member.profile_nickname} className={styles.profileImage} />
-            {member.profile_nickname}
-            <button onClick={() => removeMember(index)}>X</button>
-          </li>
-        ))}
-      </ul>
 
-      {/* 여행 이름 입력 */}
-      <input
-        type="text"
-        placeholder="Trip Name"
-        value={formData.trip_name}
-        onChange={(e) => updateFormData({ trip_name: e.target.value })}
-      />
+      <div className={styles.fourth}>
+        <div className={styles.question}>누구와 여행을 떠나시나요?</div>
+
+        {/* 선택된 멤버 리스트 및 프로필 사진 */}
+        <div className={styles.chipContainer}>
+          {formData.members.map((member, index) => (
+            <Chip
+              key={index}
+              avatar={<Avatar alt={member.profile_nickname} src={member.profile_thumbnail_image} />}
+              label={member.profile_nickname}
+              onDelete={() => removeMember(index)} // 삭제 버튼 클릭 시 멤버 삭제
+              className={styles.memberChip}
+            />
+          ))}
+        </div>
+        
+        <div className={styles.candidates}>
+          {/* 친구 초대하기 버튼 */}
+          <button onClick={handleDropdownToggle} className={styles.inviteButton}>
+            <img src={kakao} alt="kakao" />
+            멤버 초대하기
+          </button>
+
+          {/* 드롭다운 형식으로 친구 선택 */}
+          {showDropdown && (
+            <div className={styles.dropdownContainer}>
+              <div className={styles.friendListContainer}>
+                {friends.length > 0 ? (
+                  <ul className={styles.friendList}>
+                    {friends.map((friend, index) => {
+                      const isSelected = formData.members.some(member => member.profile_nickname === friend.profile_nickname);
+                      return (
+                        <li 
+                          key={index}
+                          className={`${styles.friendItem} ${isSelected ? styles.selected : ''}`} // 선택 시 스타일 변경
+                          onClick={() => toggleMember(friend)}
+                        >
+                          <img src={friend.profile_thumbnail_image} alt={friend.profile_nickname} className={styles.friendImage} />
+                          {friend.profile_nickname}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p>친구 목록을 불러오는 중입니다...</p>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      
+
+      </div>
+
     </div>
   );
 };

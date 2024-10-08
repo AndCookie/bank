@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import styles from '@/styles/HomePage.module.css';
+import kakao from '@/assets/images/kakao.png';
 import TripPage from './TripPage';
 
 const HomePage = () => {
@@ -22,7 +23,10 @@ const HomePage = () => {
         <div className={styles.third}>여행에서 가장 쉬운 정산 서비스</div>
         <div className={styles.title}>요&nbsp;&nbsp;뜨</div>
         <div className={styles.login}>
-          <button onClick={toTrip}>카카오톡 로그인</button>
+          <button onClick={toTrip}>
+            <img src={kakao} alt="kakao" />
+            카카오톡 로그인
+          </button>
         </div>
       </div>
     </div>

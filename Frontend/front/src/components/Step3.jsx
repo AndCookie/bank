@@ -22,29 +22,62 @@ const StepThree = ({ formData, updateFormData }) => {
   }, []);
 
   const handleAccountSelect = (e) => {
-    const selectedAccount = e.target.value;
-    updateFormData({ bank_account: selectedAccount });
+    const selectedAccountNo = e.target.value;
+    // 선택된 계좌 정보를 bankAccounts에서 찾음
+    const selectedAccount = bankAccounts.find(account => account.accountNo === selectedAccountNo);
+
+    if (selectedAccount) {
+      updateFormData({
+        bank_account: selectedAccount.accountNo, // 계좌 번호
+        bank_name: selectedAccount.bankName, // 은행 이름 추가
+      });
+    }
   };
 
   return (
-    <div>
-      <h2>정산 계좌 선택</h2>
-      {loading ? (
-        <p>계좌 목록을 불러오는 중...</p>
-      ) : (
-        <select
-          value={formData.bank_account || ''} // 선택된 계좌가 없으면 빈 값
-          onChange={handleAccountSelect}
-          className={styles.dropdown}
-        >
-          <option value="" disabled>계좌를 선택하세요</option>
-          {bankAccounts.map((account, index) => (
-            <option key={index} value={account.accountNo}>
-              {account.bankName}: {account.accountNo}
-            </option>
-          ))}
-        </select>
-      )}
+    <div className={styles.mainContainer}>
+
+      <div className={styles.third}>
+        <div className={styles.question}>어떤 계좌를 사용하시나요?</div>
+
+        {/* 선택된 계좌 표시 및 삭제 */}
+        {/* <div className={styles.selected}>
+          {formData.bank_account ? (
+            <div className={styles.selectedAccount}>
+              <span>{bankAccounts.find(account => account.accountNo === formData.bank_account)?.bankName}: {formData.bank_account}</span>
+              <button onClick={() => updateFormData({ bank_account: '' })}>X</button>
+            </div>
+          ) : (
+            <p>계좌를 선택하세요</p>
+          )}
+        </div> */}
+
+        <div className={styles.candidates}>
+          {/* 계좌 목록 항상 표시 */}
+          <div className={styles.dropdownContainer}>
+            <div className={styles.accountListContainer}>
+              {loading ? (
+                <p>계좌 목록을 불러오는 중입니다...</p>
+              ) : (
+                <ul className={styles.accountList}>
+                  {bankAccounts.map((account, index) => {
+                    const isSelected = formData.bank_account === account.accountNo;
+                    return (
+                      <li
+                        key={index}
+                        className={`${styles.accountItem} ${isSelected ? styles.selected : ''}`}
+                        onClick={() => toggleAccount(account.accountNo)}
+                      >
+                        {account.bankName}: {account.accountNo}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

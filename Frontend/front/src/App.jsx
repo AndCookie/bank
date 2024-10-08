@@ -14,6 +14,7 @@ import ErrorModal from '@/components/ErrorModal';
 import LoadingPage from '@/pages/LoadingPage';
 import KakaoCallbackPage from '@/pages/KakaoCallbackPage';
 import NotfoundPage from '@/pages/NotfoundPage';
+import InvitePage from '@/pages/InvitePage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/finish/:tripId" element={<TripFinishPage />} />
         <Route path="/gallery/:tripId" element={<GalleryPage />} />
         <Route path="/loading" element={<LoadingPage />} />
+        <Route path="/invite/:tripId" element={<InvitePage />}></Route>
         <Route path="/kakao_callback" element={<KakaoCallbackPage />} />
         <Route path="*" element={<NotfoundPage />} />
       </Routes>
