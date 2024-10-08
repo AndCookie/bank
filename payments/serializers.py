@@ -107,7 +107,6 @@ class CalculateCreateSerializer(serializers.Serializer):
                 
                 # 금액 이체 로직 호출
                 response = transfer(member.user.email, deposit_bank_account, withdrawal_bank_account, cost)
-                print(response)
                 if 'Header' in response:
                     is_complete = True
                     

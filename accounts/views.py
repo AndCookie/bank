@@ -100,7 +100,6 @@ def get_token(request):
 def create_account(user, user_id):
     email = f"{user_id}ssafy@naver.com"
     response = shinhan_signup(email)
-    print(response)
     flag = 1
     if 'userKey' in response:
         user_key = response['userKey']
@@ -210,5 +209,4 @@ def send_message(request):
     }
 
     response = requests.post(url, headers=headers, data=data)
-    print(response)
     return
