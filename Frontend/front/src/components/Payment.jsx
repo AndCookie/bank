@@ -12,17 +12,8 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Checkbox from '@mui/material/Checkbox';
 
 const Payment = ({ selectedDate }) => {
-  const { tripId } = useParams();
-  const tripDetailInfo = {
-    id: tripId,
-    startDate: "2024-08-19",
-    members: [
-      // ...
-    ]
-  };
-
   const userInfo = useUserStore((state) => state.userInfo);
-  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
 
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
