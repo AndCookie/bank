@@ -18,11 +18,11 @@ class PaymentCreateSerializer(serializers.ModelSerializer):
     
     
 class CalculateSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='member.user.username', read_only=True)
+    user_id = serializers.CharField(source='member.user.user_id', read_only=True)
     
     class Meta:
         model = Calculate
-        fields = ['username', 'cost']
+        fields = ['user_id', 'cost', 'is_complete']
         
         
 class PaymentDetailSerializer(serializers.ModelSerializer):    
