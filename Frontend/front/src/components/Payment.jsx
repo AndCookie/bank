@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useTripStore } from '@/stores/tripStore';
 import { useUserStore } from '@/stores/userStore';
 import { usePaymentStore } from '@/stores/paymentStore';
-
+import styles from './styles/Payment.module.css';
 import OngoingModal from '@/components/OngoingModal';
 import AdjustModal from '@/components/AdjustModal';
 
@@ -66,6 +66,7 @@ const Payment = ({ paymentsData, selectedDate }) => {
       return true;
     } else if (selectedDate === 'prepare') {
       return new Date(payment.pay_date) < new Date(tripDetailInfo.startDate);
+      // 특정 날짜 조회
     } else {
       return new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString();
     }
@@ -132,9 +133,20 @@ const Payment = ({ paymentsData, selectedDate }) => {
 
   return (
     <>
-      <div>
-        <button onClick={() => setIsCompleted(0)}>미정산</button>
-        <button onClick={() => setIsCompleted(1)}>정산완료</button>
+      {/* 탭 버튼 */}
+      <div className={styles.tabContainer}>
+        <button
+          className={`${styles.tab} ${isCompleted === 0 ? styles.active : ''}`}
+          onClick={() => setIsCompleted(0)}
+        >
+          미정산
+        </button>
+        <button
+          className={`${styles.tab} ${isCompleted === 1 ? styles.active : ''}`}
+          onClick={() => setIsCompleted(1)}
+        >
+          정산 완료
+        </button>
       </div>
 
       {filteredPayments.map((data) => (
