@@ -110,7 +110,6 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
     // console.log(renderedMemberInfo)
     return renderedMemberInfo.find((info) => info.bankAccount === bankAccount).cost;
   };
-
   
   const navigate = useNavigate();
   const { tripId } = useParams();
