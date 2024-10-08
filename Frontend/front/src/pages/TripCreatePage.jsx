@@ -81,11 +81,6 @@ const TripCreatePage = () => {
     navigate('/trip'); // 페이지 이동
   };
 
-  const saveTrip = () => {
-    const { locations, dates, members, tripName, bankAccount } = formData;
-    // Trip 저장 로직 처리
-    navigate('/trip');
-  };
 
   const renderStep = () => {
     switch (step) {
@@ -96,7 +91,7 @@ const TripCreatePage = () => {
       case 2:
         return <StepThree formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <StepFour formData={formData} saveTrip={saveTrip} />;
+        return <StepFour formData={formData} onTripCreated={() => setTimeout(() => navigate('/trip'), 3000)} />;
       default:
         return null;
     }
