@@ -68,7 +68,8 @@ def pay_list(request):
             used_budget = sum(Calculate.objects.filter(
                 member=member,
                 payment__pay_date__gte=start_date,
-                payment__pay_date__lte=end_date
+                payment__pay_date__lte=end_date, 
+                is_complete=True
                 ).values_list('cost', flat=True))
             remain_budget = initial_budget - used_budget
             budget[user_id] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}

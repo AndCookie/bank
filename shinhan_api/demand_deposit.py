@@ -212,13 +212,13 @@ def create_demand_deposit_for_each_bank(email):
 
 
 if __name__ == "__main__":
-    email = 'jamie9@naver.com'
+    email = '3719854488ssafy@naver.com'
     # create_demand_deposit_for_each_bank(email)
     # create_demand_deposit("oodeng98@naver.com")
     # pprint(inquire_demand_deposit_list(email))
     # create_demand_deposit_account("3719831726test@naver.com")
-    # pprint(inquire_demand_deposit_account_list("email9629@naver.com")['REC'])
-    # pprint(inquire_demand_deposit_account("email9629@naver.com", "0882943094128264")['REC'])
+    # pprint(inquire_demand_deposit_account_list(email)['REC'])
+    pprint(inquire_demand_deposit_account(email, "0234420981757582")['REC'])
     # inquire_demand_deposit_account_holder_name()
     # pprint(inquire_demand_deposit_account_balance("email9629@naver.com", "0372462077415412"))
     # email = "email1@naver.com"
@@ -226,6 +226,6 @@ if __name__ == "__main__":
     # bank_account = "0882137908931580"
     # update_demand_deposit_account_deposit(email, bank_account, "5000000")
     # pprint(inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance'])
-    pprint(update_demand_deposit_account_Transfer("3719831726ssafy@naver.com", "9998624062331551", "9998624062331551", 100))
+    # pprint(update_demand_deposit_account_Transfer(email, "9998624062331551", "0234420981757582", 5580239))
     # pprint(inquire_transaction_history_list("0817158183605808"))
     # inquire_transaction_history()
