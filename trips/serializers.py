@@ -52,7 +52,8 @@ class TripCreateSerializer(serializers.ModelSerializer):
             except User.DoesNotExist:
                 continue
         request = self.context.get('request')
-        send_message(request, uuid_list, trip.trip_name, trip.id)
+        # 추후 이 주석 다시 복귀
+        # send_message(request, uuid_list, trip.trip_name, trip.id)
         return trip
 
     def update(self, instance, validated_data):
