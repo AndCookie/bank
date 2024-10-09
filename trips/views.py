@@ -73,6 +73,7 @@ def list(request):
         current_date = timezone.now().date()
         trips = Trip.objects.filter(
             member__user=request.user,
+            member__is_participate=True
         ).order_by('start_date')
 
         past_trips = trips.filter(end_date__lt=current_date)
