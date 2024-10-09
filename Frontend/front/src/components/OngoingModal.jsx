@@ -4,12 +4,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
+import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 
 import styles from './styles/Modal.module.css';
 
 const OngoingModal = ({ isOpen, onClose, paymentId }) => {
+  const userInfo = useUserStore((state) => state.userInfo);
+
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
 
   // 결제 내역 상세 정보
@@ -61,6 +64,12 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
       return { ...prevPayment, bills: updatedBills };
     });
   };
+  
+  // userId에 따른 이름 반환
+  const matchUserName = (userId) => {
+    const matchMember = tripDetailInfo.members.find((member) => member.id == userId);
+    return `${matchMember.last_name}${matchMember.first_name}`
+  }
 
   // 모달 창이 닫힐 때 payments에 저장하기
   useEffect(() => {
@@ -70,6 +79,41 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   }, [isOpen])
 
   if (!isOpen) return null;
+
+  // 결제 당사자가 아닐 경우
+  if (userInfo.id != partPayment.user_id) {
+    return (
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={isOpen}>
+          <div className={styles.box}>
+            <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
+            <div>{partPayment.amount}원</div>
+
+            {/* 정산 체크한 결제 내역 */}
+            <div>
+              {partPayment.brand_name}
+              {partPayment.pay_date}
+              {partPayment.pay_time}
+            </div>
+
+            <div>결제 당사자만 정산 가능합니다</div>
+            <div>{matchUserName(partPayment.user_id)}</div>
+          </div>
+        </Fade>
+      </Modal>
+  )}
+
+  // 결제 당사자일 경우
   return (
     <Modal
       open={isOpen}
