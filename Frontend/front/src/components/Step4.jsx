@@ -6,6 +6,8 @@ import successImg from '@/assets/images/load/check.png';
 import { useErrorStore } from '@/stores/errorStore'; // 에러 스토어 가져오기
 import { useUserStore } from '@/stores/userStore'; // userStore 가져오기
 import styles from './styles/Steps.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const StepFour = ({ formData, onTripCreated }) => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
@@ -42,6 +44,8 @@ const StepFour = ({ formData, onTripCreated }) => {
           // 3초 후 여행 완료 콜백 호출
           setTimeout(() => {
             onTripCreated();
+            const tripId = response.data.id; // 응답에서 tripId 추출
+            navigate(`/trip/${tripId}`);
           }, 2500); // 여행 생성 완료 3초간 표시
         }, 1200); // 1.2초 지연
       } catch (error) {
