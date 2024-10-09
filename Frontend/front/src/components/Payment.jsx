@@ -148,7 +148,7 @@ const Payment = ({ selectedDate }) => {
               </div>
             </div>
             <div className={styles.checkArea}>
-              {data.username === userInfo.nickName && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}
+              {data.user_id == userInfo.id && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}
             </div>
           </div>
         ))}

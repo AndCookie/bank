@@ -39,10 +39,10 @@ export const useTripStore = create((set) => ({
   tripDetailInfo: {},
 
   // tripId에 따른 여행 상세 정보 저장
-  setTripDetailInfo: (tripInfo) => set(() => ({
+  setTripDetailInfo: (tripId, tripInfo) => set(() => ({
     tripDetailInfo: typeof tripInfo === 'object' && tripInfo !== null
       ? {
-        id: tripInfo.id,
+        id: tripId,
         startDate: tripInfo.start_date,
         endDate: tripInfo.end_date,
         imageUrl: tripInfo.image_url,
@@ -71,15 +71,15 @@ export const useTripStore = create((set) => ({
   },
 
   // tripId에 따른 여행 결제내역
-  paymentsInitialData: {},
+  // paymentsInitialData: {},
 
   // tripId에 따른 여행 결제내역 저장
-  setPayments: (paymentInfo) => set(() => ({
+  // setPayments: (paymentInfo) => set(() => ({
     // paymentsInitialData: Array.isArray(paymentInfo) && paymentInfo.length > 0
     //   ? paymentInfo
     //   : [],
-    paymentsInitialData: paymentInfo,
-  })),
+  //   paymentsInitialData: paymentInfo,
+  // })),
 }));
 
 //   addPayment: (payment) => set((state) => ({

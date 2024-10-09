@@ -8,7 +8,9 @@ import { useTripStore } from '@/stores/tripStore';
 
 import styles from './styles/TripInfoModal.module.css';
 
-const TripInfoModal = ({ isOpen, onClose, tripDetailInfo }) => {
+const TripInfoModal = ({ isOpen, onClose }) => {
+  const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+
   if (!isOpen) return null;
   
   return (
@@ -55,7 +57,7 @@ const TripInfoModal = ({ isOpen, onClose, tripDetailInfo }) => {
             <div className={styles.infoDetail}>
               {tripDetailInfo.members.map((member, index) => (
                 <div key={index} className={styles.member}>
-                  <div className={styles.memberName}>{member.member}</div>
+                  <div className={styles.memberName}>{member.last_name}{member.first_name}</div>
                   <div className={styles.memberBalance}>{member.balance}</div>
                 </div>
               ))}

@@ -17,10 +17,14 @@ const TripDetailPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
 
   const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
+  const setTripDetailInfo = useTripStore((state) => state.setTripDetailInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
 
-  const setPayments = usePaymentStore((state) => state.setPayments);
   const fetchPayments = usePaymentStore((state) => state.fetchPayments);
+  const setPayments = usePaymentStore((state) => state.setPayments);
+  const payments = usePaymentStore((state) => state.payments);
+
+  const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
 
   const [loading, setLoading] = useState(true);
 
@@ -30,46 +34,40 @@ const TripDetailPage = () => {
     const fetchData = async () => {
       try {
         // Promise.all을 사용해 fetchTripDetail과 fetchPayments를 병렬로 호출
-        const [tripDetail, paymentsData] = await Promise.all([
-          fetchTripDetail(tripId),  // 여행 정보 호출
-          fetchPayments(tripId),    // 결제 정보 호출
+        const [tripDetailData, paymentsData] = await Promise.all([
+          fetchTripDetail(tripId),
+          fetchPayments(tripId),
         ]);
 
-        // 데이터가 제대로 반환되었는지 확인
-        if (!tripDetail || !tripDetail.members || !paymentsData) {
-          console.log(tripDetail)
-          console.log(paymentsData)
-          console.error("Data is missing or invalid");
-          return;
-        }
+        console.log(tripDetailData, paymentsData, userInfo);
 
-        // paymentsData에서 bills 추가
-        const updatedPaymentsData = paymentsData.map(payment => {
-          const bills = tripDetail.members.map(member => ({
+        // paymentsData.payments_list에 bills 추가
+        const updatedPaymentsData = paymentsData.payments_list.map(payment => {
+          const bills = tripDetailData.members.map(member => ({
             cost: 0,
             bank_account: member.bank_account,
           }));
 
           return {
             ...payment,
-            bills,    // bills 추가
-            checked: false,  // 기본적으로 체크되지 않음
+            bills,
+            checked: false,
           };
         });
 
-        // paymentStore에 결제 데이터를 저장
+        setTripDetailInfo(tripId, tripDetailData);
         setPayments(updatedPaymentsData);
 
+        setFinalPayments(tripId);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
       } finally {
-        setLoading(false);  // 로딩 완료 후 상태 변경
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [tripId, fetchTripDetail, fetchPayments, setPayments]);
-
+  }, [tripId]);
 
   const navigate = useNavigate();
 
@@ -77,7 +75,7 @@ const TripDetailPage = () => {
   const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
 
   const goBack = () => {
-    navigate(-1); // 이전 페이지로 이동
+    navigate(-1);
   }
 
   const clickDate = (date) => {
@@ -152,7 +150,7 @@ const TripDetailPage = () => {
       </div>
 
       {/* 여행 상세 정보 모달 창 */}
-      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
+      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} />
     </div>
   );
 };
