@@ -12,58 +12,30 @@ const TripFinishPage = () => {
   const finalPayments = usePaymentStore((state) => state.finalPayments);
 
   // 정산 결과
-  // const [resultPayments, setResultPayments] = useState([]);
+  const [resultPayments, setResultPayments] = useState([]);
 
   // 선택한 상세 정산 내역 Id
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
-
-  const resultPayments = [
-    {
-      "payment_id": 13,
-      "bills": [
-        {
-          "cost": 206890,
-          "user_id": "3719831726",
-          "is_complete": true
-        },
-        {
-          "cost": 206890,
-          "user_id": "3720611926",
-          "is_complete": false
-        },
-        {
-          "cost": 206890,
-          "user_id": "3720570145",
-          "is_complete": true
-        },
-        {
-          "cost": 206890,
-          "user_id": "3719854488",
-          "is_complete": true
-        }
-      ]
-    }
-  ]
 
   useEffect(() => {
     console.log('Final', finalPayments);
   }, [])
 
-  // useEffect(() => {
-  //   // 결제 정산 요청
-  //   if (finalPayments.payments) {
-  //     const sendAdjustment = async () => {
-  //       try {
-  //         const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
-  //         const { data } = response;
-  //         setResultPayments(data.payments);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }
-  //     sendAdjustment();
-  //   };
-  // }, [finalPayments]);
+  useEffect(() => {
+    // 결제 정산 요청
+    if (finalPayments.payments) {
+      const sendAdjustment = async () => {
+        try {
+          const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
+          const { data } = response;
+          setResultPayments(data.payments);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      sendAdjustment();
+    };
+  }, [finalPayments]);
 
   // paymentId에 따른 결제 내역의 정산 여부
   const isAdjusted = (paymentId) => {

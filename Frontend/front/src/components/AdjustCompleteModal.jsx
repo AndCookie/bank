@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from 'react';
 import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
 import { useTripStore } from '@/stores/tripStore';
+import CloseIcon from '@mui/icons-material/Close';
 
 import styles from './styles/Modal.module.css';
 
