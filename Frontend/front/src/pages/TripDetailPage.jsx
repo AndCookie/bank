@@ -99,6 +99,8 @@ const TripDetailPage = () => {
     end: new Date(tripDetailInfo.endDate),
   });
 
+  const tripState = new Date(tripDetailInfo.startDate) > new Date() ? '준비' : '';
+
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
@@ -112,7 +114,7 @@ const TripDetailPage = () => {
       <div className={styles.profile}>
         <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
         <div className={styles.profileStatus}>
-          {userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 중 &nbsp;
+          {userInfo.nickName} 님은 {tripDetailInfo.locations[0].country} 여행 {tripState} 중 &nbsp;
         </div>
         <EditIcon onClick={openTripInfoModal} />
       </div>
