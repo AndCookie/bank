@@ -22,7 +22,7 @@ class CalculateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Calculate
-        fields = ['user_id', 'cost', 'is_complete']
+        fields = ['user_id', 'cost', 'remain_cost']
         
         
 class PaymentDetailSerializer(serializers.ModelSerializer):    
