@@ -31,10 +31,13 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
     if (isOpen && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
+      const baseCost = parseInt(partPayment.amount / tripDetailInfo.members.length);
+      const totalCost = baseCost * tripDetailInfo.members.length;
+
       setPartPayment((prev) => ({
         ...prev,
-        bills: tripDetailInfo.members.map((member) => ({
-          cost: parseInt(partPayment.amount / tripDetailInfo.members.length),
+        bills: tripDetailInfo.members.map((member, index) => ({
+          cost: index === 0 ? baseCost + partPayment.amount - totalCost : baseCost,
           bank_account: member.bank_account
         }))
       }));

@@ -58,20 +58,26 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
           cost: 0
         };
       }));
+
       finalPayments.payments.forEach((finalPayment) => {
         const updatedBills = payments.find((payment) => payment.id === finalPayment.payment_id).bills;
 
+        // 체크 표시를 하고 세부 가격을 설정하지 않았을 경우
         if (updatedBills.every(bill => bill.cost === 0)) {
           const paymentAmount = payments.find((payment) => payment.id === finalPayment.payment_id).amount;
-          const newUpdatedBills = updatedBills.map((bill) => ({
+          const baseCost = parseInt(paymentAmount / updatedBills.length);
+          const totalCost = baseCost * updatedBills.length;
+
+          const newUpdatedBills = updatedBills.map((bill, index) => ({
             ...bill,
-            cost: parseInt(paymentAmount / updatedBills.length),
+            cost: index === 0 ? baseCost + paymentAmount - totalCost : baseCost,
           }))
 
           updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
           newUpdatedBills.forEach(bill => {
             renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
           });
+          // 세부 가격을 설정했을 경우
         } else {
           updateFinalPayments(finalPayment.payment_id, updatedBills)
           updatedBills.forEach(bill => {
