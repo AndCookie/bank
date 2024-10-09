@@ -46,7 +46,7 @@ const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => 
           <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
 
           {/* 멤버별 정산 내역 */}
-          {resultPayment.bills.map((bill, index) => (
+          {resultPayment && resultPayment.bills.map((bill, index) => (
             <div key={index}>
               {matchUserName(bill.user_id)} {bill.cost} {bill.is_completed}
             </div>
