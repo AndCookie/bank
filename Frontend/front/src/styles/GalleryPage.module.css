@@ -1,40 +1,8 @@
-.main-container {
+.mainContainer {
   width: 100%;
   height: 100vh;
   overflow-y: auto;
   overflow-x: hidden;
   margin: 0 auto;
-  padding: 0;
-  background-color: #f4f6fa;
-}
-
-/* 구획 나누기 */
-.trip {
-  margin: 20px auto;
-  /* border: 2px solid blue; */
-}
-
-.title {
-  font-size: x-large;
-  font-weight: bolder;
-  padding: 5px 20px;
-
-  display: flex;
-  justify-content: space-between;
-}
-
-.subtitle {
-  font-size: medium;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-}
-
-.content {
-  background-color: #ffffff;
-  padding: 10px 20px;
-}
-
-.content * {
-  font-size: 1rem;
+  background-color: #f3f6fb;
 }

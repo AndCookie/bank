@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axiosInstance from '@/axios.js'; // Axios 인스턴스 가져오기
-import LoadingPage from '@/pages/LoadingPage';
-import loadingImg from '@/assets/images/load/loading.gif';
-import successImg from '@/assets/images/load/check.png';
-import { useErrorStore } from '@/stores/errorStore'; // 에러 스토어 가져오기
-import { useUserStore } from '@/stores/userStore'; // userStore 가져오기
-import styles from './styles/Steps.module.css';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "@/axios.js"; // Axios 인스턴스 가져오기
+import LoadingPage from "@/pages/LoadingPage";
+import loadingImg from "@/assets/images/load/loading.gif";
+import successImg from "@/assets/images/load/check.png";
+import { useErrorStore } from "@/stores/errorStore"; // 에러 스토어 가져오기
+import { useUserStore } from "@/stores/userStore"; // userStore 가져오기
+import styles from "./styles/Steps.module.css";
 
 const StepFour = ({ formData, onTripCreated }) => {
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
@@ -16,7 +16,6 @@ const StepFour = ({ formData, onTripCreated }) => {
   // 컴포넌트가 마운트될 때 여행 생성 요청을 자동으로 보냄
   useEffect(() => {
     const handleSubmit = async () => {
-
       // userInfo를 members에 추가 (uuid는 빈 문자열로 설정)
       const updatedFormData = {
         ...formData,
@@ -26,7 +25,7 @@ const StepFour = ({ formData, onTripCreated }) => {
             id: userInfo.id,
             profile_nickname: userInfo.nickName,
             profile_thumbnail_image: userInfo.profileImage,
-            uuid: '', // uuid는 빈 문자열로 설정
+            uuid: "", // uuid는 빈 문자열로 설정
           },
         ],
       };
@@ -34,19 +33,19 @@ const StepFour = ({ formData, onTripCreated }) => {
       try {
         // 1.2초 후에 여행 생성 요청을 보냄
         setTimeout(async () => {
-          const response = await axiosInstance.post('/trips/', updatedFormData);
-          console.log('Trip Created:', response.data);
+          const response = await axiosInstance.post("/trips/", updatedFormData);
+          console.log("Trip Created:", response.data);
           setIsSuccess(true); // 성공 상태 설정
           setIsLoading(false); // 로딩 완료
 
-          // 3초 후 여행 완료 콜백 호출
+          // 2초 후 여행 완료 콜백 호출
           setTimeout(() => {
             onTripCreated();
-          }, 2500); // 여행 생성 완료 3초간 표시
+          }, 2000); // 여행 생성 완료 2초간 표시
         }, 1200); // 1.2초 지연
       } catch (error) {
-        console.error('Error creating trip:', error);
-        setError('여행 생성에 실패했습니다. 다시 시도해주세요.');
+        console.error("Error creating trip:", error);
+        setError("여행 생성에 실패했습니다. 다시 시도해주세요.");
         setIsLoading(false);
       }
     };
@@ -63,12 +62,20 @@ const StepFour = ({ formData, onTripCreated }) => {
     <div className={styles.container}>
       {isLoading ? (
         <div className={styles.sixth}>
-          <img src={loadingImg} className={styles.loadingImg} alt="여행 생성 중..." />
+          <img
+            src={loadingImg}
+            className={styles.loadingImg}
+            alt="여행 생성 중..."
+          />
           <p className={styles.loadingMsg}>여행 생성 중..</p>
         </div>
       ) : isSuccess ? (
         <div className={styles.sixth}>
-          <img src={successImg} className={styles.successImg} alt="여행 생성 완료" />
+          <img
+            src={successImg}
+            className={styles.successImg}
+            alt="여행 생성 완료"
+          />
           <p className={styles.successMsg}>여행 생성 완료!</p>
         </div>
       ) : (
@@ -77,6 +84,5 @@ const StepFour = ({ formData, onTripCreated }) => {
     </div>
   );
 };
-
 
 export default StepFour;
