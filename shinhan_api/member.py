@@ -35,5 +35,5 @@ if __name__ == "__main__":
     email = 'jamie9@naver.com'
     # signup(email)
     # search(email)
-    signup('3719831726s@test8.com')
-    search('3719831726s@test8.com')
+    # signup('3719831726s@test8.com')
+    search('3719831726ssafy@naver.com')

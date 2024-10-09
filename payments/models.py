@@ -15,4 +15,4 @@ class Calculate(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     cost = models.IntegerField()
-    is_complete = models.BooleanField(default=False)
+    remain_cost = models.IntegerField(default=0)

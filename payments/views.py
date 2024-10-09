@@ -82,6 +82,12 @@ def adjustment(request):
     if request.method == 'POST':
         # 이거 수정해보기
         payments = request.data.get('payments')
+        ######################################################################
+        balance_dic = {}
+        for member in Member.objects.filter(trip=request.data.get('trip_id')):
+            balance_dic[member.user.last_name + member.user.first_name] = []
+            balance_dic[member.user.last_name + member.user.first_name].append(balance(member.user.email, member.bank_account)['REC']['accountBalance'])
+        ######################################################################
         for payment in payments:    
             payment_id = payment.get('payment_id')
             # if Calculate.objects.filter(payment_id=payment_id).exists():
@@ -89,9 +95,15 @@ def adjustment(request):
             bank_account = Payment.objects.get(id=payment_id).bank_account
             if not Member.objects.filter(bank_account=bank_account, user=request.user).exists():
                 return Response({'error': "현재 사용자는 해당 계좌를 사용하고 있지 않습니다."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = CalculateCreateSerializer(data=request.data)
+            
+        serializer = CalculateCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
             result = serializer.save()
+            ######################################################################
+            result['balance'] = balance_dic
+            for member in Member.objects.filter(trip=request.data.get('trip_id')):
+                balance_dic[member.user.last_name + member.user.first_name].append(balance(member.user.email, member.bank_account)['REC']['accountBalance'])
+            ######################################################################
             return Response(result, status=status.HTTP_201_CREATED)
         
         

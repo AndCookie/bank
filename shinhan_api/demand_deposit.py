@@ -226,6 +226,6 @@ if __name__ == "__main__":
     # bank_account = "0882137908931580"
     # update_demand_deposit_account_deposit(email, bank_account, "5000000")
     # pprint(inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance'])
-    # pprint(update_demand_deposit_account_Transfer(email, "9998624062331551", "0234420981757582", 5580239))
+    # pprint(update_demand_deposit_account_Transfer(email, "9998624062331551", "0234420981757582", 534853))
     # pprint(inquire_transaction_history_list("0817158183605808"))
     # inquire_transaction_history()
