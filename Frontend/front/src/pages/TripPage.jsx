@@ -90,8 +90,11 @@ const TripPage = () => {
 
         {/* 미래 여행 */}
         {futureTrips.map((trip, index) => (
-          <div className={styles.futureTrip} key={index} onClick={() => toDetail(trip.id)}>
-            {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
+          <div className={styles.futureTripContainer} key={index} onClick={() => toDetail(trip.id)}>
+            <div className={styles.futureTrip}>
+              {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
+            </div>
+            <div className={styles.tripName}>{trip.trip_name}</div> {/* Trip name 추가 */}
           </div>
         ))}
       </div>

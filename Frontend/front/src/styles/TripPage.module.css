@@ -140,3 +140,15 @@
   z-index: 100;
   padding: 3px !important;
 }
+
+.tripName {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: bold;
+  color: #333; /* 텍스트 색상 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 텍스트가 길 경우 ... 처리 */
+  max-width: 70px; /* 이미지와 같은 너비 */
+}

@@ -37,34 +37,33 @@ const Chart = () => {
     const fetchPayments = async () => {
       try {
         const response = await axiosInstance.get('/payments/list/', {
-          params: { trip_id: tripId }, // trip_id를 params로 전달
+          params: { trip_id: tripId },
         });
         const payments = response.data.payments_list;
-
+  
         if (payments && payments.length > 0) {
           const categoryTotals = {};
           payments.forEach(payment => {
             const category = payment.category;
             const amount = payment.amount;
-
+  
             if (categoryTotals[category]) {
               categoryTotals[category] += amount;
             } else {
               categoryTotals[category] = amount;
             }
           });
-
+  
           const categoryData = Object.entries(categoryTotals)
             .map(([name, value]) => ({ name, value }))
             .sort((a, b) => b.value - a.value);
-
-          console.log("Category Data: ", categoryData); // 데이터 확인
-
+  
           if (chartRef.current) {
             if (chartInstance.current) {
               chartInstance.current.dispose(); // 기존 차트 제거
             }
             chartInstance.current = echarts.init(chartRef.current); // eCharts 차트 초기화
+            
             const option = {
               tooltip: {
                 trigger: 'item',
@@ -90,11 +89,16 @@ const Chart = () => {
                 },
               ],
             };
+  
             chartInstance.current.setOption(option); // 옵션 적용
             chartInstance.current.resize(); // 차트 크기 조정
-
+  
             // 창 크기 변경 시 차트 리사이즈
-            window.addEventListener('resize', chartInstance.current.resize);
+            window.addEventListener('resize', () => {
+              if (chartInstance.current) {
+                chartInstance.current.resize();
+              }
+            });
           }
         } else {
           // 데이터가 없을 때 기본 차트 생성
@@ -119,18 +123,23 @@ const Chart = () => {
         setLoading(false);
       }
     };
-
+  
     fetchPayments();
-
+  
     return () => {
       // 창 크기 변경 이벤트 리스너 제거
-      window.removeEventListener('resize', chartInstance.current.resize);
+      window.removeEventListener('resize', () => {
+        if (chartInstance.current) {
+          chartInstance.current.resize();
+        }
+      });
       // 언마운트 시 차트 인스턴스 제거
       if (chartInstance.current) {
         chartInstance.current.dispose();
       }
     };
   }, [tripId]);
+  
 
   if (loading) return <div>차트 데이터를 불러오는 중...</div>;
   if (error) return <div>Error: {error.message}</div>;
