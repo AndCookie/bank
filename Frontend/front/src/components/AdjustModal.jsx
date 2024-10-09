@@ -64,19 +64,32 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
 
         // 체크 표시를 하고 세부 가격을 설정하지 않았을 경우
         if (updatedBills.every(bill => bill.cost === 0)) {
-          const paymentAmount = payments.find((payment) => payment.id === finalPayment.payment_id).amount;
-          const baseCost = parseInt(paymentAmount / updatedBills.length);
-          const totalCost = baseCost * updatedBills.length;
+          // 첫 정산일 경우
+          if (payments.find((payment) => payment.id === finalPayment.payment_id).calculates.length === 0) {
+            const paymentAmount = payments.find((payment) => payment.id === finalPayment.payment_id).amount;
+            const baseCost = parseInt(paymentAmount / updatedBills.length);
+            const totalCost = baseCost * updatedBills.length;
 
-          const newUpdatedBills = updatedBills.map((bill, index) => ({
-            ...bill,
-            cost: index === 0 ? baseCost + paymentAmount - totalCost : baseCost,
-          }))
+            const newUpdatedBills = updatedBills.map((bill, index) => ({
+              ...bill,
+              cost: index === 0 ? baseCost + paymentAmount - totalCost : baseCost,
+            }))
 
-          updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
-          newUpdatedBills.forEach(bill => {
-            renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
-          });
+            updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
+            newUpdatedBills.forEach(bill => {
+              renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+            });
+          // 첫 정산이 아닐 경우
+          } else {
+            const newUpdatedBills = updatedBills.map((bill) => ({
+              ...bill,
+              cost: payments.find((payment) => payment.id === finalPayment.payment_id).calculates.find((calculate) => calculate.user_id == tripDetailInfo.members.find((member) => member.bank_account == bill.bank_account).id).remain_cost,
+            }))
+            updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
+            newUpdatedBills.forEach(bill => {
+              renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+            });
+          }
           // 세부 가격을 설정했을 경우
         } else {
           updateFinalPayments(finalPayment.payment_id, updatedBills)

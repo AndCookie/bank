@@ -28,6 +28,7 @@ const TripFinishPage = () => {
         try {
           const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
           const { data } = response;
+          console.log('Adjust Reulst', data);
           setResultPayments(data.payments);
         } catch (error) {
           console.log(error);

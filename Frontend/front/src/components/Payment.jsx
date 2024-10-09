@@ -19,6 +19,7 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import CafeIcon from "@mui/icons-material/LocalCafe";
 import EtcIcon from "@mui/icons-material/MoreHoriz";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 const Payment = ({ selectedDate }) => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -42,38 +43,6 @@ const Payment = ({ selectedDate }) => {
 
   // 최종 정산 금액
   const [totalAmount, setTotalAmount] = useState(0);
-
-  // useEffect(() => {
-  //   setFinalPayments(tripDetailInfo.id);
-  // }, [])
-
-  // useEffect(() => {
-  //   // 인원별 정산 금액과 체크 여부를 담기 위한 임시 변수
-  //   const updatedPaymentsData = paymentsData.map((payment) => {
-  //     const membersData = tripDetailInfo.members.map(member => ({
-  //       cost: 0,
-  //       bank_account: member.bank_account
-  //     }));
-  //     return {
-  //       ...payment,
-  //       bills: membersData,
-  //       checked: false,
-  //     };
-  //   });
-  //   setPayments(updatedPaymentsData)
-  // }, [paymentsData])
-
-  // payments가 정의되어 있는지 체크하고 처리
-  // const filteredPayments = (payments || []).filter((payment) => {
-  //   if (selectedDate === 'all') {
-  //     return true;
-  //   } else if (selectedDate === 'prepare') {
-  //     return new Date(payment.pay_date) < new Date(tripDetailInfo.startDate);
-  //     // 특정 날짜 조회
-  //   } else {
-  //     return new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString();
-  //   }
-  // }).filter((payment) => payment.is_completed === isCompleted);
 
   // 결제내역 상세 정보 모달 창
   const [isOngoingOpen, setisOngoingOpen] = useState(false);
@@ -150,28 +119,6 @@ const Payment = ({ selectedDate }) => {
     ),
   };
 
-  // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
-  // const groupPaymentsByDate = (payments) => {
-  //   const grouped = payments.reduce((acc, payment) => {
-  //     const date = payment.pay_date;
-  //     if (!acc[date]) {
-  //       acc[date] = [];
-  //     }
-  //     acc[date].push(payment);
-  //     return acc;
-  //   }, {});
-
-  //   // 날짜를 기준으로 그룹화된 객체의 키를 정렬
-  //   const sortedKeys = Object.keys(grouped).sort(
-  //     (a, b) => new Date(a) - new Date(b)
-  //   );
-
-  //   return sortedKeys.reduce((sortedAcc, date) => {
-  //     sortedAcc[date] = grouped[date];
-  //     return sortedAcc;
-  //   }, {});
-  // };
-
   // 필터링된 결제 항목
   const filteredPayments = (payments || [])
     .filter((payment) => {
@@ -190,7 +137,6 @@ const Payment = ({ selectedDate }) => {
 
   // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
   const groupPaymentsByDate = (paymentsInfo) => {
-    // console.log(paymentsInfo)
     const grouped = paymentsInfo.reduce((acc, paymentInfo) => {
       const date = paymentInfo.pay_date;
       if (!acc[date]) {
@@ -221,13 +167,6 @@ const Payment = ({ selectedDate }) => {
         const checked = !payment.checked;
         if (checked) {
           setTotalAmount((prev) => prev + amount);
-
-          // calculatedPayments에서 paymentId에 해당하는 데이터 추가
-          // const bills = tripDetailInfo.members.map((member) => ({
-          //   cost: 0,
-          //   bank_account: member.bank_account,
-          // }));
-
           addFinalPayments(paymentId);
         } else {
           setTotalAmount((prev) => prev - amount);
@@ -286,7 +225,7 @@ const Payment = ({ selectedDate }) => {
                         isCompleted === 1 ? styles.completed : ""
                       }`} // isCompleted가 1이면 completed 클래스 추가
                     >
-                      {payment.amount}
+                      {payment.amount} {!payment.is_completed && payment.calculates.length > 0 && (<WarningAmberIcon sx={{ color: 'orange' }} />)}
                     </div>
                     <div className={styles.brandName}>{payment.brand_name}</div>
                   </div>
@@ -298,7 +237,7 @@ const Payment = ({ selectedDate }) => {
                     {payment.user_id == userInfo.id && (
                       <Checkbox
                         checked={payment.checked}
-                        onChange={() => handleCheck(payment.id, payment.amount)}
+                        onChange={() => handleCheck(payment.id, payment.calculates.length ? payment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) : payment.amount)}
                       />
                     )}
                   </div>
