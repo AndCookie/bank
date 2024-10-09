@@ -21,7 +21,6 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import CafeIcon from '@mui/icons-material/LocalCafe';
 import EtcIcon from '@mui/icons-material/MoreHoriz';
 
-
 const Payment = ({ selectedDate }) => {
   const userInfo = useUserStore((state) => state.userInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
@@ -36,10 +35,10 @@ const Payment = ({ selectedDate }) => {
 
   // 정산 여부 판단
   const [isCompleted, setIsCompleted] = useState(0);
-  
+
   // 선택한 상세 결제 내역 Id
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
-    
+
   // 최종 정산 금액
   const [totalAmount, setTotalAmount] = useState(0);
 
@@ -78,7 +77,7 @@ const Payment = ({ selectedDate }) => {
 
   // 결제내역 상세 정보 모달 창
   const [isOngoingOpen, setisOngoingOpen] = useState(false);
-  
+
   // 체크한 결제내역 정산 모달 창
   const [isAdjustOpen, setisAdjustOpen] = useState(false);
 
@@ -111,26 +110,6 @@ const Payment = ({ selectedDate }) => {
     기타: <EtcIcon fontSize="large" sx={{ color: isCompleted === 1 ? 'gray' : 'black' }} />,
   };
 
-  // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
-  const groupPaymentsByDate = (payments) => {
-    const grouped = payments.reduce((acc, payment) => {
-      const date = payment.pay_date;
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(payment);
-      return acc;
-    }, {});
-
-    // 날짜를 기준으로 그룹화된 객체의 키를 정렬
-    const sortedKeys = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
-    
-    return sortedKeys.reduce((sortedAcc, date) => {
-      sortedAcc[date] = grouped[date];
-      return sortedAcc;
-    }, {});
-  };
-
   // 필터링된 결제 항목
   const filteredPayments = (payments || []).filter((payment) => {
     if (selectedDate === 'all') {
@@ -141,6 +120,27 @@ const Payment = ({ selectedDate }) => {
       return new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString();
     }
   }).filter(payment => payment.is_completed === isCompleted);
+
+  // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
+  const groupPaymentsByDate = (paymentsInfo) => {
+    // console.log(paymentsInfo)
+    const grouped = paymentsInfo.reduce((acc, paymentInfo) => {
+      const date = paymentInfo.pay_date;
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(paymentInfo);
+      return acc;
+    }, {});
+
+    // 날짜를 기준으로 그룹화된 객체의 키를 정렬
+    const sortedKeys = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
+
+    return sortedKeys.reduce((sortedAcc, date) => {
+      sortedAcc[date] = grouped[date];
+      return sortedAcc;
+    }, {});
+  };
 
   // 날짜별로 그룹화된 결제 항목
   const groupedPayments = groupPaymentsByDate(filteredPayments);
@@ -171,7 +171,9 @@ const Payment = ({ selectedDate }) => {
 
     setPayments(updatedPaymentsData);
   };
-  
+
+  // return <></>
+
   return (
     <div className={styles.container}>
       {/* 탭 버튼 */}
@@ -192,21 +194,11 @@ const Payment = ({ selectedDate }) => {
 
       {/* 결제 내역 */}
       <div className={styles.payContainer}>
-        {filteredPayments.map((data) => (
-          <div key={data.id} className={styles.payContent}>
-            <div className={styles.pay} onClick={() => openOngoingModal(data.id)}>
-              <div className={styles.categoryArea}>
-                {data.category}
-              </div>
-              <div className={styles.costArea}>
-                {data.amount}
-              </div>
-              <div className={styles.dateArea}>
-                {data.pay_date}
-              </div>
-            </div>
-            <div className={styles.checkArea}>
-              {data.user_id == userInfo.id && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}
+        {Object.keys(groupedPayments).map(date => (
+          <div key={date} className={styles.dateGroup}>
+            {/* 날짜 표시 */}
+            <div className={styles.dateHeader}>
+              {format(new Date(date), 'MM월 dd일 (E)', { locale: ko })}  {/* 'EEEE'로 요일을 한글로 표시 */}
             </div>
 
             {groupedPayments[date].map(payment => (
@@ -216,7 +208,7 @@ const Payment = ({ selectedDate }) => {
                     {categoryIcons[payment.category] || <span>{payment.category}</span>}
                   </div>
                   <div className={styles.costArea}>
-                    <div 
+                    <div
                       className={`${styles.amount} ${isCompleted === 1 ? styles.completed : ''}`} // isCompleted가 1이면 completed 클래스 추가
                     >
                       {payment.amount}
@@ -230,7 +222,7 @@ const Payment = ({ selectedDate }) => {
                 {/* 미정산 상태에서만 checkArea 표시 */}
                 {isCompleted === 0 && (
                   <div className={styles.checkArea}>
-                    {payment.username === userInfo.nickName && (
+                    {payment.user_id == userInfo.id && (
                       <Checkbox
                         checked={payment.checked}
                         onChange={() => handleCheck(payment.id, payment.amount)}
@@ -243,7 +235,7 @@ const Payment = ({ selectedDate }) => {
           </div>
         ))}
       </div>
-      
+
       <div className={styles.adjustContainer}>
         <button className={styles.adjustBtn} onClick={openAdjustModal}>
           {totalAmount}원 정산하기

@@ -10,7 +10,7 @@ const TripFinishPage = () => {
   const finalPayments = usePaymentStore((state) => state.finalPayments);
 
   useEffect(() => {
-    console.log(finalPayments);
+    console.log('Final', finalPayments);
   }, [])
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const TripFinishPage = () => {
           console.log(error);
         }
       }
-      // sendAdjustment();
+      sendAdjustment();
     };
   }, [finalPayments]);
 
