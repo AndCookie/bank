@@ -94,7 +94,7 @@ const TripPage = () => {
             <div className={styles.futureTrip}>
               {trip.image_url && <img src={trip.image_url} alt={trip.trip_name} className={styles.tripCircleImage} />}
             </div>
-            <div className={styles.tripName}>{trip.trip_name}</div> {/* Trip name 추가 */}
+            <div className={styles.tripName}>{trip.tripName}</div> 
           </div>
         ))}
       </div>

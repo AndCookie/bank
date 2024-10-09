@@ -58,7 +58,7 @@ const TripInfoModal = ({ isOpen, onClose }) => {
               {tripDetailInfo.members.map((member, index) => (
                 <div key={index} className={styles.member}>
                   <div className={styles.memberName}>{member.last_name}{member.first_name}</div>
-                  <div className={styles.memberBalance}>{member.balance}</div>
+                  <div className={styles.memberBalance}>{member.budget}</div>
                 </div>
               ))}
             </div>

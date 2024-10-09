@@ -142,8 +142,9 @@
 }
 
 .tripName {
-  margin-top: 8px;
-  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-left: 5px;
+  font-size: 0.7rem;
   text-align: center;
   font-weight: bold;
   color: #333; /* 텍스트 색상 */

@@ -2,7 +2,7 @@ import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import { MdArrowBack } from 'react-icons/md';
-import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import styles from '@/styles/TripDetailPage.module.css';
 import Payment from "@/components/Payment";
@@ -114,7 +114,7 @@ const TripDetailPage = () => {
         <div className={styles.profileStatus}>
           {userInfo.nickName} 님은 {tripDetailInfo.trip_name} 여행 중 &nbsp;
         </div>
-        <EditIcon onClick={openTripInfoModal} />
+        <SearchIcon onClick={openTripInfoModal} />
       </div>
 
       {/* 여행 일자 */}

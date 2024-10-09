@@ -244,3 +244,7 @@ button {
   font-weight: bold;
   margin-top: 60px; /* success 상태일 때의 margin 값 */
 }
+
+input[type="date"]::-webkit-clear-button {
+  display: none;
+}
