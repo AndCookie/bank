@@ -77,8 +77,7 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const { tripId } = useParams();
 
   const goFinish = () => {
-    console.log('FINAL', finalPayments)
-    // navigate(`/finish/${tripId}`)
+    navigate(`/finish/${tripId}`)
   }
 
   if (!isOpen) return null;
