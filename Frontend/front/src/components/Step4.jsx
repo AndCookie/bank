@@ -15,6 +15,7 @@ const StepFour = ({ formData, onTripCreated }) => {
   const setError = useErrorStore((state) => state.setError); // 에러 상태 설정 함수
   const userInfo = useUserStore((state) => state.userInfo); // userInfo 가져오기
   const navigate = useNavigate()
+  console.log(formData)
   // 컴포넌트가 마운트될 때 여행 생성 요청을 자동으로 보냄
   useEffect(() => {
     const handleSubmit = async () => {
