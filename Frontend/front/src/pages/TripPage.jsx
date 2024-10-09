@@ -67,7 +67,8 @@ const TripPage = () => {
 
   // 날짜 계산
   const dayDifference = (startDate, endDate) => {
-    return (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
+    const calculatedDayDifference = (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24);
+    return calculatedDayDifference === 0 ? 1 : calculatedDayDifference;
   };
 
   return (
