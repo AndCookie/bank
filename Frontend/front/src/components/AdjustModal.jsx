@@ -60,10 +60,24 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
       }));
       finalPayments.payments.forEach((finalPayment) => {
         const updatedBills = payments.find((payment) => payment.id === finalPayment.payment_id).bills;
-        updateFinalPayments(finalPayment.payment_id, updatedBills)
-        updatedBills.forEach(bill => {
-          renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
-        });
+
+        if (updatedBills.every(bill => bill.cost === 0)) {
+          const paymentAmount = payments.find((payment) => payment.id === finalPayment.payment_id).amount;
+          const newUpdatedBills = updatedBills.map((bill) => ({
+            ...bill,
+            cost: parseInt(paymentAmount / updatedBills.length),
+          }))
+
+          updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
+          newUpdatedBills.forEach(bill => {
+            renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+          });
+        } else {
+          updateFinalPayments(finalPayment.payment_id, updatedBills)
+          updatedBills.forEach(bill => {
+            renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+          });
+        }
       })
     }
   }, [isOpen])
