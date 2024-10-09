@@ -23,17 +23,8 @@ import EtcIcon from '@mui/icons-material/MoreHoriz';
 
 
 const Payment = ({ selectedDate }) => {
-  const { tripId } = useParams();
-  const tripDetailInfo = {
-    id: tripId,
-    startDate: "2024-08-19",
-    members: [
-      // ...
-    ]
-  };
-
   const userInfo = useUserStore((state) => state.userInfo);
-  // const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
 
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
@@ -201,11 +192,21 @@ const Payment = ({ selectedDate }) => {
 
       {/* 결제 내역 */}
       <div className={styles.payContainer}>
-        {Object.keys(groupedPayments).map(date => (
-          <div key={date} className={styles.dateGroup}>
-            {/* 날짜 표시 */}
-            <div className={styles.dateHeader}>
-              {format(new Date(date), 'MM월 dd일 (E)', { locale: ko })}  {/* 'EEEE'로 요일을 한글로 표시 */}
+        {filteredPayments.map((data) => (
+          <div key={data.id} className={styles.payContent}>
+            <div className={styles.pay} onClick={() => openOngoingModal(data.id)}>
+              <div className={styles.categoryArea}>
+                {data.category}
+              </div>
+              <div className={styles.costArea}>
+                {data.amount}
+              </div>
+              <div className={styles.dateArea}>
+                {data.pay_date}
+              </div>
+            </div>
+            <div className={styles.checkArea}>
+              {data.user_id == userInfo.id && <Checkbox checked={data.checked} onChange={() => handleCheck(data.id, data.amount)} />}
             </div>
 
             {groupedPayments[date].map(payment => (

@@ -1,18 +1,33 @@
 import { create } from 'zustand';
+import axiosInstance from '@/axios';
 
 export const usePaymentStore = create((set, get) => ({
-  // 여행 멤버별 정산 금액과 체크 여부가 추가된 결제 내역
+  // 결제 내역
   payments: [],
 
-  // 여행 멤버별 정산 금액과 체크 여부가 추가된 결제 내역 저장
+  // 결제 내역 저장
   setPayments: (paymentsInfo) => set(() => ({
-    payments: paymentsInfo
+    payments: paymentsInfo,
   })),
+
+  // tripId에 따른 여행 결제내역 axios 요청
+  fetchPayments: async (tripId) => {
+    try {
+      const response = await axiosInstance.get('/payments/list/', {
+        params: {
+          trip_id: tripId
+        }
+      });
+      const { data } = response;
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   // 정산을 위해 체크한 결제 계산 내역
   finalPayments: {},
 
-  // 정산을 위해 체크한 결제 계산 내역의 tripId 설정
   setFinalPayments: (tripId) => set(() => ({
     finalPayments: {
       trip_id: tripId,
@@ -60,11 +75,5 @@ export const usePaymentStore = create((set, get) => ({
     const payment = get().payments.find(payment => payment.id === paymentId);
     return payment
   },
-
-  // payments에 데이터를 추가하는 함수
-  // addPayments: (tripId, payments) => set((state) => ({
-  //   payments: [...state.payments, { tripId, payments }]
-  // })),
-
-  // 특정 tripId에 맞는 payments를 가져오는 함수 (get을 사용)
 }));
+

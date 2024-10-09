@@ -4,259 +4,83 @@ import { eachDayOfInterval, format, isSameDay } from "date-fns";
 import { MdArrowBack } from 'react-icons/md';
 import EditIcon from '@mui/icons-material/Edit';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import styles from '@/styles/TripDetailPage.module.css'
+import styles from '@/styles/TripDetailPage.module.css';
 import Payment from "@/components/Payment";
 import TripInfoModal from '@/components/TripInfoModal';
-import LoadingPage from '@/pages/LoadingPage'
+import LoadingPage from '@/pages/LoadingPage';
 
 import { useTripStore } from '@/stores/tripStore';
-import { usePaymentStore } from '@/stores/paymentStore'
+import { usePaymentStore } from '@/stores/paymentStore';
 import { useUserStore } from "@/stores/userStore";
 
 const TripDetailPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
+
   const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
-
-  const { tripId } = useParams();
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchTripDetail(tripId); // fetchTripDetail 함수 호출
-      setLoading(false); // 데이터를 다 불러오면 로딩 종료
-    };
-    
-    fetchData();
-  }, [fetchTripDetail, tripId]);
+  const setTripDetailInfo = useTripStore((state) => state.setTripDetailInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-  const [loading, setLoading] = useState(true);
-  // const payments = useTripStore((state) => state.payments);
 
-  const paymentsDummyData = {
-    "data": [
-      {
-        "id": 339,
-        "is_completed": 1,
-        "amount": 300000,
-        "pay_date": "2024-08-19",
-        "pay_time": "00:00:00",
-        "brand_name": "Korean Air",
-        "category": "항공",
-        "bank_account": "0880493544778029",
-        "username": "김신한",
-        "calculates": [
-          {
-            "username": "김신한",
-            "cost": 60000
-          },
-          {
-            "username": "박준영",
-            "cost": 60000
-          },
-          {
-            "username": "이선재",
-            "cost": 60000
-          },
-          {
-            "username": "임광영",
-            "cost": 60000
-          },
-          {
-            "username": "정태완",
-            "cost": 60000
-          }
-        ]
-      },
-      {
-        "id": 79,
-        "is_completed": 0,
-        "amount": 500,
-        "pay_date": "2024-08-17",
-        "pay_time": "15:54:35",
-        "brand_name": "공항버스 선예매",
-        "category": "교통",
-        "bank_account": "0886984969930397",
-        "username": "임광영"
-      },
-      {
-        "id": 80,
-        "is_completed": 0,
-        "amount": 10000,
-        "pay_date": "2024-08-19",
-        "pay_time": "15:54:35",
-        "brand_name": "냠",
-        "category": "식비",
-        "bank_account": "0886984969930397",
-        "username": "이선재"
-      },
-      {
-        "id": 81,
-        "is_completed": 0,
-        "amount": 500,
-        "pay_date": "2024-08-19",
-        "pay_time": "15:54:35",
-        "brand_name": "공항버스 선예매",
-        "category": "교통",
-        "bank_account": "0886984969930397",
-        "username": "임광영"
-      },
-      {
-        "id": 83,
-        "is_completed": 0,
-        "amount": 10000,
-        "pay_date": "2024-08-26",
-        "pay_time": "15:54:35",
-        "brand_name": "냠",
-        "category": "식비",
-        "bank_account": "0886984969930397",
-        "username": "임광영"
-      },
-      {
-        "id": 85,
-        "is_completed": 0,
-        "amount": 60000,
-        "pay_date": "2024-08-27",
-        "pay_time": "15:54:35",
-        "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
-        "category": "관광",
-        "bank_account": "0886984969930397",
-        "username": "임광영"
-      },
-      {
-        "id": 1,
-        "is_completed": 0,
-        "amount": 1000000,
-        "pay_date": "2024-08-19",
-        "pay_time": "15:54:35",
-        "brand_name": "플러스 O2O 제휴-(주)마이리얼트립",
-        "category": "관광",
-        "bank_account": "0886984969930397",
-        "username": "임광영"
-      },
-      {
-        "id": 90,
-        "is_completed": 0,
-        "amount": 1031997,
-        "pay_date": "2024-08-27",
-        "pay_time": "04:00:32",
-        "brand_name": "AIR FRANCE",
-        "category": "항공",
-        "bank_account": "0885399658115105",
-        "username": "이선재"
-      },
-      {
-        "id": 88,
-        "is_completed": 1,
-        "amount": 853111,
-        "pay_date": "2024-08-20",
-        "pay_time": "10:12:33",
-        "brand_name": "AIRBNB * HMFYA3QH3F",
-        "category": "숙소",
-        "bank_account": "0880493544778029",
-        "username": "김신한",
-        "calculates": [
-          {
-            "username": "김신한",
-            "cost": 300
-          },
-          {
-            "username": "박준영",
-            "cost": 300
-          },
-          {
-            "username": "이선재",
-            "cost": 300
-          },
-          {
-            "username": "임광영",
-            "cost": 300
-          },
-          {
-            "username": "정태완",
-            "cost": 300
-          }
-        ]
-      }
-    ],
-    "budget": {
-      "박준영": {
-        "initial_budget": 2000000,
-        "used_budget": 93122,
-        "remain_budget": 1906878
-      },
-      "이선재": {
-        "initial_budget": 1500000,
-        "used_budget": 93122,
-        "remain_budget": 1406878
-      },
-      "임광영": {
-        "initial_budget": 1500000,
-        "used_budget": 93122,
-        "remain_budget": 1406878
-      },
-      "정태완": {
-        "initial_budget": 2000000,
-        "used_budget": 93122,
-        "remain_budget": 1906878
-      },
-      "김신한": {
-        "initial_budget": 1000000,
-        "used_budget": 84409,
-        "remain_budget": 915591
-      }
-    }
-  };
-
-  const paymentsData = paymentsDummyData.data;
-  const paymentsBudget = paymentsDummyData.budget;
-
-  const payments = usePaymentStore((state) => state.payments);
+  const fetchPayments = usePaymentStore((state) => state.fetchPayments);
   const setPayments = usePaymentStore((state) => state.setPayments);
+  const payments = usePaymentStore((state) => state.payments);
 
-  const finalPayments = usePaymentStore((state) => state.finalPayments);
   const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
 
-  useEffect(() => {
-    setFinalPayments(tripDetailInfo.id);
-  }, [])
+  const [loading, setLoading] = useState(true);
+
+  const { tripId } = useParams();
 
   useEffect(() => {
-    // tripDetailInfo.members가 존재하는지 확인하고 실행
-    if (tripDetailInfo.members && tripDetailInfo.members.length > 0) {
-      const updatedPaymentsData = paymentsData.map((payment) => {
-        const membersData = tripDetailInfo.members.map(member => ({
-          cost: 0,
-          bank_account: member.bank_account
-        }));
-        return {
-          ...payment,
-          bills: membersData,
-          checked: false,
-        };
-      });
-      setPayments(updatedPaymentsData);
-    }
-  }, [tripDetailInfo]); 
+    const fetchData = async () => {
+      try {
+        // Promise.all을 사용해 fetchTripDetail과 fetchPayments를 병렬로 호출
+        const [tripDetailData, paymentsData] = await Promise.all([
+          fetchTripDetail(tripId),
+          fetchPayments(tripId),
+        ]);
 
-  const tripDays = eachDayOfInterval({
-    start: new Date(tripDetailInfo.startDate),
-    end: new Date(tripDetailInfo.endDate),
-  });
+        console.log(tripDetailData, paymentsData, userInfo);
 
-  // 날짜 선택
-  const [selectedDate, setSelectedDate] = useState('all');
+        // paymentsData.payments_list에 bills 추가
+        const updatedPaymentsData = paymentsData.payments_list.map(payment => {
+          const bills = tripDetailData.members.map(member => ({
+            cost: 0,
+            bank_account: member.bank_account,
+          }));
+
+          return {
+            ...payment,
+            bills,
+            checked: false,
+          };
+        });
+
+        setTripDetailInfo(tripId, tripDetailData);
+        setPayments(updatedPaymentsData);
+
+        setFinalPayments(tripId);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [tripId]);
 
   const navigate = useNavigate();
 
-  // 뒤로가기 버튼 클릭 시 이전 페이지로 이동
+  const [selectedDate, setSelectedDate] = useState('all');
+  const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
+
   const goBack = () => {
-    navigate(-1); // 이전 페이지로 이동
+    navigate(-1);
   }
 
   const clickDate = (date) => {
     setSelectedDate(date);
   }
-
-  // 여행 상세 정보 모달 창
-  const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
 
   const openTripInfoModal = () => {
     setisTripInfoOpen(true);
@@ -270,9 +94,13 @@ const TripDetailPage = () => {
     return <LoadingPage />;
   }
 
+  const tripDays = eachDayOfInterval({
+    start: new Date(tripDetailInfo.startDate),
+    end: new Date(tripDetailInfo.endDate),
+  });
+
   return (
     <div className={styles.container}>
-
       {/* 뒤로가기 */}
       <div className={styles.header}>
         <div className={styles.back}>
@@ -302,9 +130,6 @@ const TripDetailPage = () => {
           <div className={styles.bottom}>준비</div>
         </div>
 
-        {/* 구분선 */}
-        <div className={styles.line}>|</div>
-
         {/* 날짜 스크롤 */}
         <div className={styles.dayScroll}>
           {tripDays.map((date, index) => (
@@ -317,22 +142,17 @@ const TripDetailPage = () => {
             </div>
           ))}
         </div>
-
-        {/* 구분선 */}
-        <div className={styles.arrow}>
-          <ChevronRightIcon />
-        </div>
       </div>
 
       {/* 결제 내역 */}
       <div className={styles.payment}>
-        <Payment paymentsData={paymentsData} selectedDate={selectedDate} />
+        <Payment selectedDate={selectedDate} />
       </div>
 
       {/* 여행 상세 정보 모달 창 */}
-      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} tripDetailInfo={tripDetailInfo} />
+      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} />
     </div>
-  )
-}
+  );
+};
 
 export default TripDetailPage;

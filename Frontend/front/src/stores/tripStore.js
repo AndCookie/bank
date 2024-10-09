@@ -15,7 +15,7 @@ export const useTripStore = create((set) => ({
         startDate: tripInfo[0].start_date,
         endDate: tripInfo[0].end_date,
         tripName: tripInfo[0].trip_name,
-        imageUrl: tripInfo[0].image_url ,
+        imageUrl: tripInfo[0].image_url,
         locations: tripInfo[0].locations,
       }
       : {},
@@ -39,10 +39,10 @@ export const useTripStore = create((set) => ({
   tripDetailInfo: {},
 
   // tripId에 따른 여행 상세 정보 저장
-  setTripDetailInfo: (tripInfo) => set(() => ({
+  setTripDetailInfo: (tripId, tripInfo) => set(() => ({
     tripDetailInfo: typeof tripInfo === 'object' && tripInfo !== null
       ? {
-        id: tripInfo.id,
+        id: tripId,
         startDate: tripInfo.start_date,
         endDate: tripInfo.end_date,
         imageUrl: tripInfo.image_url,
@@ -61,40 +61,25 @@ export const useTripStore = create((set) => ({
         }
       });
       const { data } = response;
-      console.log(data)
+
       // 여행 상세 정보 저장
-      useTripStore.getState().setTripDetailInfo(data);
+      // useTripStore.getState().setTripDetailInfo(data);
+      return data
     } catch (error) {
       console.log(error)
     }
   },
 
   // tripId에 따른 여행 결제내역
-  payments: [],
+  // paymentsInitialData: {},
 
   // tripId에 따른 여행 결제내역 저장
-  setPayments: (paymentInfo) => set(() => ({
-    payments: Array.isArray(paymentInfo) && paymentInfo.length > 0
-      ? paymentInfo
-      : [],
-  })),
-
-  // tripId에 따른 여행 결제내역 axios 요청
-  fetchPayments: async (tripId) => {
-    try {
-      const response = await axiosInstance.get('/payments/list/', {
-        params: {
-          trip_id: tripId
-        }
-      });
-      const { data } = response;
-
-      // 여행 결제내역 저장
-      useTripStore.getState().setPayments(data);
-    } catch (error) {
-      console.log(error);
-    }
-  },
+  // setPayments: (paymentInfo) => set(() => ({
+    // paymentsInitialData: Array.isArray(paymentInfo) && paymentInfo.length > 0
+    //   ? paymentInfo
+    //   : [],
+  //   paymentsInitialData: paymentInfo,
+  // })),
 }));
 
 //   addPayment: (payment) => set((state) => ({
