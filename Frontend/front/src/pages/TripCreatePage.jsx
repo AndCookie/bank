@@ -91,7 +91,7 @@ const TripCreatePage = () => {
       case 2:
         return <StepThree formData={formData} updateFormData={updateFormData} />;
       case 3:
-        return <StepFour formData={formData} onTripCreated={() => setTimeout(() => navigate('/trip'), 3000)} />;
+        return <StepFour formData={formData} onTripCreated={() => console.log("created trips")} />;
       default:
         return null;
     }

@@ -6,6 +6,8 @@ const StepThree = ({ formData, updateFormData }) => {
   const [bankAccounts, setBankAccounts] = useState([]); // 계좌 목록을 관리할 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
 
+
+  
   useEffect(() => {
     const fetchBankAccounts = async () => {
       try {

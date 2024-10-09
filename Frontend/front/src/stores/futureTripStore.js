@@ -30,6 +30,7 @@ export const useFutureTripStore = create((set) => ({
         // 이미지가 없으면 랜덤 이미지 사용
         image_url: trip.image_url || useFutureTripStore.getState().getRandomImage(),
       }))
+      .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
       : [],
   })),
 }));
