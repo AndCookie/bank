@@ -66,9 +66,9 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   };
   
   // userId에 따른 이름 반환
-  const matchUserName = (userId) => {
-    const matchMember = tripDetailInfo.members.find((member) => member.id == userId);
-    return `${matchMember.last_name}${matchMember.first_name}`
+  const matchUserName = () => {
+    const matchMember = tripDetailInfo.members.find((member) => member.id == partPayment.user_id);
+    return matchMember ? `${matchMember.last_name}${matchMember.first_name}` : '';
   }
 
   // 모달 창이 닫힐 때 payments에 저장하기
@@ -107,7 +107,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             </div>
 
             <div>결제 당사자만 정산 가능합니다</div>
-            <div>{matchUserName(partPayment.user_id)}</div>
+            <div>{matchUserName()}</div>
           </div>
         </Fade>
       </Modal>
