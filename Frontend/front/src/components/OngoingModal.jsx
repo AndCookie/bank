@@ -10,7 +10,7 @@ import { usePaymentStore } from '@/stores/paymentStore';
 
 import styles from './styles/Modal.module.css';
 
-const OngoingModal = ({ isOpen, onClose, paymentId }) => {
+const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   const userInfo = useUserStore((state) => state.userInfo);
 
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
@@ -147,7 +147,8 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             <div key={index}>
               {member.last_name}{member.first_name}
               <TextField
-                variant="outlined"
+                disabled={isCompleted === 1}
+                variant={isCompleted === 1 ? 'filled' : 'outlined'}
                 value={matchBankAccount(member.bank_account)}
                 onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
               />
