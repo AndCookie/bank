@@ -320,6 +320,7 @@ const Payment = ({ selectedDate }) => {
         isOpen={isOngoingOpen}
         onClose={closeOngoingModal}
         paymentId={selectedPaymentId}
+        isCompleted={isCompleted}
       />
 
       {/* 결제내역 상세 정보 모달 창 */}
