@@ -68,9 +68,16 @@ const PreviousTrip = () => {
     return images[index % images.length];
   };
 
-  const calculatePadding = (index) => {
-    const paddingValues = [0, 15, 40, 40]; // 패딩값 조정
-    return `${paddingValues[index % paddingValues.length]}px`;
+  // member1과 member2는 padding-left를 20px로 설정
+  const calculatePaddingLeft = (index) => {
+    if (index === 0) {
+      return "25px";
+    } else if (index === 1) {
+      return "18px";
+    } else if (index === 2) {
+      return "6px";
+    }
+    return "5px";
   };
 
   return (
@@ -119,7 +126,7 @@ const PreviousTrip = () => {
               className={styles.memberList}
               style={{
                 backgroundImage: `url(${getImagePath(index)})`,
-                paddingRight: calculatePadding(index),
+                paddingLeft: calculatePaddingLeft(index),
               }}
             >
               <div className={styles.memberImage}>
