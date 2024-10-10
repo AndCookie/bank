@@ -183,7 +183,9 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               onClick={onClose}
             />
             <div className={styles.totalAmount}>
-              {partPayment.amount.toLocaleString()}&nbsp;원
+              {(partPayment.amount !== undefined && partPayment.amount !== null)
+                ? partPayment.amount.toLocaleString()
+                : '0'} 원
             </div>
 
             {/* 정산 체크한 결제 내역 */}
@@ -199,6 +201,28 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                 <div className={styles.payTime}>{partPayment.pay_time}</div>
               </div>
             </div>
+
+            {/* 정산 멤버 */}
+            {partPayment.calculates && partPayment.calculates.length &&
+              <>
+                <div>정산대상</div>
+                {tripDetailInfo.members.map((member, index) => (
+                  <div key={index}>
+                    {partPayment.calculates.length &&
+                      partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
+                      <WarningAmberIcon sx={{ color: 'orange' }} />}
+
+                    {member.last_name}{member.first_name}
+                    <TextField
+                      disabled
+                      variant={isCompleted === 1 ? 'filled' : 'outlined'}
+                      value={matchBankAccount(member.bank_account)}
+                      onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
+                    />
+                  </div>
+                ))}
+              </>
+            }
 
             <div className={styles.memberList}>
               결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />정산할 수 있어요
@@ -229,7 +253,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             fontSize="large"
             onClick={onClose}
           />
-          <div className={styles.totalAmount}>{partPayment.amount.toLocaleString()}&nbsp;원</div>
+          <div className={styles.totalAmount}>
+            {(partPayment.amount !== undefined && partPayment.amount !== null)
+              ? partPayment.amount.toLocaleString()
+              : '0'} 원
+          </div>
 
           {/* 정산 체크한 결제 내역 */}
           <div className={styles.content}>
@@ -250,12 +278,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           {tripDetailInfo.members.map((member, index) => (
             <div key={index}>
               {partPayment.calculates.length &&
-              partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
-              <WarningAmberIcon sx={{ color: 'orange' }} />}
+                partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
+                <WarningAmberIcon sx={{ color: 'orange' }} />}
 
               {member.last_name}{member.first_name}
               <TextField
-                disabled={isCompleted === 1}
                 variant={isCompleted === 1 ? 'filled' : 'outlined'}
                 value={matchBankAccount(member.bank_account)}
                 onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
