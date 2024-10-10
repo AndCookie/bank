@@ -1,0 +1,44 @@
+.trip {
+  margin: 15px auto 0px auto;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bolder;
+  padding: 5px 20px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.content {
+  background-color: #ffffff;
+  padding: 10px 20px;
+}
+
+.content * {
+  font-size: 1rem;
+}
+
+.icon {
+  text-align: right;
+}
+
+.character {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  background-color: white;
+}
+
+.characterInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.myCharacter {
+  font-size: 1.5rem;
+  font-weight: bolder;
+}
