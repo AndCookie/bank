@@ -7,10 +7,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
 
 import styles from './styles/Modal.module.css';
 
-const OngoingModal = ({ isOpen, onClose, paymentId }) => {
+const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   const userInfo = useUserStore((state) => state.userInfo);
 
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
@@ -31,13 +33,28 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
     if (isOpen && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
-      setPartPayment((prev) => ({
-        ...prev,
-        bills: tripDetailInfo.members.map((member) => ({
-          cost: parseInt(partPayment.amount / tripDetailInfo.members.length),
-          bank_account: member.bank_account
-        }))
-      }));
+      // 첫 정산의 경우
+      if (payments.find(payment => payment.id === paymentId).calculates.length === 0) {
+        const baseCost = parseInt(partPayment.amount / tripDetailInfo.members.length);
+        const totalCost = baseCost * tripDetailInfo.members.length;
+
+        setPartPayment((prev) => ({
+          ...prev,
+          bills: tripDetailInfo.members.map((member, index) => ({
+            cost: index === 0 ? baseCost + partPayment.amount - totalCost : baseCost,
+            bank_account: member.bank_account
+          }))
+        }));
+        // 첫 정산이 아닌 경우
+      } else {
+        setPartPayment((prev) => ({
+          ...prev,
+          bills: tripDetailInfo.members.map((member, index) => ({
+            cost: payments.find(payment => payment.id === paymentId).calculates.find(calculate => calculate.user_id === member.id).remain_cost,
+            bank_account: member.bank_account
+          }))
+        }));
+      }
     }
   }, [partPayment.amount])
 
@@ -50,25 +67,44 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
-    const remainingCost = partPayment.amount - fixedCost;
+
+    let remainingCost;
+    if (partPayment.calculates.length === 0) {
+      remainingCost = partPayment.amount - fixedCost;
+    } else {
+      remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost;
+    }
 
     setPartPayment((prevPayment) => {
-      const otherMembers = (prevPayment.bills).filter(bill => bill.bank_account !== bankAccount);
-      const updatedBills = (prevPayment.bills).map(bill => {
+      const firstMember = prevPayment.bills[0];
+      const isFirstMemberBeingAdjusted = firstMember.bank_account === bankAccount;
+
+      const otherMembers = prevPayment.bills.filter(bill => bill.bank_account !== bankAccount);
+
+      const updatedBills = prevPayment.bills.map((bill, index) => {
         if (bill.bank_account === bankAccount) {
+          // 입력된 금액을 조정 중인 사람의 cost 업데이트
           return { ...bill, cost: fixedCost };
+        } else if (index === 0 && !isFirstMemberBeingAdjusted) {
+          // 첫 번째 사람이 조정 중이 아니면, 첫 번째 사람에게 남은 차액 할당
+          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) + (remainingCost % otherMembers.length) };
+        } else if (index === 1 && isFirstMemberBeingAdjusted) {
+          // 첫 번째 사람이 조정 중이면, 두 번째 사람에게 남은 차액 할당
+          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) + (remainingCost % otherMembers.length) };
         } else {
+          // 나머지 사람들에게 남은 금액을 균등하게 분배
           return { ...bill, cost: parseInt(remainingCost / otherMembers.length) };
         }
       });
       return { ...prevPayment, bills: updatedBills };
     });
   };
-  
+
+
   // userId에 따른 이름 반환
-  const matchUserName = (userId) => {
-    const matchMember = tripDetailInfo.members.find((member) => member.id == userId);
-    return `${matchMember.last_name}${matchMember.first_name}`
+  const matchUserName = () => {
+    const matchMember = tripDetailInfo.members.find((member) => member.id == partPayment.user_id);
+    return matchMember ? `${matchMember.last_name}${matchMember.first_name}` : '';
   }
 
   // 모달 창이 닫힐 때 payments에 저장하기
@@ -107,11 +143,12 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             </div>
 
             <div>결제 당사자만 정산 가능합니다</div>
-            <div>{matchUserName(partPayment.user_id)}</div>
+            <div>{matchUserName()}</div>
           </div>
         </Fade>
       </Modal>
-  )}
+    )
+  }
 
   // 결제 당사자일 경우
   return (
@@ -142,9 +179,14 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
           <div>정산대상</div>
           {tripDetailInfo.members.map((member, index) => (
             <div key={index}>
+              {partPayment.calculates.length &&
+              partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
+              <WarningAmberIcon sx={{ color: 'orange' }} />}
+
               {member.last_name}{member.first_name}
               <TextField
-                variant="outlined"
+                disabled={isCompleted === 1}
+                variant={isCompleted === 1 ? 'filled' : 'outlined'}
                 value={matchBankAccount(member.bank_account)}
                 onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
               />

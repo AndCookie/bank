@@ -1,42 +1,60 @@
-import React from 'react';
-import { useTripStore } from '@/stores/tripStore'; // tripStore에서 상태 가져오기
-import styles from './styles/AdjustCompleteModal.module.css'; // 스타일 경로에 맞게 설정
+import { React, useState, useEffect } from 'react';
+import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
+import { useTripStore } from '@/stores/tripStore';
+import CloseIcon from '@mui/icons-material/Close';
 
-const AdjustCompleteModal = ({ adjustResults }) => {
-  // tripStore에서 tripDetailInfo 가져오기
+import styles from './styles/Modal.module.css';
+
+const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => {
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
 
-  // 사용자 ID와 tripDetailInfo의 members를 매칭하여 이름과 이미지를 찾는 함수
-  const findMemberInfo = (userId) => {
-    const member = tripDetailInfo.members.find(member => member.id === userId);
-    return member ? { name: member.last_name, image: member.profileImage } : { name: 'Unknown', image: '' };
-  };
+  const [resultPayment, setResultPayment] = useState(null);
+
+  // paymentId에 따른 정산 결과 내역
+  useEffect(() => {
+    if (isOpen) {
+      setResultPayment(resultPayments.find((payment) => payment.payment_id === paymentId));
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    console.log(resultPayment)
+  }, [resultPayment])
+
+  // userId에 따른 이름 반환
+  const matchUserName = (userId) => {
+    const matchMember = tripDetailInfo.members.find((member) => member.id == userId);
+    return matchMember ? `${matchMember.last_name}${matchMember.first_name}` : '';
+  }
+
+  if (!isOpen) return null;
 
   return (
-    <div className={styles.modalContainer}>
-      <h3>정산 상세 결과</h3>
-      {adjustResults.payments.map((payment) => (
-        <div key={payment.payment_id} className={styles.paymentSection}>
-          <h4>결제 ID: {payment.payment_id}</h4>
-          <ul className={styles.billsList}>
-            {payment.bills.map((bill, index) => {
-              const memberInfo = findMemberInfo(bill.user_id); // 사용자 정보 매칭
-              return (
-                <li key={index} className={styles.billItem}>
-                  <img src={memberInfo.image} alt={memberInfo.name} className={styles.memberImage} />
-                  <span className={styles.memberName}>{memberInfo.name}</span>
-                  <span className={styles.cost}>금액: {bill.cost}원</span>
-                  <span className={bill.is_complete ? styles.complete : styles.incomplete}>
-                    {bill.is_complete ? '완료' : '미완료'}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          timeout: 500,
+        },
+      }}
+    >
+      <Fade in={isOpen}>
+        <div className={styles.box}>
+          <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
+
+          {/* 멤버별 정산 내역 */}
+          {resultPayment && resultPayment.bills.map((bill, index) => (
+            <div key={index}>
+              {matchUserName(bill.user_id)} {bill.cost} {bill.is_completed}
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  );
-};
+      </Fade>
+    </Modal>
+  )
+}
 
 export default AdjustCompleteModal;

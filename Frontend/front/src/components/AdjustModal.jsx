@@ -24,20 +24,13 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const [renderedInfo, setRenderedInfo] = useState([]);
 
   // 렌더링 되는 멤버별 정산 내역 정보
-  const [renderedMemberInfo, setRenderedMemberInfo] = useState(tripDetailInfo.members.reduce((acc, member) => {
-    acc[String(member.bank_account)] = 0;
-    return acc;
-  }, {}));
-
-  useEffect(() => {
-    if (isOpen) {
-      console.log('FINAL', finalPayments)
-    }
-  }, [finalPayments, isOpen])
-
-  useEffect(() => {
-    console.log(renderedMemberInfo)
-  }, [renderedMemberInfo])
+  const [renderedMemberInfo, setRenderedMemberInfo] = useState(tripDetailInfo.members.map(member => {
+    return {
+      // member: member.member,
+      bankAccount: member.bank_account,
+      cost: 0
+    };
+  }));
 
   // 결제 내역 정보 렌더링
   useEffect(() => {
@@ -59,35 +52,64 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   // 멤버별 정산 내역 정보 렌더링
   useEffect(() => {
     if (isOpen) {
+      setRenderedMemberInfo(tripDetailInfo.members.map(member => {
+        return {
+          bankAccount: member.bank_account,
+          cost: 0
+        };
+      }));
+
       finalPayments.payments.forEach((finalPayment) => {
         const updatedBills = payments.find((payment) => payment.id === finalPayment.payment_id).bills;
-        updateFinalPayments(finalPayment.payment_id, updatedBills)
 
-        updatedBills.forEach((bill) => {
-          console.log(bill)
-          setRenderedMemberInfo((prevState) => {
-            const newState = { ...prevState };
-            if (newState[bill.bank_account] !== undefined) {
-              newState[bill.bank_account] += bill.cost;
-            }
-            return newState;
+        // 체크 표시를 하고 세부 가격을 설정하지 않았을 경우
+        if (updatedBills.every(bill => bill.cost === 0)) {
+          // 첫 정산일 경우
+          if (payments.find((payment) => payment.id === finalPayment.payment_id).calculates.length === 0) {
+            const paymentAmount = payments.find((payment) => payment.id === finalPayment.payment_id).amount;
+            const baseCost = parseInt(paymentAmount / updatedBills.length);
+            const totalCost = baseCost * updatedBills.length;
+
+            const newUpdatedBills = updatedBills.map((bill, index) => ({
+              ...bill,
+              cost: index === 0 ? baseCost + paymentAmount - totalCost : baseCost,
+            }))
+
+            updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
+            newUpdatedBills.forEach(bill => {
+              renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+            });
+          // 첫 정산이 아닐 경우
+          } else {
+            const newUpdatedBills = updatedBills.map((bill) => ({
+              ...bill,
+              cost: payments.find((payment) => payment.id === finalPayment.payment_id).calculates.find((calculate) => calculate.user_id == tripDetailInfo.members.find((member) => member.bank_account == bill.bank_account).id).remain_cost,
+            }))
+            updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
+            newUpdatedBills.forEach(bill => {
+              renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+            });
+          }
+          // 세부 가격을 설정했을 경우
+        } else {
+          updateFinalPayments(finalPayment.payment_id, updatedBills)
+          updatedBills.forEach(bill => {
+            renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
           });
-        })
+        }
       })
     }
-  }, [payments, isOpen])
+  }, [isOpen])
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
-    console.log(bankAccount)
-    console.log(renderedMemberInfo)
-    return renderedMemberInfo[bankAccount]
+    return renderedMemberInfo.find((info) => info.bankAccount === bankAccount).cost;
   };
-  
+
   const navigate = useNavigate();
   const { tripId } = useParams();
 
-  const goFinish = () => {    
+  const goFinish = () => {
     navigate(`/finish/${tripId}`)
   }
 

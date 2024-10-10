@@ -5,12 +5,20 @@ import axiosInstance from '@/axios.js';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import LoadingPage from '@/pages/LoadingPage'; // LoadingPage 컴포넌트 가져오기
+import AdjustCompleteModal from '@/components/AdjustCompleteModal';
 
 const TripFinishPage = () => {
+  const getPartPayment = usePaymentStore((state) => state.getPartPayment);
   const finalPayments = usePaymentStore((state) => state.finalPayments);
 
+  // 정산 결과
+  const [resultPayments, setResultPayments] = useState([]);
+
+  // 선택한 상세 정산 내역 Id
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+
   useEffect(() => {
-    console.log(finalPayments);
+    console.log('Final', finalPayments);
   }, [])
 
   useEffect(() => {
@@ -19,81 +27,51 @@ const TripFinishPage = () => {
       const sendAdjustment = async () => {
         try {
           const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
-          console.log(response);
+          const { data } = response;
+          console.log('Adjust Reulst', data);
+          setResultPayments(data.payments);
         } catch (error) {
           console.log(error);
         }
       }
-      // sendAdjustment();
+      sendAdjustment();
     };
   }, [finalPayments]);
 
-// const { currentTrip, payments, fetchPayments } = useTripStore((state) => ({
-//   currentTrip: state.currentTrip,
-//   payments: state.payments,
-//   fetchPayments: state.fetchPayments,
-// }));
+  // paymentId에 따른 결제 내역의 정산 여부
+  const isAdjusted = (paymentId) => {
+    const resultPayment = resultPayments.find(payment => payment.payment_id === paymentId);
+    return resultPayment.bills.every(bill => bill.is_complete) ? true : false;
+  }
 
-// const [budgetInfo, setBudgetInfo] = useState(null); // API 응답 데이터를 저장할 상태
-// const [errorMessage, setErrorMessage] = useState('');
-// const [isLoading, setIsLoading] = useState(true); // 로딩 상태 관리
+  // 정산 상세 정보 모달 창
+  const [isAdjustCompleteOpen, setisAdjustCompleteOpen] = useState(false);
 
-// useEffect(() => {
-//   // 결제 정보 가져오기
-//   if (currentTrip.id) {
-//     fetchPayments(currentTrip.id);
-//   }
-// }, [currentTrip.id, fetchPayments]);
+  const openisAdjustCompleteModal = (paymentId) => {
+    setSelectedPaymentId(paymentId);
+    setisAdjustCompleteOpen(true);
+  };
 
+  const closeisAdjustCompleteModal = () => {
+    setisAdjustCompleteOpen(false);
+  };
 
-// 예산 정보를 렌더링하는 함수
-// const renderBudgetInfo = () => {
-//   if (!budgetInfo) {
-//     return null;
-//   }
+  return (
+    <div>
+      <div>정산 완료</div>
+      {resultPayments.map((payment) => (
+        <div key={payment.payment_id} onClick={() => openisAdjustCompleteModal(payment.payment_id)}>
+          {getPartPayment(payment.payment_id).brand_name}
+          {getPartPayment(payment.payment_id).pay_date}
+          {getPartPayment(payment.payment_id).pay_time}
+          {isAdjusted(payment.payment_id)}
 
-// const userName = "정태완"; // 현재 사용자의 이름 (변경 가능)
-// const userBudget = budgetInfo.data[userName];
+          <AdjustCompleteModal isOpen={isAdjustCompleteOpen} onClose={closeisAdjustCompleteModal} resultPayments={resultPayments} paymentId={selectedPaymentId} />
+        </div>
+      ))}
 
-//   if (!userBudget) {
-//     return <p>사용자의 예산 정보를 찾을 수 없습니다.</p>;
-//   }
-
-//   return (
-//     <div className={styles.detail}>
-//       <h4>{`${userName} 님의 여행 소비 정보`}</h4>
-//       <p>전체 지출 {userBudget.used_budget.toLocaleString()}원</p>
-//       <p>남은 예산 {userBudget.remain_budget.toLocaleString()}원</p>
-//       <div className={styles.explanation}>
-//         (개인별) 남은 예산 = 초기 예산 - 총 지출금
-//       </div>
-//     </div>
-//   );
-// };
-
-// 로딩 중일 때는 LoadingPage를 렌더링
-// if (isLoading) {
-//   return <LoadingPage />;
-// }
-
-return (
-  <>
-    <div>정산 완료</div>
-    {/* 정산 완료
-      <div className={styles.complete}>
-        <img src={checkImage} alt="체크" />
-        <div className={styles.message}>정 산 완 료</div>
-      </div> */}
-
-    {/* 지출/예산/잔액 정보 */}
-    {/* {errorMessage ? (
-        <p className={styles.error}>{errorMessage}</p>
-      ) : (
-        renderBudgetInfo()
-      )} */}
-  </>
+    </div>
   );
 };
 
 export default TripFinishPage;
-
