@@ -48,6 +48,7 @@ export const useTripStore = create((set) => ({
         imageUrl: tripInfo.image_url,
         locations: tripInfo.locations,
         members: tripInfo.members,
+        tripName: tripInfo.trip_name
       }
       : {},
   })),

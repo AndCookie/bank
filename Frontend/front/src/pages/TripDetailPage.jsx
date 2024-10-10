@@ -114,7 +114,7 @@ const TripDetailPage = () => {
       <div className={styles.profile}>
         <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
         <div className={styles.profileStatus}>
-          {userInfo.nickName} 님은 {tripDetailInfo.trip_name} 여행 {tripState} 중 &nbsp;
+          {userInfo.nickName} 님은 {tripDetailInfo.tripName} 여행 {tripState} 중 &nbsp;
         </div>
         <SearchIcon onClick={openTripInfoModal} />
       </div>
