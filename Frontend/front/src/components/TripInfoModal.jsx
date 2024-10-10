@@ -90,13 +90,13 @@ const TripInfoModal = ({ isOpen, onClose }) => {
               {!editMode ? (
                 <>
                   <div className={styles.infoBudget}>
-                    초기 예산: {budget.initialBudget.toLocaleString()}원
+                    초기 예산 | {budget.initialBudget.toLocaleString()}원
                     <IconButton onClick={handleEditClick} size="small">
                       <EditIcon />
                     </IconButton>
                   </div>
-                  <div className={styles.infoBudget}>소비 예산: {budget.usedBudget.toLocaleString()}원</div>
-                  <div className={styles.infoBudget}>잔여 예산: {budget.remainBudget.toLocaleString()}원</div>
+                  <div className={styles.infoBudget}>소비 예산 | {budget.usedBudget.toLocaleString()}원</div>
+                  <div className={styles.infoBudget}>잔여 예산 | {budget.remainBudget.toLocaleString()}원</div>
                 </>
               ) : (
                 <div className={styles.editBudget}>

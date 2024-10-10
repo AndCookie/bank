@@ -157,10 +157,12 @@ const TripFinishPage = () => {
         <div className={styles.completeAmount}>{totalSuccessAmount.toLocaleString()} 원</div>
         <div className={styles.completeMsg}>정 산 완 료</div>
 
-        <div className={styles.fail}>
-          <WarningAmberIcon sx={{ color: 'crimson' }} />&nbsp;
-          <span className={styles.failAmount}>{totalFailAmount.toLocaleString()} 원을 못받으셨어요</span>
-        </div>
+        {totalFailAmount > 0 && (
+          <div className={styles.fail}>
+            <WarningAmberIcon sx={{ color: 'crimson' }} />&nbsp;
+            <span className={styles.failAmount}>{totalFailAmount.toLocaleString()} 원을 못받으셨어요</span>
+          </div>
+        )}
       </div>
 
       {/* 내 정보 */}
@@ -178,12 +180,17 @@ const TripFinishPage = () => {
         </div>
         
         <div className={styles.progress}>
-          <div className={styles.progressBar}>
-          <span className={styles.percentage}>
-            {resultBudget.initial_budget > 0 
-              ? Math.floor((resultBudget.used_budget / resultBudget.initial_budget) * 100) + "%"
-              : "0%"}
-          </span>
+          <div 
+            className={styles.progressBar} 
+            style={{ width: resultBudget.initial_budget > 0 
+              ? `${Math.floor((resultBudget.used_budget / resultBudget.initial_budget) * 100)}%` 
+              : '0%' }}
+          >
+            <span className={styles.percentage}>
+              {resultBudget.initial_budget > 0 
+                ? Math.floor((resultBudget.used_budget / resultBudget.initial_budget) * 100) + "%"
+                : "0%"}
+            </span>
           </div>
         </div>
         
