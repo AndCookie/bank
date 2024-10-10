@@ -35,7 +35,6 @@
   left: 50%;
 
   width: 90%;
-  height: 80%;
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 10px;
@@ -155,4 +154,33 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* 저장하기 */
+.editBudget {
+  margin-bottom: 50px;
+}
+.saveContainer {
+  position: absolute !important;
+  bottom: 10px !important; /* 모달의 하단에서 10px 띄움 */
+  left: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  padding: 10px 0 !important;
+}
+
+.saveBtn {
+  width: 50% !important;
+  height: 70% !important;
+  background-color: #4b72e1 !important;
+  border-radius: 30px !important;
+  color: white !important;
+  padding: 8px 20px !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  text-align: center !important;
+  font-family: "Spoqa Han Sans Neo" !important;
 }

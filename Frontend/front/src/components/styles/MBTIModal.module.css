@@ -60,6 +60,7 @@
 }
 
 .explanation {
-  font-size: 0.9rem !important;
+  font-size: 0.75rem !important;
   margin-top: 10px !important;
+  font-family: "Spoqa Han Sans Neo" !important;
 }
