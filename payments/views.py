@@ -74,6 +74,8 @@ def pay_list(request):
 def adjustment(request):
     if request.method == 'POST':
         payments = request.data.get('payments')
+        if not payments:
+            return Response({'error': '0개의 결제 내역에 대한 정산을 요청했습니다.'}, status=status.HTTP_204_NO_CONTENT)
         for payment in payments:
             payment_id = payment.get('payment_id')
             bank_account = Payment.objects.get(id=payment_id).bank_account
