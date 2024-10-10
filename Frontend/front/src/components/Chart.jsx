@@ -95,7 +95,7 @@ const Chart = () => {
         bottom: '0%',
         left: 'center',
         itemGap: 20, // 아이템 간격 조정
-        width: '90%', // 너비를 조정하여 4개의 카테고리가 한 줄에 표시되도록 설정
+        width: '85%', // 너비를 조정하여 4개의 카테고리가 한 줄에 표시되도록 설정
       },
       color: [
         "#becaf4",
