@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styles from './styles/Steps.module.css';
 import axiosInstance from '@/axios.js';
+import { useUserStore } from '@/stores/userStore'
 
 const StepThree = ({ formData, updateFormData }) => {
   const [bankAccounts, setBankAccounts] = useState([]); // 계좌 목록을 관리할 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
-
+  const { userInfo, setUserAccount } = useUserStore();
 
   
   useEffect(() => {
@@ -14,6 +15,7 @@ const StepThree = ({ formData, updateFormData }) => {
         const response = await axiosInstance.get('/bank_accounts/');
         setBankAccounts(response.data); // 계좌 목록을 state에 저장
         setLoading(false); // 로딩 완료
+        
       } catch (error) {
         console.error('Error fetching bank accounts:', error);
         setLoading(false); // 오류 발생 시에도 로딩 완료
@@ -25,9 +27,11 @@ const StepThree = ({ formData, updateFormData }) => {
 
   const toggleAccount = (accountNo) => {
     if (formData.bank_account === accountNo) {
-      updateFormData({ bank_account: '' }); // 선택 해제
+      updateFormData({ bank_account: '' }); 
+      setUserAccount('');// 선택 해제
     } else {
-      updateFormData({ bank_account: accountNo }); // 계좌 선택
+      updateFormData({ bank_account: accountNo });
+      setUserAccount(accountNo) // 계좌 선택
     }
   };
 

@@ -21,8 +21,16 @@ export const useUserStore = create(
           id: userInfo.id,
           nickName: userInfo.properties.nickname,
           profileImage: userInfo.properties.profile_image,
+          bankAccount : '',
         },
       })),
+
+      setUserAccount: (bankAccount) => set((state) => ({
+        userInfo: {
+          ...state.userInfo, // 기존 userInfo 정보 유지
+          bankAccount: bankAccount, // bankAccount 업데이트
+        },
+      }))
     }),
     {
       name: 'user-storage', // localStorage에 저장될 key 이름
