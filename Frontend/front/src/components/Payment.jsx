@@ -204,6 +204,7 @@ const Payment = ({ selectedDate }) => {
 
   // 정산 내역 체크
   const handleCheck = (paymentId, amount) => {
+    console.log(amount);
     const updatedPaymentsData = payments.map((payment) => {
       if (payment.id === paymentId) {
         const checked = !payment.checked;
@@ -301,7 +302,7 @@ const Payment = ({ selectedDate }) => {
                     <Checkbox
                       checked={payment.is_completed == 1 ? true : payment.checked}
                       disabled={!!payment.is_completed}
-                      onChange={() => handleCheck(payment.id, payment.calculates.length ? payment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) : payment.amount)}
+                      onChange={() => handleCheck(payment.id, payment.amount)}
                     />
                   )}
                 </div>

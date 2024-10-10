@@ -46,7 +46,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
 
   const handleDeletePayment = async () => {
     try {
-      await axiosInstance.post(`/payments/delete/`, {payment_id: paymentId});
+      await axiosInstance.post(`/payments/delete/`, { payment_id: paymentId });
       setPayments(payments.filter(payment => payment.id !== paymentId));  // 삭제된 결제 내역을 로컬에서 제거
       setShowDeleteModal(false);
       onClose();  // 모달 닫기
@@ -425,17 +425,20 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             })}
           </div>
 
-          <div>
-            {!partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
+          <div className={styles.alertContainer}>
+            {partPayment.calculates && !partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
               <>
-                <WarningAmberIcon sx={{ color: 'orange' }} />
-                <div style={{ 'color': 'orange' }}>
+                <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;미정산 알림&nbsp;<WarningAmberIcon sx={{ color: 'lightgreen' }} />
+                <div className={styles.alert}>
                   {partPayment.calculates
                     .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
                       const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
                       return (
-                        <div key={calculate.user_id}>
-                          {member.last_name}{member.first_name}님이 {calculate.remain_cost}원을 정산하지 않았습니다.
+                        <div className={styles.alertUser} key={calculate.user_id}>
+                          <span style={{ 'color': 'lightgreen' }}>{member.last_name}{member.first_name}</span>
+                          님이 &nbsp;
+                          <span style={{ 'color': 'lightgreen' }}>{calculate.remain_cost}원</span>
+                          &nbsp;정산에 실패했습니다.
                         </div>
                       );
                     })}
@@ -446,7 +449,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           <div className={styles.deleteButtonContainer}>
             <Button
               variant="contained"
-              onClick={openDeleteModal} 
+              onClick={openDeleteModal}
               style={{
                 backgroundColor: "lightgrey",
                 position: 'absolute',  // 버튼을 절대 위치로 설정
