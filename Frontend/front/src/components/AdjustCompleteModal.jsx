@@ -2,6 +2,8 @@ import { React, useState, useEffect } from 'react';
 import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
 import { useTripStore } from '@/stores/tripStore';
 import CloseIcon from '@mui/icons-material/Close';
+import { usePaymentStore } from '@/stores/paymentStore';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import styles from "./styles/AdjustCompleteModal.module.css";
 
@@ -14,22 +16,32 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import CafeIcon from "@mui/icons-material/LocalCafe";
 import EtcIcon from "@mui/icons-material/MoreHoriz";
 
-
 const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => {
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+  const getPartPayment = usePaymentStore((state) => state.getPartPayment);
 
   const [resultPayment, setResultPayment] = useState(null);
+  const [partPayment, setPartPayment] = useState(null);
 
   // paymentId에 따른 정산 결과 내역
   useEffect(() => {
     if (isOpen) {
       setResultPayment(resultPayments.find((payment) => payment.payment_id === paymentId));
+      setPartPayment(getPartPayment(paymentId));
     }
   }, [isOpen])
 
   useEffect(() => {
-    console.log(resultPayment)
-  }, [resultPayment])
+    if (isOpen) {
+      console.log(resultPayment)
+    }
+  }, [isOpen, resultPayment])
+
+  useEffect(() => {
+    if (isOpen) {
+      console.log(partPayment)
+    }
+  }, [isOpen, partPayment])
 
   // userId에 따른 이름 반환
   const matchUserName = (userId) => {
@@ -82,14 +94,26 @@ const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => 
             onClick={onClose}
           />
 
+          {/* 결제 상세 내역 */}
+          {partPayment && (
+            <div>
+              {categoryIcons[partPayment.category]} {partPayment.brand_name} {partPayment.pay_date} {partPayment.pay_time}
+            </div>
+          )}
+
           {/* 멤버별 정산 내역 */}
           <div className={styles.memberList}>
             {resultPayment && resultPayment.bills.map((bill, index) => (
               <div className={styles.member} key={index}>
-                {matchUserName(bill.user_id)} {bill.cost} {bill.is_completed}
+                {matchUserName(bill.user_id)} {bill.cost} {bill.remain_cost !== 0 && <WarningAmberIcon sx={{ color: 'orange' }} />}
               </div>
             ))}
           </div>
+          {/* {resultPayment && resultPayment.bills.map((bill, index) => (
+            <div key={index}>
+              {matchUserName(bill.user_id)} {bill.cost} {bill.remain_cost !== 0 && <WarningAmberIcon sx={{ color: 'orange' }} />}
+            </div>
+          ))} */}
         </div>
       </Fade>
     </Modal>
