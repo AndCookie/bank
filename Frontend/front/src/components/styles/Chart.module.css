@@ -1,11 +1,14 @@
 .paymentTrip {
-  margin: 10px auto;
+  margin: 15px auto;
 }
 
 .title {
-  font-size: x-large;
+  font-size: 20px;
   font-weight: bolder;
   padding: 5px 20px;
+
+  display: flex;
+  justify-content: space-between;
 }
 
 .content {

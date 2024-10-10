@@ -84,11 +84,10 @@ const PreviousTrip = () => {
   return (
     <>
       {/* 여행 별칭 섹션 */}
-      <div className={(styles.nickname, styles.trip)}>
+      <div className={(styles.nickName, styles.trip)}>
         <div className={styles.tripName}>
           {selectedTrip.trip_name}
         </div>
-       
       </div>
 
       {/* 여행 날짜 섹션 */}

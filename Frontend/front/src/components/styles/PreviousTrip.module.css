@@ -1,11 +1,11 @@
 /* 구획 나누기 */
 .trip {
-  margin: 20px auto;
+  margin: 15px auto;
   /* border: 2px solid blue; */
 }
 
 .title {
-  font-size: x-large;
+  font-size: 20px;
   font-weight: bolder;
   padding: 5px 20px;
 
@@ -30,19 +30,18 @@
 }
 
 /* 별칭 */
-.nickname {
-  display: flex;
-  justify-content: center; /* 수평 가운데 정렬 */
-  align-items: center; /* 수직 가운데 정렬 */
-  margin: 0px auto;
-  height: 100px;
-  font-size: 40px;
+.tripName {
+  font-size: 28px;
   font-weight: bolder;
+  text-align: center;
+  margin-top: -62px;
+  margin-bottom: 40px;
+  /* border: 1px solid black; */
 }
 
 /* 날짜 */
 .date {
-  margin-top: -10px;
+  margin-top: 0px;
 }
 
 .date > .content {
@@ -97,10 +96,4 @@
 
 .memberName {
   font-weight: 500;
-}
-
-.tripName {
-  font-style: bold;
-  font-size: 1.5rem;
-  text-align: center;
 }
