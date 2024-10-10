@@ -37,13 +37,14 @@ const InvitePage = () => {
     fetchBankAccounts(); // 컴포넌트가 마운트될 때 계좌 목록 요청
   }, []);
 
-  const handleAccountSelect = (e) => {
-    const selectedAccountNo = e.target.value;
-    const selectedAccountData = bankAccounts.find(account => account.accountNo === selectedAccountNo);
-
-    if (selectedAccountData) {
-      setSelectedAccount(selectedAccountData.accountNo); // 선택된 계좌 번호 설정
-      setSelectedBankName(selectedAccountData.bankName); // 선택된 은행 이름 설정
+  // 계좌 선택 시 처리
+  const toggleAccount = (account) => {
+    if (selectedAccount === account.accountNo) {
+      setSelectedAccount(''); // 선택 해제
+      setSelectedBankName(''); // 은행 이름도 초기화
+    } else {
+      setSelectedAccount(account.accountNo); // 계좌 선택
+      setSelectedBankName(account.bankName); // 은행 이름 설정
     }
   };
 
@@ -57,7 +58,7 @@ const InvitePage = () => {
       trip_id: tripId,
       budget,
       bank_account: selectedAccount,
-      bank_name: selectedBankName
+      bank_name: selectedBankName,
     };
 
     axiosInstance.post('/trips/invite/', payload)
@@ -72,39 +73,50 @@ const InvitePage = () => {
   };
 
   return (
-    <div>
-      <h4>초대 수락하기</h4>
+    <div className={styles.mainContainer}>
       {loading ? (
-        <p>계좌 목록을 불러오는 중...</p>
+        <div className={styles.content}>계좌 목록을 불러오는 중...</div>
       ) : (
-        <div>
-          <select
-            value={selectedAccount}
-            onChange={handleAccountSelect}
-            className={styles.dropdown}
-          >
-            <option value="" disabled>계좌를 선택하세요</option>
-            {bankAccounts.map((account, index) => (
-              <option key={index} value={account.accountNo}>
-                {account.bankName}: {account.accountNo}
-              </option>
-            ))}
-          </select>
+        <>
+          <div className={styles.content}>
+            <div className={styles.question}>어떤 계좌를 사용하시나요?</div>
+            <div className={styles.accountListContainer}>
+              <ul className={styles.accountList}>
+                {bankAccounts.map((account, index) => {
+                  const isSelected = selectedAccount === account.accountNo;
+                  return (
+                    <li
+                      key={index}
+                      className={`${styles.accountItem} ${isSelected ? styles.selected : ''}`}
+                      onClick={() => toggleAccount(account)}
+                    >
+                      {account.bankName}: {account.accountNo}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
 
-          {/* 예산 입력 */}
-          <input
-            type="number"
-            placeholder="예산 입력"
-            value={budget}
-            onChange={handleBudgetChange}
-            className={styles.budgetInput}
-          />
-
-          {/* 초대 수락 버튼 */}
-          <button onClick={handleSubmit} className={styles.submitButton}>
-            초대 수락
-          </button>
-        </div>
+          <div className={styles.content}>
+            <div className={styles.question}>예산을 설정해주세요</div>
+            <div className={styles.budget}>
+              <input
+                type="number"
+                placeholder="예산 입력"
+                value={budget}
+                onChange={handleBudgetChange}
+                className={styles.budgetInput}
+              />
+            </div>
+          </div>
+          
+          <div className={styles.acceptContainer}>
+            <button onClick={handleSubmit} className={styles.acceptBtn}>
+              초대 수락하기
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
