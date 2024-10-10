@@ -10,7 +10,6 @@ import { useFutureTripStore } from '@/stores/futureTripStore';
 import SketchModal from '@/components/SketchModal';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
-import BrushIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const TripPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -85,13 +84,9 @@ const TripPage = () => {
 
         {/* 현재 여행 */}
         {currentTrip.id && (
-          <div className={styles.futureTripContainer}>
-            <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
-              {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
-            </div>
-            <div className={styles.tripName}>{currentTrip.tripName}</div>
+          <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
+            {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
           </div>
-
         )}
 
         {/* 미래 여행 */}
@@ -113,7 +108,7 @@ const TripPage = () => {
               {trip.image_url && <img src={trip.image_url} alt={trip.tripName} className={styles.tripImage} />}
               <div className={styles.pastTripContent}>
                 <div className={styles.location}>
-                  {trip.locations[0].country} {trip.locations[1]?.country ? `· ${trip.locations[1].country}` : ""}
+                  {trip.tripName}
                 </div>
                 <div className={styles.dateLength}>
                   {dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.startDate, trip.endDate)}일
@@ -122,12 +117,12 @@ const TripPage = () => {
                 <div className={styles.date}>종료일 : {trip.endDate}</div>
               </div>
               <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
-              <BrushIcon style={{ fontSize: 30 }} />
+                <AddIcon />
               </IconButton>
             </div>
           ))
         ) : (
-          <div className={styles.noPastTrips}>과거 여행 기록이 없어요 😥</div>
+          <div className={styles.noPastTrips}>과거 여행 기록이 없습니다.</div>
         )}
       </div>
 
