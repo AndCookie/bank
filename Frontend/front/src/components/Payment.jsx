@@ -221,9 +221,8 @@ const Payment = ({ selectedDate }) => {
                   </div>
                   <div className={styles.costArea}>
                     <div
-                      className={`${styles.amount} ${
-                        isCompleted === 1 ? styles.completed : ""
-                      }`} // isCompleted가 1이면 completed 클래스 추가
+                      className={`${styles.amount} ${isCompleted === 1 ? styles.completed : ""
+                        }`} // isCompleted가 1이면 completed 클래스 추가
                     >
                       {payment.amount.toLocaleString()} {!payment.is_completed && payment.calculates.length > 0 && (<WarningAmberIcon sx={{ color: 'orange' }} />)}
                     </div>
@@ -232,16 +231,15 @@ const Payment = ({ selectedDate }) => {
                 </div>
 
                 {/* 미정산 상태에서만 checkArea 표시 */}
-                {isCompleted === 0 && (
-                  <div className={styles.checkArea}>
-                    {payment.user_id == userInfo.id && (
-                      <Checkbox
-                        checked={payment.checked}
-                        onChange={() => handleCheck(payment.id, payment.calculates.length ? payment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) : payment.amount)}
-                      />
-                    )}
-                  </div>
-                )}
+                <div className={styles.checkArea}>
+                  {payment.user_id == userInfo.id && (
+                    <Checkbox
+                      checked={payment.is_completed == 1 ? 1 : payment.checked}
+                      disabled={payment.is_completed}
+                      onChange={() => handleCheck(payment.id, payment.calculates.length ? payment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) : payment.amount)}
+                    />
+                  )}
+                </div>
               </div>
             ))}
           </div>
