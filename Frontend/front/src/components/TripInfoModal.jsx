@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { Modal, Backdrop, Fade, IconButton, TextField, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
-import { useTripStore } from '@/stores/tripStore';
-import { useUserStore } from '@/stores/userStore'; // userStore import
-import { useParams } from 'react-router-dom'; // useParams import
+import { useParams } from 'react-router-dom';
 import axiosInstance from '@/axios'; // axiosInstance import
+import { useUserStore } from '@/stores/userStore'; // userStore import
 
 import styles from './styles/TripInfoModal.module.css';
 
-const TripInfoModal = ({ isOpen, onClose }) => {
-  const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
+const TripInfoModal = ({ isOpen, onClose, refreshData }) => {
   const { budget, setUserBudget, userInfo } = useUserStore((state) => state); // budget과 userInfo 가져오기
   const { tripId } = useParams(); // tripId 가져오기
 
@@ -23,18 +21,26 @@ const TripInfoModal = ({ isOpen, onClose }) => {
 
   const handleSaveClick = async () => {
     try {
-      // 새로운 예산 업데이트
-
       // POST 요청 데이터
       const postData = {
         trip_id: tripId,
         budget: newBudget,
       };
 
-      // /trips/invite/로 POST 요청 보내기
+      // /trips/budget/로 POST 요청 보내기
       await axiosInstance.post('/trips/budget/', postData);
 
-      setEditMode(false); // 수정 모드 종료
+      // 새로운 예산 업데이트
+      setUserBudget({ ...budget, initialBudget: newBudget });
+
+      // 수정 모드 종료
+      setEditMode(false);
+
+      // 데이터 새로고침 (부모 컴포넌트의 fetchData 호출)
+      refreshData();
+
+      // 모달 닫기
+      onClose();
     } catch (error) {
       console.error('Error sending budget data:', error);
     }
@@ -57,31 +63,6 @@ const TripInfoModal = ({ isOpen, onClose }) => {
       <Fade in={isOpen}>
         <div className={styles.infoBox}>
           <CloseIcon className={styles.closeBtn} fontSize="large" onClick={onClose} />
-
-          {/* 날짜 정보 */}
-          <div className={styles.date}>
-            <div className={styles.infoTitle}>📅 &nbsp;날짜</div>
-            <div className={styles.infoDetail}>
-              <div className={styles.startDate}>
-                시작일 &nbsp;| &nbsp; <span className={styles.fullDate}>{tripDetailInfo.startDate}</span>
-              </div>
-              <div className={styles.endDate}>
-                종료일 &nbsp;| &nbsp; <span className={styles.fullDate}>{tripDetailInfo.endDate}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 국가 정보 */}
-          <div className={styles.country}>
-            <div className={styles.infoTitle}>✈️ &nbsp;국가</div>
-            <div className={styles.infoDetail}>
-              {tripDetailInfo.locations.map((location, index) => (
-                <div key={index} className={styles.infoMap}>
-                  <div className={styles.countryName}>{location.country}</div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* 예산 정보 */}
           <div className={styles.budget}>

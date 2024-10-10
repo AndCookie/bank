@@ -15,64 +15,55 @@ import { useUserStore } from "@/stores/userStore";
 
 const TripDetailPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
-
   const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
   const setTripDetailInfo = useTripStore((state) => state.setTripDetailInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-  const setUserBudget = useUserStore((state) => state.setUserBudget)
+  const setUserBudget = useUserStore((state) => state.setUserBudget);
   const fetchPayments = usePaymentStore((state) => state.fetchPayments);
   const setPayments = usePaymentStore((state) => state.setPayments);
-  const payments = usePaymentStore((state) => state.payments);
-
   const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
-
+  
   const [loading, setLoading] = useState(true);
-
   const { tripId } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Promise.all을 사용해 fetchTripDetail과 fetchPayments를 병렬로 호출
-        const [tripDetailData, paymentsData] = await Promise.all([
-          fetchTripDetail(tripId),
-          fetchPayments(tripId),
-        ]);
-
-        console.log(tripDetailData, paymentsData, userInfo);
-        setUserBudget(paymentsData)
-        // paymentsData.payments_list에 bills 추가
-        const updatedPaymentsData = paymentsData.payments_list.map(payment => {
-          const bills = tripDetailData.members.map(member => ({
-            cost: 0,
-            bank_account: member.bank_account,
-          }));
-
-          return {
-            ...payment,
-            bills,
-            checked: false,
-          };
-        });
-
-        setTripDetailInfo(tripId, tripDetailData);
-        setPayments(updatedPaymentsData);
-
-        setFinalPayments(tripId);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [tripId]);
-
   const navigate = useNavigate();
-
+  
   const [selectedDate, setSelectedDate] = useState('all');
   const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const [tripDetailData, paymentsData] = await Promise.all([
+        fetchTripDetail(tripId),
+        fetchPayments(tripId),
+      ]);
+      
+      setUserBudget(paymentsData);
+      const updatedPaymentsData = paymentsData.payments_list.map(payment => {
+        const bills = tripDetailData.members.map(member => ({
+          cost: 0,
+          bank_account: member.bank_account,
+        }));
+
+        return {
+          ...payment,
+          bills,
+          checked: false,
+        };
+      });
+
+      setTripDetailInfo(tripId, tripDetailData);
+      setPayments(updatedPaymentsData);
+      setFinalPayments(tripId);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [tripId]);
 
   const goBack = () => {
     navigate('/trip');
@@ -99,8 +90,6 @@ const TripDetailPage = () => {
     end: new Date(tripDetailInfo.endDate),
   });
 
-  const tripState = new Date(tripDetailInfo.startDate) > new Date() ? '준비' : '';
-
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
@@ -117,11 +106,14 @@ const TripDetailPage = () => {
         </div>
       </div>
 
+      {/* 여행 상세 정보 모달 */}
+      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} refreshData={fetchData} />
+
       {/* 프로필 */}
       <div className={styles.profile}>
         <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
         <div className={styles.profileStatus}>
-          {userInfo.nickName} 님은<br /><div className={styles.tripName}>{tripDetailInfo.tripName}</div> 여행 {tripState} 중 &nbsp;
+          {userInfo.nickName} 님은<br /><div className={styles.tripName}>{tripDetailInfo.tripName}</div> 여행 중 &nbsp;
         </div>
       </div>
 
@@ -156,9 +148,6 @@ const TripDetailPage = () => {
       <div className={styles.payment}>
         <Payment selectedDate={selectedDate} />
       </div>
-
-      {/* 여행 상세 정보 모달 창 */}
-      <TripInfoModal isOpen={isTripInfoOpen} onClose={closeTripInfoModal} />
     </div>
   );
 };
