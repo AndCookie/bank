@@ -1,13 +1,30 @@
-import { React, useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { React, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Modal,
+  Box,
+  Typography,
+  Backdrop,
+  Fade,
+  TextField,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-import { useTripStore } from '@/stores/tripStore';
-import { usePaymentStore } from '@/stores/paymentStore';
-import axiosInstance from '@/axios.js';
-import styles from './styles/Modal.module.css';
+import { useTripStore } from "@/stores/tripStore";
+import { usePaymentStore } from "@/stores/paymentStore";
+import axiosInstance from "@/axios.js";
+
+import styles from "./styles/AdjustModal.module.css";
+
+import FlightIcon from "@mui/icons-material/Flight";
+import HotelIcon from "@mui/icons-material/Hotel";
+import AttractionsIcon from "@mui/icons-material/Attractions";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import CafeIcon from "@mui/icons-material/LocalCafe";
+import EtcIcon from "@mui/icons-material/MoreHoriz";
 
 const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
@@ -18,19 +35,23 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const finalPayments = usePaymentStore((state) => state.finalPayments);
   const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
   const addFinalPayments = usePaymentStore((state) => state.addFinalPayments);
-  const updateFinalPayments = usePaymentStore((state) => state.updateFinalPayments);
+  const updateFinalPayments = usePaymentStore(
+    (state) => state.updateFinalPayments
+  );
 
   // 렌더링 되는 결제 내역 정보
   const [renderedInfo, setRenderedInfo] = useState([]);
 
   // 렌더링 되는 멤버별 정산 내역 정보
-  const [renderedMemberInfo, setRenderedMemberInfo] = useState(tripDetailInfo.members.map(member => {
-    return {
-      // member: member.member,
-      bankAccount: member.bank_account,
-      cost: 0
-    };
-  }));
+  const [renderedMemberInfo, setRenderedMemberInfo] = useState(
+    tripDetailInfo.members.map((member) => {
+      return {
+        // member: member.member,
+        bankAccount: member.bank_account,
+        cost: 0,
+      };
+    })
+  );
 
   // 결제 내역 정보 렌더링
   useEffect(() => {
@@ -39,28 +60,36 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
 
       payments.forEach((payment) => {
         if (payment.checked) {
-          setRenderedInfo((prevInfo) => [...prevInfo, {
-            brandName: payment.brand_name,
-            payDate: payment.pay_date,
-            payTime: payment.pay_time,
-          }])
+          setRenderedInfo((prevInfo) => [
+            ...prevInfo,
+            {
+              category: payment.category,
+              brandName: payment.brand_name,
+              payDate: payment.pay_date,
+              payTime: payment.pay_time,
+            },
+          ]);
         }
-      })
+      });
     }
-  }, [payments, isOpen])
+  }, [payments, isOpen]);
 
   // 멤버별 정산 내역 정보 렌더링
   useEffect(() => {
     if (isOpen) {
-      setRenderedMemberInfo(tripDetailInfo.members.map(member => {
-        return {
-          bankAccount: member.bank_account,
-          cost: 0
-        };
-      }));
+      setRenderedMemberInfo(
+        tripDetailInfo.members.map((member) => {
+          return {
+            bankAccount: member.bank_account,
+            cost: 0,
+          };
+        })
+      );
 
       finalPayments.payments.forEach((finalPayment) => {
-        const updatedBills = payments.find((payment) => payment.id === finalPayment.payment_id).bills;
+        const updatedBills = payments.find(
+          (payment) => payment.id === finalPayment.payment_id
+        ).bills;
 
         // 체크 표시를 하고 세부 가격을 설정하지 않았을 경우
         if (updatedBills.every(bill => bill.cost === 0)) {
@@ -92,26 +121,49 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
           }
           // 세부 가격을 설정했을 경우
         } else {
-          updateFinalPayments(finalPayment.payment_id, updatedBills)
-          updatedBills.forEach(bill => {
-            renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
+          updateFinalPayments(finalPayment.payment_id, updatedBills);
+          updatedBills.forEach((bill) => {
+            renderedMemberInfo.find(
+              (member) => member.bankAccount === bill.bank_account
+            ).cost += bill.cost;
           });
         }
-      })
+      });
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
-    return renderedMemberInfo.find((info) => info.bankAccount === bankAccount).cost;
+    return renderedMemberInfo.find((info) => info.bankAccount === bankAccount)
+      .cost;
   };
 
   const navigate = useNavigate();
   const { tripId } = useParams();
 
   const goFinish = () => {
-    navigate(`/finish/${tripId}`)
-  }
+    navigate(`/finish/${tripId}`);
+  };
+
+  // 카테고리별 아이콘 매핑
+  const categoryIcons = {
+    항공: <FlightIcon fontSize="large" />,
+    숙소: <HotelIcon fontSize="large" />,
+    관광: <AttractionsIcon fontSize="large" />,
+    식비: <RestaurantIcon fontSize="large" />,
+    쇼핑: <ShoppingBagIcon fontSize="large" />,
+    교통: <DirectionsCarIcon fontSize="large" />,
+    카페: <CafeIcon fontSize="large" />,
+    기타: <EtcIcon fontSize="large" />,
+  };
+
+  // 날짜 포맷팅 함수
+  const formatPayDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    return `${month}월 ${day}일`;
+  };
 
   if (!isOpen) return null;
   return (
@@ -128,36 +180,69 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
     >
       <Fade in={isOpen}>
         <div className={styles.box}>
-          <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
-          <div>{totalAmount}원</div>
+          <CloseIcon
+            className={styles.closeBtn}
+            fontSize="large"
+            onClick={onClose}
+          />
+          <div className={styles.totalAmount}>{totalAmount}&nbsp;원</div>
 
           {/* 정산 체크한 결제 내역 */}
-          {renderedInfo.map((data, index) => (
-            <div key={index}>
-              {data.brandName}
-              {data.payDate}
-              {data.payTime}
-            </div>
-          ))}
+          <div className={styles.allContent}>
+            {renderedInfo.map((data, index) => (
+              <div className={styles.content} key={index}>
+                <div className={styles.category}>
+                  {categoryIcons[data.category]}
+                </div>
+                <div className={styles.brandName}>{data.brandName}</div>
+                <div className={styles.payRecord}>
+                  <div className={styles.payDate}>
+                    {formatPayDate(data.payDate)}
+                  </div>
+                  <div className={styles.payTime}>{data.payTime}</div>
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* 정산 멤버 */}
-          <div>정산대상</div>
-          {tripDetailInfo.members.map((member, index) => (
-            <div key={index}>
-              {member.last_name}{member.first_name}
-              <TextField
-                disabled
-                variant="filled"
-                defaultValue={matchBankAccount(member.bank_account)}
-              />
-            </div>
-          ))}
+          <div className={styles.memberList}>
+            {tripDetailInfo.members.map((member, index) => (
+              <div className={styles.member} key={index}>
+                <div className={styles.memberName}>
+                  {member.last_name}
+                  {member.first_name}
+                </div>
+                <TextField
+                  disabled
+                  variant="outlined"
+                  defaultValue={matchBankAccount(member.bank_account)}
+                  className={styles.customTextField}
+                  InputProps={{
+                    style: {
+                      height: "40px", // 원하는 높이로 조정
+                      width: "120px", // 원하는 너비로 조정
+                    },
+                  }}
+                  inputProps={{
+                    style: {
+                      backgroundColor: "lightgrey",
+                      padding: "8px",
+                      borderRadius: "5px",
+                      textAlign: "right", // 텍스트를 오른쪽 정렬
+                    },
+                  }}
+                />
+                &nbsp; 원
+              </div>
+            ))}
+          </div>
 
           <button onClick={goFinish}>정산하기</button>
         </div>
       </Fade>
     </Modal>
   );
-}
+};
 
 export default AdjustModal;

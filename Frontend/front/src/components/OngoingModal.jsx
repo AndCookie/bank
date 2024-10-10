@@ -1,8 +1,15 @@
-import { React, useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { React, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
-import { Modal, Box, Typography, Backdrop, Fade, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Modal,
+  Box,
+  Typography,
+  Backdrop,
+  Fade,
+  TextField,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
@@ -10,7 +17,16 @@ import { usePaymentStore } from '@/stores/paymentStore';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 
-import styles from './styles/Modal.module.css';
+import styles from "./styles/OngoingModal.module.css";
+
+import FlightIcon from "@mui/icons-material/Flight";
+import HotelIcon from "@mui/icons-material/Hotel";
+import AttractionsIcon from "@mui/icons-material/Attractions";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import CafeIcon from "@mui/icons-material/LocalCafe";
+import EtcIcon from "@mui/icons-material/MoreHoriz";
 
 const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -28,7 +44,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     if (isOpen) {
       setPartPayment(getPartPayment(paymentId));
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
@@ -56,11 +72,13 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
         }));
       }
     }
-  }, [partPayment.amount])
+  }, [partPayment.amount]);
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
-    const targetBill = (partPayment.bills || []).find(bill => bill.bank_account === bankAccount);
+    const targetBill = (partPayment.bills || []).find(
+      (bill) => bill.bank_account === bankAccount
+    );
     return targetBill ? targetBill.cost : 0;
   };
 
@@ -100,19 +118,46 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     });
   };
 
-
   // userId에 따른 이름 반환
   const matchUserName = () => {
-    const matchMember = tripDetailInfo.members.find((member) => member.id == partPayment.user_id);
-    return matchMember ? `${matchMember.last_name}${matchMember.first_name}` : '';
-  }
+    const matchMember = tripDetailInfo.members.find(
+      (member) => member.id == partPayment.user_id
+    );
+    return matchMember
+      ? `${matchMember.last_name}${matchMember.first_name}`
+      : "";
+  };
+
+  // 카테고리별 아이콘 매핑
+  const categoryIcons = {
+    항공: <FlightIcon fontSize="large" />,
+    숙소: <HotelIcon fontSize="large" />,
+    관광: <AttractionsIcon fontSize="large" />,
+    식비: <RestaurantIcon fontSize="large" />,
+    쇼핑: <ShoppingBagIcon fontSize="large" />,
+    교통: <DirectionsCarIcon fontSize="large" />,
+    카페: <CafeIcon fontSize="large" />,
+    기타: <EtcIcon fontSize="large" />,
+  };
+
+  // 날짜 포맷팅 함수
+  const formatPayDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    return `${month}월 ${day}일`;
+  };
 
   // 모달 창이 닫힐 때 payments에 저장하기
   useEffect(() => {
     if (!isOpen) {
-      setPayments(payments.map((payment) => payment.id === partPayment.id ? partPayment : payment));
+      setPayments(
+        payments.map((payment) =>
+          payment.id === partPayment.id ? partPayment : payment
+        )
+      );
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -132,18 +177,33 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       >
         <Fade in={isOpen}>
           <div className={styles.box}>
-            <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
-            <div>{partPayment.amount}원</div>
-
-            {/* 정산 체크한 결제 내역 */}
-            <div>
-              {partPayment.brand_name}
-              {partPayment.pay_date}
-              {partPayment.pay_time}
+            <CloseIcon
+              className={styles.closeBtn}
+              fontSize="large"
+              onClick={onClose}
+            />
+            <div className={styles.totalAmount}>
+              {partPayment.amount}&nbsp; 원
             </div>
 
-            <div>결제 당사자만 정산 가능합니다</div>
-            <div>{matchUserName()}</div>
+            {/* 정산 체크한 결제 내역 */}
+            <div className={styles.content}>
+              <div className={styles.category}>
+                {categoryIcons[partPayment.category]}
+              </div>
+              <div className={styles.brandName}>{partPayment.brand_name}</div>
+              <div className={styles.payRecord}>
+                <div className={styles.payDate}>
+                  {formatPayDate(partPayment.pay_date)}
+                </div>
+                <div className={styles.payTime}>{partPayment.pay_time}</div>
+              </div>
+            </div>
+
+            <div className={styles.memberList}>
+              결제 당사자만 정산 가능합니다
+              <div>{matchUserName()}</div>
+            </div>
           </div>
         </Fade>
       </Modal>
@@ -165,14 +225,25 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     >
       <Fade in={isOpen}>
         <div className={styles.box}>
-          <CloseIcon className={styles.closeBtn} fontSize='large' onClick={onClose} />
-          <div>{partPayment.amount}원</div>
+          <CloseIcon
+            className={styles.closeBtn}
+            fontSize="large"
+            onClick={onClose}
+          />
+          <div className={styles.totalAmount}>{partPayment.amount}&nbsp;원</div>
 
           {/* 정산 체크한 결제 내역 */}
-          <div>
-            {partPayment.brand_name}
-            {partPayment.pay_date}
-            {partPayment.pay_time}
+          <div className={styles.content}>
+            <div className={styles.category}>
+              {categoryIcons[partPayment.category]}
+            </div>
+            <div className={styles.brandName}>{partPayment.brand_name}</div>
+            <div className={styles.payRecord}>
+              <div className={styles.payDate}>
+                {formatPayDate(partPayment.pay_date)}
+              </div>
+              <div className={styles.payTime}>{partPayment.pay_time}</div>
+            </div>
           </div>
 
           {/* 정산 멤버 */}
@@ -196,6 +267,6 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       </Fade>
     </Modal>
   );
-}
+};
 
 export default OngoingModal;
