@@ -24,7 +24,7 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { blue } from "@mui/material/colors";
-import PaymentModal from './PaymentModal';  
+import PaymentModal from './PaymentModal';
 
 const Payment = ({ selectedDate }) => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -43,12 +43,12 @@ const Payment = ({ selectedDate }) => {
     (state) => state.removeFinalPayments
   );
 
-  const { mutate: mutatePrepare } = useMutation((newPayment) => 
+  const { mutate: mutatePrepare } = useMutation((newPayment) =>
     axiosInstance.post('/payments/prepare/', newPayment)
   );
 
   // 현금 결제내역 POST 요청
-  const { mutate: mutateCash } = useMutation((newCashPayment) => 
+  const { mutate: mutateCash } = useMutation((newCashPayment) =>
     axiosInstance.post('/payments/', newCashPayment)
   );
 
@@ -147,22 +147,23 @@ const Payment = ({ selectedDate }) => {
 
   // 필터링된 결제 항목
   const filteredPayments = (payments || [])
-  .filter((payment) => {
-    const tripStartDateMidnight = new Date(tripDetailInfo.startDate);
-    tripStartDateMidnight.setHours(0, 0, 0, 0); // 여행 시작일의 자정을 기준으로 설정
+    .filter((payment) => {
+      const tripStartDateMidnight = new Date(tripDetailInfo.startDate);
+      tripStartDateMidnight.setHours(0, 0, 0, 0); // 여행 시작일의 자정을 기준으로 설정
 
-    if (selectedDate === "all") {
-      return true;
-    } else if (selectedDate === "prepare") {
-      return new Date(payment.pay_date) < tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
-    } else {
-      return (
-        new Date(payment.pay_date).toDateString() ===
-        new Date(selectedDate).toDateString()
-      );
-    }
-  })
-  .filter((payment) => payment.is_completed === isCompleted);
+      // console.log(tripStartDateMidnight)
+
+      if (selectedDate === "all") {
+        return true;
+      } else if (selectedDate === "prepare") {
+        return new Date(`${payment.pay_date}T${payment.pay_time}`).getTime() == new Date(tripStartDateMidnight).getTime();
+      } else {
+        return (
+          new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString()
+        );
+      }
+    })
+    .filter((payment) => payment.is_completed === isCompleted);
 
   // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
   const groupPaymentsByDate = (paymentsInfo) => {
