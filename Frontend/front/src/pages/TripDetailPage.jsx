@@ -19,7 +19,7 @@ const TripDetailPage = () => {
   const fetchTripDetail = useTripStore((state) => state.fetchTripDetail);
   const setTripDetailInfo = useTripStore((state) => state.setTripDetailInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-
+  const setUserBudget = useUserStore((state) => state.setUserBudget)
   const fetchPayments = usePaymentStore((state) => state.fetchPayments);
   const setPayments = usePaymentStore((state) => state.setPayments);
   const payments = usePaymentStore((state) => state.payments);
@@ -40,7 +40,7 @@ const TripDetailPage = () => {
         ]);
 
         console.log(tripDetailData, paymentsData, userInfo);
-
+        setUserBudget(paymentsData)
         // paymentsData.payments_list에 bills 추가
         const updatedPaymentsData = paymentsData.payments_list.map(payment => {
           const bills = tripDetailData.members.map(member => ({

@@ -25,13 +25,13 @@ const StepThree = ({ formData, updateFormData }) => {
     fetchBankAccounts(); // 컴포넌트가 마운트될 때 계좌 목록 요청
   }, []);
 
-  const toggleAccount = (accountNo) => {
-    if (formData.bank_account === accountNo) {
+  const toggleAccount = (account) => {
+    if (formData.bank_account === account.accountNo) {
       updateFormData({ bank_account: '' }); 
       setUserAccount('');// 선택 해제
     } else {
-      updateFormData({ bank_account: accountNo });
-      setUserAccount(accountNo) // 계좌 선택
+      updateFormData({ bank_account: account.accountNo });
+      setUserAccount(account) // 계좌 선택
     }
   };
 
@@ -53,18 +53,6 @@ const StepThree = ({ formData, updateFormData }) => {
 
       <div className={styles.third}>
         <div className={styles.question}>어떤 계좌를 사용하시나요?</div>
-      
-        {/* 선택된 계좌 표시 및 삭제 */}
-        {/* <div className={styles.selected}>
-          {formData.bank_account ? (
-            <div className={styles.selectedAccount}>
-              <span>{bankAccounts.find(account => account.accountNo === formData.bank_account)?.bankName}: {formData.bank_account}</span>
-              <button onClick={() => updateFormData({ bank_account: '' })}>X</button>
-            </div>
-          ) : (
-            <p>계좌를 선택하세요</p>
-          )}
-        </div> */}
 
         <div className={styles.candidates}>
           {/* 계좌 목록 항상 표시 */}
@@ -80,7 +68,7 @@ const StepThree = ({ formData, updateFormData }) => {
                       <li
                         key={index}
                         className={`${styles.accountItem} ${isSelected ? styles.selected : ''}`}
-                        onClick={() => toggleAccount(account.accountNo)}
+                        onClick={() => toggleAccount(account)}
                       >
                         {account.bankName}: {account.accountNo}
                       </li>
