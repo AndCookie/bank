@@ -2,7 +2,8 @@ import { React, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
-
+import axiosInstance from '@/axios.js';
+import { useMutation } from "react-query";
 import { useTripStore } from "@/stores/tripStore";
 import { useUserStore } from "@/stores/userStore";
 import { usePaymentStore } from "@/stores/paymentStore";
@@ -19,14 +20,21 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import CafeIcon from "@mui/icons-material/LocalCafe";
 import EtcIcon from "@mui/icons-material/MoreHoriz";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { blue } from "@mui/material/colors";
+import PaymentModal from './PaymentModal';  
 
 const Payment = ({ selectedDate }) => {
   const userInfo = useUserStore((state) => state.userInfo);
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   // const finalPayments = usePaymentStore((state) => state.finalPayments);
   // const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
@@ -34,6 +42,24 @@ const Payment = ({ selectedDate }) => {
   const removeFinalPayments = usePaymentStore(
     (state) => state.removeFinalPayments
   );
+
+  const { mutate: mutatePrepare } = useMutation((newPayment) => 
+    axiosInstance.post('/payments/prepare/', newPayment)
+  );
+
+  // 현금 결제내역 POST 요청
+  const { mutate: mutateCash } = useMutation((newCashPayment) => 
+    axiosInstance.post('/payments/', newCashPayment)
+  );
+
+  const handleAddPreparePayment = (newPayment) => {
+    mutatePrepare(newPayment);
+  };
+
+  // 현금 결제 내역 추가
+  const handleAddCashPayment = (newCashPayment) => {
+    mutateCash(newCashPayment);
+  };
 
   // 정산 여부 판단
   const [isCompleted, setIsCompleted] = useState(0);
@@ -183,7 +209,7 @@ const Payment = ({ selectedDate }) => {
   return (
     <div className={styles.container}>
       {/* 탭 버튼 */}
-      <div className={styles.tabContainer}>
+      <div className={styles.tabContainer} style={{ position: 'relative' }}>
         <button
           className={`${styles.tab} ${isCompleted === 0 ? styles.active : ""}`}
           onClick={() => setIsCompleted(0)}
@@ -196,6 +222,27 @@ const Payment = ({ selectedDate }) => {
         >
           정산 완료
         </button>
+        <IconButton
+          className={styles.addButton}
+          onClick={openModal}
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            right: '10px',
+            transform: 'translateY(-50%)',
+            backgroundColor: '#4b72e1', // 배경색 파란색으로 설정
+            color: 'white', // 아이콘 색상을 흰색으로 설정
+          }}
+      
+        >
+          <AddIcon />
+        </IconButton>
+        <PaymentModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmitPrepare={handleAddPreparePayment}  // 여행 전 결제 내역 처리
+          onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
+        />
       </div>
 
       {/* 결제 내역 */}
