@@ -287,8 +287,8 @@ const Payment = ({ selectedDate }) => {
                 <div className={styles.checkArea}>
                   {payment.user_id == userInfo.id && (
                     <Checkbox
-                      checked={payment.is_completed == 1 ? 1 : payment.checked}
-                      disabled={payment.is_completed}
+                      checked={payment.is_completed == 1 ? true : payment.checked}
+                      disabled={!!payment.is_completed}
                       onChange={() => handleCheck(payment.id, payment.calculates.length ? payment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) : payment.amount)}
                     />
                   )}
