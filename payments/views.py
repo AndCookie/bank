@@ -19,21 +19,18 @@ User = get_user_model()
 def pay(request):
     if request.method == 'POST':
         data = request.data
-        bank_account = data.get('bank_account')
-        member = Member.objects.filter(bank_account=bank_account).first()
-
-        if member is None:
-            return Response({'error': "해당 계좌에 대한 사용자를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
-        if request.user != member.user:
-            return Response({'error': "현재 사용자는 해당 계좌의 주인이 아닙니다."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        withdrawal(bank_account, data.get('amount'), request.user.email)
+        trip_id = data.get('trip_id')
+        try:
+            bank_account = Member.objects.get(trip=trip_id, user=request.user).bank_account
+        except:
+            return Response({'error': "여행 계좌가 등록되지 않았거나, 참여하지 않은 사용자입니다."})
+        # withdrawal(bank_account, data.get('amount'), request.user.email)
         
         try:
             data['category'] = categorize(data.get('brand_name'))
         except:
             data['category'] = "미정"
-
+        data['bank_account'] = bank_account
         serializer = PaymentCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
