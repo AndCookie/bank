@@ -225,7 +225,7 @@ const Payment = ({ selectedDate }) => {
                         isCompleted === 1 ? styles.completed : ""
                       }`} // isCompleted가 1이면 completed 클래스 추가
                     >
-                      {payment.amount} {!payment.is_completed && payment.calculates.length > 0 && (<WarningAmberIcon sx={{ color: 'orange' }} />)}
+                      {payment.amount.toLocaleString()} {!payment.is_completed && payment.calculates.length > 0 && (<WarningAmberIcon sx={{ color: 'orange' }} />)}
                     </div>
                     <div className={styles.brandName}>{payment.brand_name}</div>
                   </div>
