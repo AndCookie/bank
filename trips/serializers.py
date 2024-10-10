@@ -120,13 +120,13 @@ class TripMainSerializer(serializers.ModelSerializer):
         representation['members'] = MemberDetailSerializer(instance.member_set.all().order_by('user__username'), many=True).data
         request = self.context.get('request')
         for member in representation['members']:
-            bank_account = member['bank_account']
+            # bank_account = member['bank_account']
             is_participate = member['is_participate']
             if not is_participate:
                 continue
-            if request.user.username == member['member']:
-                member_account = account(request.user.email, bank_account)['REC']
-                member['balance'] = member_account['accountBalance']
+            # if request.user.username == member['member']:
+            #     member_account = account(request.user.email, bank_account)['REC']
+            #     member['balance'] = member_account['accountBalance']
         return representation
     
     
