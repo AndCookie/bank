@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom'; // useParams를 import
+import { useParams, useNavigate } from 'react-router-dom'; // useNavigate 추가
 import axiosInstance from '@/axios.js';
+import { useUserStore } from '@/stores/userStore'; // userStore import
 import styles from '@/styles/InvitePage.module.css'; // 스타일 파일
 
 const InvitePage = () => {
   const { tripId } = useParams(); // URL에서 tripId 가져오기
+  const navigate = useNavigate(); // 리다이렉트용 useNavigate 훅
+  const { userToken } = useUserStore(); // userStore에서 userToken 가져오기
+
   const [bankAccounts, setBankAccounts] = useState([]); // 계좌 목록 상태
   const [selectedAccount, setSelectedAccount] = useState(''); // 선택된 계좌 번호
   const [selectedBankName, setSelectedBankName] = useState(''); // 선택된 은행 이름
   const [budget, setBudget] = useState(''); // 예산 입력 상태
   const [loading, setLoading] = useState(true); // 로딩 상태
+
+  // 페이지 로딩 시 토큰이 없으면 메인 페이지로 리다이렉트
+  useEffect(() => {
+    if (!userToken) {
+      navigate('/'); // 메인 페이지로 리다이렉트
+    }
+  }, [userToken, navigate]);
 
   useEffect(() => {
     const fetchBankAccounts = async () => {

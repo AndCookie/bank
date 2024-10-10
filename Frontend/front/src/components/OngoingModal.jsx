@@ -208,11 +208,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             <div className={styles.totalAmount}>
               {(partPayment.amount !== undefined && partPayment.amount !== null)
                 ? partPayment.amount.toLocaleString()
-<<<<<<< HEAD
-                : '0'}&nbsp;원
-=======
                 : '0'} 원
->>>>>>> limkwangyoung
             </div>
 
 
@@ -286,14 +282,8 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           <div className={styles.totalAmount}>
             {(partPayment.amount !== undefined && partPayment.amount !== null)
               ? partPayment.amount.toLocaleString()
-<<<<<<< HEAD
-              : '0'}&nbsp;원
-          </div>
-
-=======
               : '0'} 원
           </div>
->>>>>>> limkwangyoung
 
           {/* 정산 체크한 결제 내역 */}
           <div className={styles.content}>
@@ -310,48 +300,6 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           </div>
 
           {/* 정산 멤버 */}
-<<<<<<< HEAD
-          <div className={styles.memberList}>
-          {tripDetailInfo.members.map((member, index) => {
-            const calculate = partPayment.calculates.find((calculate) => Number(calculate.user_id) === Number(member.id));
-            
-            return (
-              <div className={styles.member} key={index}>
-                {calculate && calculate.remain_cost > 0 && (
-                  <WarningAmberIcon sx={{ color: 'orange' }} />
-                )}
-
-                <div className={styles.memberName}>
-                  {member.last_name}
-                  {member.first_name}
-                </div>
-                <TextField
-                  disabled={isCompleted === 1}
-                  variant={isCompleted === 1 ? 'filled' : 'outlined'}
-                  value={matchBankAccount(member.bank_account)}
-                  onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
-                  className={styles.customTextField}
-                  InputProps={{
-                    style: {
-                      height: "40px", // 원하는 높이로 조정
-                      width: "120px", // 원하는 너비로 조정
-                    },
-                  }}
-                  inputProps={{
-                    style: {
-                      backgroundColor: "lightgrey",
-                      padding: "8px",
-                      borderRadius: "5px",
-                      textAlign: "right", // 텍스트를 오른쪽 정렬
-                    },
-                  }}
-                />
-                &nbsp; 원
-              </div>
-            );
-          })}
-          </div>
-=======
           <div>정산대상</div>
           {tripDetailInfo.members.map((member, index) => (
             <div key={index}>
@@ -367,7 +315,6 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               />
             </div>
           ))}
->>>>>>> limkwangyoung
         </div>
       </Fade>
     </Modal>

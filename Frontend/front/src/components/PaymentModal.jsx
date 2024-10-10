@@ -11,7 +11,7 @@ import { useUserStore } from '@/stores/userStore';
 const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
   // useParams로 URL에서 tripId 받아오기
   const { tripId } = useParams();
-  const userInfo = useUserStore((state) => state.userInfo);
+  const bankAccount = useUserStore((state) => state.userInfo.bankAccount);
 
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
@@ -42,7 +42,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         pay_date: payDate,
         pay_time: payTime,
         brand_name: brandName,
-        bank_account: userInfo.bankAccount, // userStore에서 bankAccount 가져오기
+        bank_account: bankAccount, // userStore에서 bankAccount 가져오기
         amount: Number(amount),
       });
     }
