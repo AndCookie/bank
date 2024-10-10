@@ -109,7 +109,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
         }));
       }
     }
-  }, [partPayment.amount]);
+  }, [partPayment]);
 
   // useEffect(() => {
   //   console.log(partPayment)

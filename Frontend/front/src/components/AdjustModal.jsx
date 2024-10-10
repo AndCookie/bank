@@ -112,7 +112,7 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
           } else {
             const newUpdatedBills = updatedBills.map((bill) => ({
               ...bill,
-              cost: payments.find((payment) => payment.id === finalPayment.payment_id).calculates.find((calculate) => calculate.user_id == tripDetailInfo.members.find((member) => member.bank_account == bill.bank_account).id).remain_cost,
+              cost: payments.find((payment) => payment.id === finalPayment.payment_id).calculates.find((calculate) => calculate.user_id == tripDetailInfo.members.find((member) => member.bank_account == bill.bank_account).id).cost,
             }))
             updateFinalPayments(finalPayment.payment_id, newUpdatedBills)
             newUpdatedBills.forEach(bill => {
