@@ -77,7 +77,7 @@ def pay_list(request):
 def adjustment(request):
     if request.method == 'POST':
         payments = request.data.get('payments')
-        for payment in payments:    
+        for payment in payments:
             payment_id = payment.get('payment_id')
             bank_account = Payment.objects.get(id=payment_id).bank_account
             if not Member.objects.filter(bank_account=bank_account, user=request.user).exists():
@@ -98,6 +98,7 @@ def adjustment(request):
             remain_budget = initial_budget - used_budget
             budget = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
             result['budget'] = budget
+            result['balance'] = balance(request.user.email, bank_account)['REC']['accountBalance']
             return Response(result, status=status.HTTP_201_CREATED)
         
         
