@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { usePaymentStore } from '@/stores/paymentStore';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-import styles from "./styles/AdjustCompleteModal.module.css";
+import styles from "./styles/OngoingModal.module.css";
 
 import FlightIcon from "@mui/icons-material/Flight";
 import HotelIcon from "@mui/icons-material/Hotel";
@@ -88,32 +88,86 @@ const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => 
           className={styles.box}
           onClick={(e) => e.stopPropagation()} // Modal 내부 클릭 시 이벤트 전파 방지
         >
-         <CloseIcon
+          <CloseIcon
             className={styles.closeBtn}
             fontSize="large"
             onClick={onClose}
           />
 
           {/* 결제 상세 내역 */}
-          {partPayment && (
-            <div>
-              {categoryIcons[partPayment.category]} {partPayment.brand_name} {partPayment.pay_date} {partPayment.pay_time}
-            </div>
-          )}
-
-          {/* 멤버별 정산 내역 */}
-          <div className={styles.memberList}>
-            {resultPayment && resultPayment.bills.map((bill, index) => (
-              <div className={styles.member} key={index}>
-                {matchUserName(bill.user_id)} {bill.cost} {bill.remain_cost !== 0 && <WarningAmberIcon sx={{ color: 'orange' }} />}
+          <div className={styles.allContent}>
+            {partPayment && (
+              <div className={styles.content}>
+                <div className={styles.category}>
+                  {categoryIcons[partPayment.category]}
+                </div>
+                <div className={styles.brandName}>{partPayment.brand_name}</div>
+                <div className={styles.payRecord}>
+                  <div className={styles.payDate}>
+                    {formatPayDate(partPayment.pay_date)}
+                  </div>
+                  <div className={styles.payTime}>{partPayment.pay_time}</div>
+                </div>
               </div>
-            ))}
-          </div>
-          {/* {resultPayment && resultPayment.bills.map((bill, index) => (
-            <div key={index}>
-              {matchUserName(bill.user_id)} {bill.cost} {bill.remain_cost !== 0 && <WarningAmberIcon sx={{ color: 'orange' }} />}
+            )}
+
+            {/* 멤버별 정산 내역 */}
+            <div className={styles.memberList}>
+              {resultPayment && resultPayment.bills.map((bill, index) => (
+                <div className={styles.member} key={index}>
+                  <div className={styles.memberName} style={{
+                    color: bill && bill.remain_cost > 0 ? 'orange' : 'black',
+                  }}>
+                    {matchUserName(bill.user_id)}
+                  </div>
+                  <TextField
+                    disabled
+                    variant="outlined"
+                    defaultValue={bill.cost}
+                    className={styles.customTextField}
+                    InputProps={{
+                      style: {
+                        height: "40px", // 원하는 높이로 조정
+                        width: "120px", // 원하는 너비로 조정
+                      },
+                    }}
+                    inputProps={{
+                      style: {
+                        backgroundColor: "lightgrey",
+                        padding: "8px",
+                        borderRadius: "5px",
+                        textAlign: "right", // 텍스트를 오른쪽 정렬
+                      },
+                    }}
+                  />
+                </div>
+              ))}
             </div>
-          ))} */}
+            {/* {bill.remain_cost !== 0 && <WarningAmberIcon sx={{ color: 'orange' }} />} */}
+            <div className={styles.alertContainer}>
+              {resultPayment && !resultPayment.bills.every((calculate) => calculate.remain_cost === 0) && (
+                <>
+                  <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;미정산 알림&nbsp;<WarningAmberIcon sx={{ color: 'lightgreen' }} />
+                  <div className={styles.alert}>
+                    {resultPayment.bills
+                      .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
+                        const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
+                        return (
+                          <div className={styles.alertUser} key={calculate.user_id}>
+                            <span style={{ 'color': 'lightgreen' }}>{member.last_name}{member.first_name}</span>
+                            님이 &nbsp;
+                            <span style={{ 'color': 'lightgreen' }}>{calculate.remain_cost}원</span>
+                            &nbsp;정산에 실패했습니다.
+                          </div>
+                        );
+                      })}
+                  </div>
+                </>
+              )}
+            </div>
+
+
+          </div>
         </div>
       </Fade>
     </Modal>
