@@ -4,7 +4,7 @@
   left: 50%;
 
   width: 350px;
-  min-height: 45%;
+  min-height: 60%;
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 10px;
@@ -30,9 +30,10 @@
 
 .totalAmount {
   font-weight: bold;
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   color: rgb(78, 160, 120);
   height: 50px;
+  margin-top: -20px;
 }
 
 .content {
@@ -52,15 +53,13 @@
 
 .brandName {
   width: 60%;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   text-align: center;
   white-space: nowrap; /* 텍스트를 한 줄로 표시 */
   overflow: hidden; /* 넘치는 텍스트를 숨김 */
   text-overflow: ellipsis; /* 넘치는 텍스트에 '...' 표시 */
-  /* text-overflow: clip; */
-  /* border: 1px solid black; */
   padding: 0 5%;
 }
 
@@ -72,7 +71,7 @@
 }
 
 .memberList {
-  margin-top: 20px;
+  margin-top: 40px;
   /* border: 1px solid blue; */
 }
 
@@ -85,4 +84,13 @@
 
 .memberName {
   margin: 10px 50px 10px 0px;
+}
+
+.payMember {
+  color: rgb(78, 160, 120);
+  font-weight: 600;
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }

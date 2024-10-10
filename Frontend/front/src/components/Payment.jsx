@@ -286,7 +286,7 @@ const Payment = ({ selectedDate }) => {
                         isCompleted === 1 ? styles.completed : ""
                       }`} // isCompleted가 1이면 completed 클래스 추가
                     >
-                      {payment.amount}
+                      {payment.amount.toLocaleString()} {/* 세 자리마다 쉼표 추가 */}
                     </div>
                     <div className={styles.brandName}>{payment.brand_name}</div>
                   </div>

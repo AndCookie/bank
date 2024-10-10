@@ -164,7 +164,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
               onClick={onClose}
             />
             <div className={styles.totalAmount}>
-              {partPayment.amount}&nbsp; 원
+              {partPayment.amount.toLocaleString()}&nbsp;원
             </div>
 
             {/* 정산 체크한 결제 내역 */}
@@ -182,8 +182,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             </div>
 
             <div className={styles.memberList}>
-              결제 당사자만 정산 가능합니다
-              <div>{matchUserName()}</div>
+              결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />정산할 수 있어요
             </div>
           </div>
         </Fade>
@@ -211,7 +210,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId }) => {
             fontSize="large"
             onClick={onClose}
           />
-          <div className={styles.totalAmount}>{partPayment.amount}&nbsp;원</div>
+          <div className={styles.totalAmount}>{partPayment.amount.toLocaleString()}&nbsp;원</div>
 
           {/* 정산 체크한 결제 내역 */}
           <div className={styles.content}>
