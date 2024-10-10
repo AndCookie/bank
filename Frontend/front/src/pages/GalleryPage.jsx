@@ -1,6 +1,7 @@
 import React from "react";
 import PreviousTrip from "../components/PreviousTrip";
 import Chart from "../components/Chart";
+import MBTI from "../components/MBTI";
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import LoadingPage from '@/pages/LoadingPage'
@@ -22,6 +23,7 @@ const GalleryPage = () => {
       </div>
       <PreviousTrip />
       <Chart /> {/* Chart에서 payments 데이터를 직접 불러옴 */}
+      <MBTI />
     </div>
   );
 };
