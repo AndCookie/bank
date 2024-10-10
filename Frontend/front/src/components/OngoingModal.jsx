@@ -46,9 +46,21 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen && isCompleted && partPayment.length) {
+      setPartPayment((prev) => ({
+        ...prev,
+        bills: partPayment.calculates.map((calculate) => ({
+          cost: calculate.cost,
+          bank_account: tripDetailInfo.members.find((member) => member.id === calculate.user_id).bank_account,
+        })),
+      }))
+    }
+  }, [isOpen, isCompleted, partPayment])
+
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
-    if (isOpen && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
+    if (isOpen && !isCompleted && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
       // 첫 정산의 경우
       if (payments.find(payment => payment.id === paymentId).calculates.length === 0) {
         const baseCost = parseInt(partPayment.amount / tripDetailInfo.members.length);
@@ -74,12 +86,23 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     }
   }, [partPayment.amount]);
 
+  // useEffect(() => {
+  //   console.log(partPayment)
+  // }, [partPayment])
+
   // 여행 멤버별 정산 금액 매칭
-  const matchBankAccount = (bankAccount) => {
-    const targetBill = (partPayment.bills || []).find(
-      (bill) => bill.bank_account === bankAccount
-    );
-    return targetBill ? targetBill.cost : 0;
+  const matchBankAccount = (bankAccount, userId) => {
+    if (!isCompleted) {
+      const targetBill = (partPayment.bills || []).find(
+        (bill) => bill.bank_account === bankAccount
+      );
+      return targetBill ? targetBill.cost : 0;
+    } else {
+      const targetBill = (partPayment.calculates || []).find(
+        (calculate) => calculate.user_id === userId
+      );
+      return targetBill ? targetBill.cost : 0;
+    }
   };
 
   // 여행 멤버별 정산 금액 조정
@@ -203,7 +226,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             </div>
 
             {/* 정산 멤버 */}
-            {partPayment.calculates && partPayment.calculates.length &&
+            {partPayment.calculates && partPayment.calculates.length > 0 &&
               <>
                 <div>정산대상</div>
                 {tripDetailInfo.members.map((member, index) => (
@@ -216,7 +239,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                     <TextField
                       disabled
                       variant={isCompleted === 1 ? 'filled' : 'outlined'}
-                      value={matchBankAccount(member.bank_account)}
+                      value={matchBankAccount(member.bank_account, member.id)}
                       onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
                     />
                   </div>
@@ -224,9 +247,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               </>
             }
 
-            <div className={styles.memberList}>
-              결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />정산할 수 있어요
+
+            {<div className={styles.memberList}>
+              결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />{isCompleted ? '수정' : '정산'}할 수 있어요
             </div>
+            }
           </div>
         </Fade>
       </Modal>
@@ -284,7 +309,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               {member.last_name}{member.first_name}
               <TextField
                 variant={isCompleted === 1 ? 'filled' : 'outlined'}
-                value={matchBankAccount(member.bank_account)}
+                value={matchBankAccount(member.bank_account, member.id)}
                 onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
               />
             </div>
