@@ -113,24 +113,26 @@ const TripPage = () => {
       {/* 과거 여행 */}
       <div className={styles.past}>
         {pastTrips.length > 0 ? (
-          pastTrips.map((trip, index) => (
-            <div key={index} className={styles.pastTrip} onClick={() => toGallery(trip.id)}>
-              {trip.image_url && <img src={trip.image_url} alt={trip.tripName} className={styles.tripImage} />}
-              <div className={styles.pastTripContent}>
-                <div className={styles.location}>
-                  {trip.tripName}
+          [...pastTrips]
+            .sort((a, b) => new Date(b.endDate) - new Date(a.endDate))  // 종료일 기준으로 최신순 정렬
+            .map((trip, index) => (
+              <div key={index} className={styles.pastTrip} onClick={() => toGallery(trip.id)}>
+                {trip.image_url && <img src={trip.image_url} alt={trip.tripName} className={styles.tripImage} />}
+                <div className={styles.pastTripContent}>
+                  <div className={styles.location}>
+                    {trip.tripName}
+                  </div>
+                  <div className={styles.dateLength}>
+                    {dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.startDate, trip.endDate)}일
+                  </div>
+                  <div className={styles.date}>시작일 : {trip.startDate}</div>
+                  <div className={styles.date}>종료일 : {trip.endDate}</div>
                 </div>
-                <div className={styles.dateLength}>
-                  {dayDifference(trip.startDate, trip.endDate) - 1}박 {dayDifference(trip.startDate, trip.endDate)}일
-                </div>
-                <div className={styles.date}>시작일 : {trip.startDate}</div>
-                <div className={styles.date}>종료일 : {trip.endDate}</div>
+                <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
+                  <AddPhotoAlternateIcon />
+                </IconButton>
               </div>
-              <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
-                <AddPhotoAlternateIcon />
-              </IconButton>
-            </div>
-          ))
+            ))
         ) : (
           <div className={styles.noPastTrips}>과거 여행 기록이 없습니다.</div>
         )}
