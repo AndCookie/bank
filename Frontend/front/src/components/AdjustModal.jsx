@@ -14,6 +14,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useTripStore } from "@/stores/tripStore";
 import { usePaymentStore } from "@/stores/paymentStore";
 import axiosInstance from "@/axios.js";
+import ErrorModal from '@/components/ErrorModal';
 
 import styles from "./styles/AdjustModal.module.css";
 
@@ -108,7 +109,7 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
             newUpdatedBills.forEach(bill => {
               renderedMemberInfo.find(member => member.bankAccount === bill.bank_account).cost += bill.cost;
             });
-          // 첫 정산이 아닐 경우
+            // 첫 정산이 아닐 경우
           } else {
             const newUpdatedBills = updatedBills.map((bill) => ({
               ...bill,
@@ -141,8 +142,22 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   const navigate = useNavigate();
   const { tripId } = useParams();
 
+  const [isErrorModalOpen, setIsErorModalOpen] = useState(false);
+
+  const openErrorModal = () => {
+    setIsErorModalOpen(true);
+  }
+
+  const closeErrorModal = () => {
+    setIsErorModalOpen(false);
+  }
+
   const goFinish = () => {
-    navigate(`/finish/${tripId}`);
+    if (finalPayments.payments.length > 0) {
+      navigate(`/finish/${tripId}`);
+    } else {
+      openErrorModal();
+    }
   };
 
   // 카테고리별 아이콘 매핑
@@ -167,90 +182,98 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
 
   if (!isOpen) return null;
   return (
-    <Modal
-      open={isOpen}
-      onClose={onClose}
-      closeAfterTransition
-      slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
-    >
-      <Fade in={isOpen}>
-        <div className={styles.box}>
-          <CloseIcon
-            className={styles.closeBtn}
-            fontSize="large"
-            onClick={onClose}
-          />
-          <div className={styles.totalAmount}>
+    <>
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={isOpen}>
+          <div className={styles.box}>
+            <CloseIcon
+              className={styles.closeBtn}
+              fontSize="large"
+              onClick={onClose}
+            />
+            <div className={styles.totalAmount}>
               {(totalAmount !== undefined && totalAmount !== null)
                 ? totalAmount.toLocaleString()
                 : '0'}&nbsp;원
             </div>
 
-          {/* 정산 체크한 결제 내역 */}
-          <div className={styles.allContent}>
-            {renderedInfo.map((data, index) => (
-              <div className={styles.content} key={index}>
-                <div className={styles.category}>
-                  {categoryIcons[data.category]}
-                </div>
-                <div className={styles.brandName}>{data.brandName}</div>
-                <div className={styles.payRecord}>
-                  <div className={styles.payDate}>
-                    {formatPayDate(data.payDate)}
+            {/* 정산 체크한 결제 내역 */}
+            <div className={styles.allContent}>
+              {renderedInfo.map((data, index) => (
+                <div className={styles.content} key={index}>
+                  <div className={styles.category}>
+                    {categoryIcons[data.category]}
                   </div>
-                  <div className={styles.payTime}>{data.payTime}</div>
+                  <div className={styles.brandName}>{data.brandName}</div>
+                  <div className={styles.payRecord}>
+                    <div className={styles.payDate}>
+                      {formatPayDate(data.payDate)}
+                    </div>
+                    <div className={styles.payTime}>{data.payTime}</div>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* 정산 멤버 */}
-          <div className={styles.memberList}>
-            {tripDetailInfo.members.map((member, index) => (
-              <div className={styles.member} key={index}>
-                <div className={styles.memberName}>
-                  {member.last_name}
-                  {member.first_name}
+            {/* 정산 멤버 */}
+            <div className={styles.memberList}>
+              {tripDetailInfo.members.map((member, index) => (
+                <div className={styles.member} key={index}>
+                  <div className={styles.memberName}>
+                    {member.last_name}
+                    {member.first_name}
+                  </div>
+                  <TextField
+                    disabled
+                    variant="outlined"
+                    defaultValue={matchBankAccount(member.bank_account)}
+                    className={styles.customTextField}
+                    InputProps={{
+                      style: {
+                        height: "40px", // 원하는 높이로 조정
+                        width: "120px", // 원하는 너비로 조정
+                      },
+                    }}
+                    inputProps={{
+                      style: {
+                        backgroundColor: "lightgrey",
+                        padding: "8px",
+                        borderRadius: "5px",
+                        textAlign: "right", // 텍스트를 오른쪽 정렬
+                      },
+                    }}
+                  />
+                  &nbsp; 원
                 </div>
-                <TextField
-                  disabled
-                  variant="outlined"
-                  defaultValue={matchBankAccount(member.bank_account)}
-                  className={styles.customTextField}
-                  InputProps={{
-                    style: {
-                      height: "40px", // 원하는 높이로 조정
-                      width: "120px", // 원하는 너비로 조정
-                    },
-                  }}
-                  inputProps={{
-                    style: {
-                      backgroundColor: "lightgrey",
-                      padding: "8px",
-                      borderRadius: "5px",
-                      textAlign: "right", // 텍스트를 오른쪽 정렬
-                    },
-                  }}
-                />
-                &nbsp; 원
-              </div>
-            ))}
-          </div>
-          
-          <div className={styles.adjustContainer}>
-            <button className={styles.adjustBtn} onClick={goFinish}>
-              정 산 하 기
-            </button>
-          </div>
+              ))}
+            </div>
 
-        </div>
-      </Fade>
-    </Modal>
+            <div className={styles.adjustContainer}>
+              <button className={styles.adjustBtn} onClick={goFinish}>
+                정 산 하 기
+              </button>
+            </div>
+
+          </div>
+        </Fade>
+      </Modal>
+
+      <ErrorModal
+        errorMessage={'정산 내역을 선택하세요.'}
+        showErrorModal={isErrorModalOpen}
+        clearError={closeErrorModal}
+      />
+    </>
   );
 };
 
