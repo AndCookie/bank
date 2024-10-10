@@ -32,24 +32,36 @@ const Payment = ({ selectedDate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
+  const fetchPayments = usePaymentStore((state) => state.fetchPayments);  // fetchPayments 함수
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // const finalPayments = usePaymentStore((state) => state.finalPayments);
-  // const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
   const addFinalPayments = usePaymentStore((state) => state.addFinalPayments);
-  const removeFinalPayments = usePaymentStore(
-    (state) => state.removeFinalPayments
-  );
+  const removeFinalPayments = usePaymentStore((state) => state.removeFinalPayments);
 
-  const { mutate: mutatePrepare } = useMutation((newPayment) => 
-    axiosInstance.post('/payments/prepare/', newPayment)
+  const { tripId } = useParams(); // tripId 가져오기
+
+  // 사전 결제내역 POST 요청
+  const { mutate: mutatePrepare } = useMutation(
+    (newPayment) => axiosInstance.post('/payments/prepare/', newPayment),
+    {
+      onSuccess: () => {
+        // 결제 내역이 추가된 후 결제 목록을 다시 가져옴
+        fetchPayments(tripId);
+      },
+    }
   );
 
   // 현금 결제내역 POST 요청
-  const { mutate: mutateCash } = useMutation((newCashPayment) => 
-    axiosInstance.post('/payments/', newCashPayment)
+  const { mutate: mutateCash } = useMutation(
+    (newCashPayment) => axiosInstance.post('/payments/', newCashPayment),
+    {
+      onSuccess: () => {
+        // 결제 내역이 추가된 후 결제 목록을 다시 가져옴
+        fetchPayments(tripId);
+      },
+    }
   );
 
   const handleAddPreparePayment = (newPayment) => {
@@ -147,22 +159,22 @@ const Payment = ({ selectedDate }) => {
 
   // 필터링된 결제 항목
   const filteredPayments = (payments || [])
-  .filter((payment) => {
-    const tripStartDateMidnight = new Date(tripDetailInfo.startDate);
-    tripStartDateMidnight.setHours(0, 0, 0, 0); // 여행 시작일의 자정을 기준으로 설정
+    .filter((payment) => {
+      const tripStartDateMidnight = new Date(tripDetailInfo.startDate);
+      tripStartDateMidnight.setHours(0, 0, 0, 0); // 여행 시작일의 자정을 기준으로 설정
 
-    if (selectedDate === "all") {
-      return true;
-    } else if (selectedDate === "prepare") {
-      return new Date(payment.pay_date) < tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
-    } else {
-      return (
-        new Date(payment.pay_date).toDateString() ===
-        new Date(selectedDate).toDateString()
-      );
-    }
-  })
-  .filter((payment) => payment.is_completed === isCompleted);
+      if (selectedDate === "all") {
+        return true;
+      } else if (selectedDate === "prepare") {
+        return new Date(payment.pay_date) < tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
+      } else {
+        return (
+          new Date(payment.pay_date).toDateString() ===
+          new Date(selectedDate).toDateString()
+        );
+      }
+    })
+    .filter((payment) => payment.is_completed === isCompleted);
 
   // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
   const groupPaymentsByDate = (paymentsInfo) => {
