@@ -56,6 +56,8 @@ const TripFinishPage = () => {
     setisAdjustCompleteOpen(false);
   };
 
+
+  
   return (
     <div>
       <div>정산 완료</div>
