@@ -252,7 +252,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                     <div className={styles.member} key={index}>
                       <div className={styles.memberName} style={{
                         color: partPayment.calculates.length &&
-                          partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 ? 'orange' : 'black',
+                          partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 ? 'brown' : 'black',
                       }}>
                         {/* {partPayment.calculates.length &&
                           partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
@@ -296,17 +296,20 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             </div>
             }
 
-            <div>
+            <div className={styles.alertContainer}>
               {partPayment.calculates && !partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
                 <>
-                  <WarningAmberIcon sx={{ color: 'orange' }} />
-                  <div style={{ 'color': 'orange' }}>
+                  <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;미정산 알림&nbsp;<WarningAmberIcon sx={{ color: 'lightgreen' }} />
+                  <div className={styles.alert}>
                     {partPayment.calculates
                       .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
                         const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
                         return (
-                          <div key={calculate.user_id}>
-                            {member.last_name}{member.first_name}님이 {calculate.remain_cost}원을 정산하지 않았습니다.
+                          <div className={styles.alertUser} key={calculate.user_id}>
+                            <span style={{ 'color': 'lightgreen' }}>{member.last_name}{member.first_name}</span>
+                            님이 &nbsp;
+                            <span style={{ 'color': 'lightgreen' }}>{calculate.remain_cost}원</span>
+                            &nbsp;정산에 실패했습니다.
                           </div>
                         );
                       })}

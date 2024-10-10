@@ -24,7 +24,7 @@ const Chart = () => {
   return (
     <div className={styles.trip}>
       <div className={styles.title}>
-        소BTI
+        👑 소BTI
         {/*  아이콘  */}
         <div className={styles.icon}>
           <InfoIcon className={styles.infoIcon} onClick={(event) => openModal(event)} />
