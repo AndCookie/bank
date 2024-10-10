@@ -5,31 +5,29 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton'; 
+import CloseIcon from '@mui/icons-material/Close'; 
 import { useParams } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
 
 const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
-  // useParams로 URL에서 tripId 받아오기
   const { tripId } = useParams();
-  const bankAccount = useUserStore((state) => state.userInfo.bankAccount);
+  const userInfo = useUserStore((state) => state.userInfo);
 
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(''); // 기본값을 빈 문자열로 설정
   const [payDate, setPayDate] = useState('');
   const [payTime, setPayTime] = useState('');
 
-  // 탭 상태 (0: 여행 시작 전 결제, 1: 현금 결제)
   const [tabIndex, setTabIndex] = useState(0);
 
-  // 탭 변경 시 호출
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
   };
 
   const handleSubmit = () => {
     if (tabIndex === 0) {
-      // 여행 시작 전 결제 내역
       onSubmitPrepare({
         trip_id: Number(tripId),
         amount: Number(amount),
@@ -37,32 +35,39 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         category: category,
       });
     } else if (tabIndex === 1) {
-      // 현금 결제 내역
       onSubmitCash({
         pay_date: payDate,
         pay_time: payTime,
         brand_name: brandName,
-        bank_account: bankAccount, // userStore에서 bankAccount 가져오기
+        bank_account: userInfo.bankAccount,
         amount: Number(amount),
       });
     }
 
-    // 모달 닫기
     onClose();
   };
 
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={{ ...modalStyle }}>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            top: 10,
+            right: 10,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
         <h2>결제 내역 추가</h2>
 
-        {/* 탭 컴포넌트 */}
         <Tabs value={tabIndex} onChange={handleTabChange} aria-label="payment type tabs">
-          <Tab label="여행 준비 결제" />
+          <Tab label="여행 시작 전 결제" />
           <Tab label="현금 결제" />
         </Tabs>
 
-        {/* 여행 시작 전 결제 (탭 0) */}
         {tabIndex === 0 && (
           <>
             <TextField
@@ -82,6 +87,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
               onChange={(e) => setAmount(e.target.value)}
             />
 
+            {/* Category 선택 필드 */}
             <TextField
               fullWidth
               margin="normal"
@@ -93,6 +99,8 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
                 native: true,
               }}
             >
+              <option value="" disabled>
+              </option>
               <option value="항공">항공</option>
               <option value="숙소">숙소</option>
               <option value="교통">교통</option>
@@ -105,7 +113,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
           </>
         )}
 
-        {/* 현금 결제 (탭 1) */}
         {tabIndex === 1 && (
           <>
             <TextField

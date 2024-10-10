@@ -147,19 +147,22 @@ const Payment = ({ selectedDate }) => {
 
   // 필터링된 결제 항목
   const filteredPayments = (payments || [])
-    .filter((payment) => {
-      if (selectedDate === "all") {
-        return true;
-      } else if (selectedDate === "prepare") {
-        return new Date(payment.pay_date) < new Date(tripDetailInfo.startDate); // 여행 시작일 이전의 결제 건 필터링
-      } else {
-        return (
-          new Date(payment.pay_date).toDateString() ===
-          new Date(selectedDate).toDateString()
-        );
-      }
-    })
-    .filter((payment) => payment.is_completed === isCompleted);
+  .filter((payment) => {
+    const tripStartDateMidnight = new Date(tripDetailInfo.startDate);
+    tripStartDateMidnight.setHours(0, 0, 0, 0); // 여행 시작일의 자정을 기준으로 설정
+
+    if (selectedDate === "all") {
+      return true;
+    } else if (selectedDate === "prepare") {
+      return new Date(payment.pay_date) < tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
+    } else {
+      return (
+        new Date(payment.pay_date).toDateString() ===
+        new Date(selectedDate).toDateString()
+      );
+    }
+  })
+  .filter((payment) => payment.is_completed === isCompleted);
 
   // 결제 항목을 날짜별로 그룹화하면서 날짜 순서대로 정렬
   const groupPaymentsByDate = (paymentsInfo) => {

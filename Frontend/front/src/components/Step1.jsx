@@ -87,14 +87,13 @@ const StepOne = ({ formData, updateFormData }) => {
             placeholder="Start Date"
             value={formData.start_date || ''}  // formData.start_date가 없는 경우 빈 문자열 처리
             onChange={handleStartDateChange}  // start_date 유효성 검사 포함
-            min={today}
           />
           <input
             type="date"
             placeholder="End Date"
             value={formData.end_date || ''}  // formData.end_date가 없는 경우 빈 문자열 처리
             onChange={handleEndDateChange}  // end_date 유효성 검사 포함
-            min={formData.start_date || today}
+            min={formData.start_date}
           />
         </div>
       </div>
