@@ -13,7 +13,7 @@ const StepThree = ({ formData, updateFormData }) => {
     const fetchBankAccounts = async () => {
       try {
         const response = await axiosInstance.get('/bank_accounts/');
-        setBankAccounts(response.data); // 계좌 목록을 state에 저장
+        setBankAccounts(response.data); // 계좌 목록을 state에 저장x` 
         setLoading(false); // 로딩 완료
         
       } catch (error) {

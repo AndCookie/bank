@@ -3,7 +3,7 @@ import PreviousTrip from "../components/PreviousTrip";
 import Chart from "../components/Chart";
 import { MdArrowBack } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-
+import LoadingPage from '@/pages/LoadingPage'
 import styles from "@/styles/GalleryPage.module.css";
 
 const GalleryPage = () => {

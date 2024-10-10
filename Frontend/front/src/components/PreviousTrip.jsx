@@ -7,6 +7,7 @@ import member1 from "../assets/images/member/member1.png";
 import member2 from "../assets/images/member//member2.png";
 import member3 from "../assets/images/member/member3.png";
 import member4 from "../assets/images/member/member4.png";
+import LoadingPage from '@/pages/LoadingPage'
 
 const PreviousTrip = () => {
   const { tripId } = useParams(); // URL에서 tripId 추출
@@ -50,7 +51,7 @@ const PreviousTrip = () => {
   }, [tripId]);
 
   // 로딩 중일 때 로딩 메시지 표시
-  if (loading) return <div>로딩 중...</div>;
+  if (loading) return <LoadingPage />;;
 
   // 에러가 발생했을 때 에러 메시지 표시
   if (error) return <div>{error}</div>;

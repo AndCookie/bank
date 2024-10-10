@@ -10,6 +10,7 @@ import { useFutureTripStore } from '@/stores/futureTripStore';
 import SketchModal from '@/components/SketchModal';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const TripPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -71,27 +72,24 @@ const TripPage = () => {
     return calculatedDayDifference === 0 ? 1 : calculatedDayDifference;
   };
 
+  const handleProfileClick = () => {
+    if (currentTrip.id) {
+      navigate(`/trip/${currentTrip.id}`);
+    } else {
+      toCreate();
+    }
+  };
+
   return (
     <div className={styles.mainContainer}>
       {/* 사용자 프로필 */}
       <div className={styles.upper}>
-        <div className={styles.profile}>
+        <div className={styles.profile} onClick={handleProfileClick}>
           {userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.tripCircleImage} />}
           <IconButton className={styles.createButton} onClick={toCreate}>
             <AddIcon />
           </IconButton>
         </div>
-
-        {/* 현재 여행 */}
-        {currentTrip.id && (
-          <div>
-            <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
-              {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
-            </div>
-            <div className={styles.tripName}>{currentTrip.tripName}</div>
-          </div>
-
-        )}
 
         {/* 미래 여행 */}
         {futureTrips.map((trip, index) => (
@@ -121,7 +119,7 @@ const TripPage = () => {
                 <div className={styles.date}>종료일 : {trip.endDate}</div>
               </div>
               <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
-                <AddIcon />
+                <AddPhotoAlternateIcon />
               </IconButton>
             </div>
           ))
