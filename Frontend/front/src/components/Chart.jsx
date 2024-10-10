@@ -84,7 +84,7 @@ const Chart = () => {
               <img src="${iconUrl}" style="width: 20px; height: 20px; margin-right: 5px;" />
               <strong style="font-size:14px;">${params.name}</strong>
             </div>
-            <div style="font-size:16px; color:${params.color};">${params.value}원</div>
+            <div style="font-size:16px; color:${params.color};">${params.value.toLocaleString()}원</div>
             <div style="font-size:12px;">${params.percent}%</div>
           `;
         },

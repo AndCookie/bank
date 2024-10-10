@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import styles from './styles/MBTI.module.css';
 import InfoIcon from '@mui/icons-material/Info';
 import MBTIModal from '@/components/MBTIModal';
+import aja from '@/assets/images/ping/아자핑.png'; //항공
 
 const Chart = () => {
   const [isMBTIOpen, setisMBTIOpen] = useState(false);
@@ -22,19 +23,21 @@ const Chart = () => {
 
   return (
     <div className={styles.trip}>
-      <div className={styles.title}>소BTI</div>
-      <div className={styles.content}>
+      <div className={styles.title}>
+        소BTI
         {/*  아이콘  */}
         <div className={styles.icon}>
           <InfoIcon className={styles.infoIcon} onClick={(event) => openModal(event)} />
         </div>
+      </div>
+      <div className={styles.content}>
         {/*  캐릭터  */}
         <div className={styles.character}>
-          <img src="" alt="" />
+          <img className={styles.characterImg} src={aja} alt="아자핑" />
           <div className={styles.characterInfo}>
             <div>당신의 소BTI 캐릭터는</div>
-            <div className={styles.myCharacter}>룰루핑</div>
-            <div>
+            <div className={styles.myCharacter}>아자핑</div>
+            <div className={styles.myChip}>
               <Chip variant="outlined" color="primary" label="#항공마일리지왕" />
               <Chip variant="outlined" color="primary" label="#하늘길애호가" />
             </div>
