@@ -4,6 +4,7 @@ import checkImage from '@/assets/images/load/check.png';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import axiosInstance from '@/axios.js';
+import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import LoadingPage from '@/pages/LoadingPage'; // LoadingPage 컴포넌트 가져오기
@@ -21,18 +22,32 @@ import CafeIcon from "@mui/icons-material/LocalCafe";
 import EtcIcon from "@mui/icons-material/MoreHoriz";
 
 const TripFinishPage = () => {
+  const userInfo = useUserStore((state) => state.userInfo);
+
   const getPartPayment = usePaymentStore((state) => state.getPartPayment);
   const finalPayments = usePaymentStore((state) => state.finalPayments);
 
   // 정산 결과
   const [resultPayments, setResultPayments] = useState([]);
 
+  // 총 정산 금액
+  const [successAmount, setsuccessAmount] = useState(0);
+  const [failAmount, setfailsAmount] = useState(0);
+
   // 선택한 상세 정산 내역 Id
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
 
   useEffect(() => {
-    console.log('Final', finalPayments);
-  }, [])
+    console.log('finalPayments', finalPayments);
+  }, [finalPayments])
+
+  useEffect(() => {
+    console.log('getPartPayment', getPartPayment(1))
+  }, [getPartPayment(1)])
+
+  useEffect(() => {
+    console.log('resultPayments', resultPayments)
+  }, [resultPayments])
 
   useEffect(() => {
     // 결제 정산 요청
@@ -41,7 +56,6 @@ const TripFinishPage = () => {
         try {
           const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
           const { data } = response;
-          console.log('Adjust Reulst', data);
           setResultPayments(data.payments);
         } catch (error) {
           console.log(error);
@@ -50,6 +64,21 @@ const TripFinishPage = () => {
       sendAdjustment();
     };
   }, [finalPayments]);
+
+  useEffect(() => {
+    let successCost = 0;
+    let failCost = 0;
+    if (resultPayments) {
+      resultPayments.forEach(payment => {
+        payment.bills.forEach(bill => {
+          successCost += (bill.cost - bill.remain_cost);
+          failCost += bill.remain_cost
+        });
+      });
+    }
+    setsuccessAmount(successCost);
+    setfailsAmount(failCost);
+  }, [resultPayments])
 
   // paymentId에 따른 결제 내역의 정산 여부
   const isAdjusted = (paymentId) => {
@@ -87,7 +116,7 @@ const TripFinishPage = () => {
   }
 
 
-  
+
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
@@ -105,7 +134,8 @@ const TripFinishPage = () => {
       </div>
 
       {/* 내 정보 */}
-      
+      {userInfo.nickName}
+      {successAmount} {failAmount}
 
       {/* 세부 내역 */}
       <div className={styles.allContent}>
