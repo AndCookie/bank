@@ -22,7 +22,7 @@ const Chart = () => {
     항공: airplaneIcon,
     카페: cafeIcon,
     기타: etcIcon,
-    음식: foodIcon,
+    식비: foodIcon,
     숙소: hotelIcon,
     쇼핑: shoppingIcon,
     관광: tourIcon,
@@ -90,8 +90,11 @@ const Chart = () => {
         },
       },
       legend: {
+        orient: 'horizontal',
         bottom: '0%',
         left: 'center',
+        itemGap: 20, // 아이템 간격 조정
+        width: '90%', // 너비를 조정하여 4개의 카테고리가 한 줄에 표시되도록 설정
       },
       color: [
         "#becaf4",

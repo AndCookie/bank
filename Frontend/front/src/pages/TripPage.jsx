@@ -84,9 +84,13 @@ const TripPage = () => {
 
         {/* 현재 여행 */}
         {currentTrip.id && (
-          <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
-            {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
+          <div>
+            <div className={styles.currentTrip} onClick={() => toDetail(currentTrip.id)}>
+              {currentTrip.imageUrl && <img src={currentTrip.imageUrl} alt={currentTrip.tripName} className={styles.tripCircleImage} />}
+            </div>
+            <div className={styles.tripName}>{currentTrip.tripName}</div>
           </div>
+
         )}
 
         {/* 미래 여행 */}
