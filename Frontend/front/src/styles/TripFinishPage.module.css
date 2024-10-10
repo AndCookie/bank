@@ -26,7 +26,7 @@
 /* 정산 완료  */
 .complete {
   width: 100%;
-  height: 200px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -43,7 +43,6 @@
   padding: 0;
   /* border: 1px solid black; */
 }
-
 
 .completeImg > img {
   height: 100px;
@@ -71,16 +70,77 @@
   font-weight: bolder;
 }
 
+.fail {
+  color: black;
+  margin-top: 20px;
+  display: flex;
+}
+
+/* 내 정보 */
+.myData {
+  background-color: #fff;
+  width: 100%;
+  padding: 50px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 20px auto 0 auto;
+  /* border: 1px solid black; */
+}
+
+.myName {
+  font-weight: bold;
+  font-size: 1.4rem;
+  margin-bottom: 40px;
+}
+
+.expense,
+.balance {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.expense div, 
+.balance div {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.progress {
+  margin: 30px 0;
+  width: 100%;
+  background-color: #f3f3f3;
+  border-radius: 20px;
+  height: 10px;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: 20px;
+  background-color: #4b72e1;
+  width: 52%; /* Dynamically set width based on percentage */
+  position: relative;
+}
+
+.percentage {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
 /* 세부 내역 */
 .allContent {
   width: 80%;
-  height: 150px;
+  height: 220px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: auto;
+  margin: 10px auto 20px auto;
 }
 
 .content {
@@ -115,5 +175,6 @@
   width: 20%;
   font-size: 0.7rem;
   color: grey;
+  text-align: center;
   /* border: 1px solid black; */
 }

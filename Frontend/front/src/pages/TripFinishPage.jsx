@@ -9,6 +9,7 @@ import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import LoadingPage from '@/pages/LoadingPage'; // LoadingPage 컴포넌트 가져오기
 import AdjustCompleteModal from '@/components/AdjustCompleteModal';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import successImg from "@/assets/images/load/check.png";
 
@@ -29,8 +30,14 @@ const TripFinishPage = () => {
 
   // 정산 결과
   const [resultPayments, setResultPayments] = useState([]);
+  const [resultBudget, setResultBudget] = useState([]);
+  const [resultBalance, setResultBalance] = useState('');
 
   // 총 정산 금액
+  const [totalSuccessAmount, setTotalSuccessAmount] = useState(0);
+  const [totalFailAmount, setTotalFailAmount] = useState(0);
+
+  // 개인 정산 금액
   const [successAmount, setsuccessAmount] = useState(0);
   const [failAmount, setfailsAmount] = useState(0);
 
@@ -55,8 +62,10 @@ const TripFinishPage = () => {
       const sendAdjustment = async () => {
         try {
           const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
-          const { data } = response;
-          setResultPayments(data.payments);
+          console.log(response)
+          setResultPayments(response.data.payments);
+          setResultBudget(response.data.budget);
+          setResultBalance(parseInt(response.data.balance));
         } catch (error) {
           console.log(error);
         }
@@ -66,16 +75,24 @@ const TripFinishPage = () => {
   }, [finalPayments]);
 
   useEffect(() => {
+    let totalSuccessCost = 0;
+    let totalFailCost = 0;
     let successCost = 0;
     let failCost = 0;
     if (resultPayments) {
       resultPayments.forEach(payment => {
         payment.bills.forEach(bill => {
-          successCost += (bill.cost - bill.remain_cost);
-          failCost += bill.remain_cost
+          totalSuccessCost += bill.cost - bill.remain_cost;
+          totalFailCost += bill.remain_cost;
+          if (bill.user_id == userInfo.id) {
+            successCost += (bill.cost - bill.remain_cost);
+            failCost += bill.remain_cost
+          }
         });
       });
     }
+    setTotalSuccessAmount(totalSuccessCost);
+    setTotalFailAmount(totalFailCost);
     setsuccessAmount(successCost);
     setfailsAmount(failCost);
   }, [resultPayments])
@@ -98,6 +115,14 @@ const TripFinishPage = () => {
     기타: <EtcIcon fontSize="large" />,
   };
 
+  // 날짜 포맷팅 함수
+  const formatPayDate = (dateString) => {
+    const date = new Date(dateString);
+    const month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+    const day = date.getDate();
+    return `${month}월 ${day}일`;
+  };
+
   // 정산 상세 정보 모달 창
   const [isAdjustCompleteOpen, setisAdjustCompleteOpen] = useState(false);
 
@@ -115,8 +140,6 @@ const TripFinishPage = () => {
     navigate(-1);
   }
 
-
-
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
@@ -129,13 +152,57 @@ const TripFinishPage = () => {
       {/* 정산완료 */}
       <div className={styles.complete}>
         <div className={styles.completeImg}><img src={checkImage} alt="체크" /></div>
-        <div className={styles.completeAmount}>얼마야</div>
+        <div className={styles.completeAmount}>{totalSuccessAmount.toLocaleString()} 원</div>
         <div className={styles.completeMsg}>정 산 완 료</div>
+
+        <div className={styles.fail}>
+          <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;
+          <span className={styles.failAmount}>{totalFailAmount.toLocaleString()} 원을 못받으셨어요</span>
+        </div>
       </div>
 
       {/* 내 정보 */}
-      {userInfo.nickName}
-      {successAmount} {failAmount}
+      <div className={styles.myData}>
+        <div className={styles.myName}>{userInfo.nickName} 님의 여행 소비 정보</div>
+        
+        <div className={styles.expense}>
+          <div>전체 지출</div>
+          <div>{resultBudget.used_budget?.toLocaleString()} 원</div>
+        </div>
+        
+        <div className={styles.expense}>
+          <div>이번 지출</div>
+          <div>{successAmount.toLocaleString()} 원</div>
+        </div>
+        
+        <div className={styles.progress}>
+          <div className={styles.progressBar}>
+          <span className={styles.percentage}>
+            {resultBudget.initial_budget > 0 
+              ? Math.floor((resultBudget.used_budget / resultBudget.initial_budget) * 100) + "%"
+              : "0%"}
+          </span>
+          </div>
+        </div>
+        
+        <div className={styles.balance}>
+          <div>예산 잔고</div>
+          <div>{resultBudget.remain_budget?.toLocaleString()} 원</div>
+        </div>
+        <div className={styles.balance}>
+          <div>계좌 잔고</div>
+          <div>{resultBalance.toLocaleString()} 원</div>
+        </div>
+        
+      </div>
+
+      {/* <p>{totalSuccessAmount} {totalFailAmount}</p>
+      <p>{successAmount} {failAmount}</p>
+      <p>초기 예산: {resultBudget.initial_budget} 원</p>
+      <p>사용된 예산: {resultBudget.used_budget} 원</p>
+      <p>남은 예산: {resultBudget.remain_budget} 원</p>
+      잔고: {resultBalance} */}
+
 
       {/* 세부 내역 */}
       <div className={styles.allContent}>
@@ -147,7 +214,7 @@ const TripFinishPage = () => {
             <div className={styles.brandName}>{getPartPayment(payment.payment_id).brand_name}</div>
             <div className={styles.payRecord}>
               <div className={styles.payDate}>
-                {getPartPayment(payment.payment_id).pay_date}
+                {formatPayDate(getPartPayment(payment.payment_id).pay_date)}
               </div>
               <div className={styles.payTime}>{getPartPayment(payment.payment_id).pay_time}</div>
             </div>
