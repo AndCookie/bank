@@ -46,8 +46,6 @@ def pay_list(request):
     if request.method == 'GET':
         trip_id = request.GET.get('trip_id')
         trip = Trip.objects.get(pk=trip_id)
-        start_date = trip.start_date
-        end_date = trip.end_date
         
         members = Member.objects.filter(trip=trip_id)
         if not members.filter(user=request.user).exists():
@@ -57,21 +55,19 @@ def pay_list(request):
         
         payments = Payment.objects.filter(
             bank_account__in=bank_accounts, 
-            pay_date__gte=start_date, 
-            pay_date__lte=end_date
+            pay_date__gte=trip.start_date, 
+            pay_date__lte=trip.end_date
         ).order_by('pay_date', 'pay_time')
         serializer = PaymentDetailSerializer(payments, many=True)
-        budget = {}
-        for member in members:
-            user_id = member.user.user_id
-            initial_budget = member.budget
-            used_budget = sum(Calculate.objects.filter(
-                member=member,
-                payment__pay_date__gte=start_date,
-                payment__pay_date__lte=end_date
-                ).values_list('cost', flat=True))
-            remain_budget = initial_budget - used_budget
-            budget[user_id] = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
+        member = Member.objects.get(user=request.user, trip=trip_id)
+        initial_budget = member.budget
+        used_budget = sum(Calculate.objects.filter(
+            member=member,
+            payment__pay_date__gte=trip.start_date,
+            payment__pay_date__lte=trip.end_date
+            ).values_list('cost', flat=True))
+        remain_budget = initial_budget - used_budget
+        budget = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
         return Response({"payments_list": serializer.data, 'budget': budget}, status=status.HTTP_200_OK)
 
 
@@ -79,30 +75,28 @@ def pay_list(request):
 @permission_classes([IsAuthenticated])
 def adjustment(request):
     if request.method == 'POST':
-        # 이거 수정해보기
         payments = request.data.get('payments')
-        ######################################################################
-        balance_dic = {}
-        for member in Member.objects.filter(trip=request.data.get('trip_id')):
-            balance_dic[member.user.last_name + member.user.first_name] = []
-            balance_dic[member.user.last_name + member.user.first_name].append(balance(member.user.email, member.bank_account)['REC']['accountBalance'])
-        ######################################################################
         for payment in payments:    
             payment_id = payment.get('payment_id')
-            # if Calculate.objects.filter(payment_id=payment_id).exists():
-            #     return Response({'error': "이미 정산이 완료된 정산이 포함되었습니다."}, status=status.HTTP_403_FORBIDDEN)
             bank_account = Payment.objects.get(id=payment_id).bank_account
             if not Member.objects.filter(bank_account=bank_account, user=request.user).exists():
                 return Response({'error': "현재 사용자는 해당 계좌를 사용하고 있지 않습니다."}, status=status.HTTP_401_UNAUTHORIZED)
             
         serializer = CalculateCreateSerializer(data=request.data, context={'request': request})
         if serializer.is_valid(raise_exception=True):
+            trip_id = request.data.get('trip_id')
+            trip = Trip.objects.get(pk=trip_id)
             result = serializer.save()
-            ######################################################################
-            result['balance'] = balance_dic
-            for member in Member.objects.filter(trip=request.data.get('trip_id')):
-                balance_dic[member.user.last_name + member.user.first_name].append(balance(member.user.email, member.bank_account)['REC']['accountBalance'])
-            ######################################################################
+            member = Member.objects.get(user=request.user, trip=trip_id)
+            initial_budget = member.budget
+            used_budget = sum(Calculate.objects.filter(
+                member=member,
+                payment__pay_date__gte=trip.start_date,
+                payment__pay_date__lte=trip.end_date
+                ).values_list('cost', flat=True))
+            remain_budget = initial_budget - used_budget
+            budget = {"initial_budget": initial_budget, "used_budget": used_budget, "remain_budget": remain_budget}
+            result['budget'] = budget
             return Response(result, status=status.HTTP_201_CREATED)
         
         
