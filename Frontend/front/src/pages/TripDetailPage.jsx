@@ -75,7 +75,7 @@ const TripDetailPage = () => {
   const [isTripInfoOpen, setisTripInfoOpen] = useState(false);
 
   const goBack = () => {
-    navigate(-1);
+    navigate('/trip');
   }
 
   const clickDate = (date) => {

@@ -4,10 +4,13 @@ import axiosInstance from '@/axios';
 import { Modal, Backdrop, Fade, Button, CircularProgress } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useErrorStore } from '@/stores/errorStore'; // useErrorStore import
 
 import styles from './styles/SketchModal.module.css';
 
-const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
+const SketchModal = ({ isOpen, onClose, tripId, imageUrl, onSave }) => {
+  const { setError } = useErrorStore(); // errorStore에서 setError 사용
+
   // 새롭게 생성한 AI 스케치 이미지 url
   const [sketchUrl, setSketchUrl] = useState('');
 
@@ -108,6 +111,7 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
     });
   };
 
+  // 이미지 저장 및 알림 처리
   const saveImage = async () => {
     if (sketchUrl.length > 0) {
       try {
@@ -115,12 +119,15 @@ const SketchModal = ({ isOpen, onClose, tripId, imageUrl }) => {
           trip_id: tripId,
           image_url: sketchUrl,
         });
+        onClose(); // 모달 닫기
+        setError('이미지가 성공적으로 저장되었습니다.'); // 성공 메시지 표시
+        if (onSave) onSave(); // 부모 컴포넌트의 여행 데이터 갱신 콜백 호출
       } catch (error) {
         console.error(error);
       }
     }
   };
-
+  
   let imageContent;
   if (sketchUrl.length > 0) {
     imageContent = <img src={sketchUrl} alt="AI Sketch" style={{ maxWidth: '100%', maxHeight: '250px' }} />;

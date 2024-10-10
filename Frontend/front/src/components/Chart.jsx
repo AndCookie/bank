@@ -11,6 +11,7 @@ import hotelIcon from '@/assets/images/category/hotel.png';
 import shoppingIcon from '@/assets/images/category/shopping.png';
 import tourIcon from '@/assets/images/category/tour.png';
 import vehicleIcon from '@/assets/images/category/vehicle.png';
+import LoadingPage from '@/pages/LoadingPage'
 
 const Chart = () => {
   const { tripId } = useParams(); // URL에서 tripId 추출
@@ -127,7 +128,7 @@ const Chart = () => {
     };
   };
 
-  if (loading) return <div>차트 데이터를 불러오는 중...</div>;
+  if (loading) return <LoadingPage />;
   if (error) return <div>Error: {error.message}</div>;
   if (!chartData) return <div>차트 데이터를 불러오지 못했습니다.</div>;
 

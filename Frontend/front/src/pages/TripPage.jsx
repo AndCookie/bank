@@ -80,12 +80,20 @@ const TripPage = () => {
     }
   };
 
+  const handleTripDataUpdate = async () => {
+    try {
+      await fetchTrips(); // 여행 데이터를 다시 불러옴
+    } catch (error) {
+      console.error("Error fetching trips:", error);
+    }
+  };
+
   return (
     <div className={styles.mainContainer}>
       {/* 사용자 프로필 */}
       <div className={styles.upper}>
-        <div className={styles.profile} onClick={handleProfileClick}>
-          {userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.tripCircleImage} />}
+        <div className={styles.profile} >
+          {userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.tripCircleImage} onClick={handleProfileClick} />}
           <IconButton className={styles.createButton} onClick={toCreate}>
             <AddIcon />
           </IconButton>
@@ -128,7 +136,7 @@ const TripPage = () => {
         )}
       </div>
 
-      <SketchModal isOpen={isSketchOpen} onClose={closeModal} tripId={sketchTripId} imageUrl={sketchImageUrl} />
+      <SketchModal isOpen={isSketchOpen} onClose={closeModal} tripId={sketchTripId} imageUrl={sketchImageUrl} onSave={handleTripDataUpdate} />
     </div>
   );
 };
