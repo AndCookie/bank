@@ -71,6 +71,7 @@
 
 .memberList {
   margin-top: 40px;
+  width: 100%;
   /* border: 1px solid blue; */
 }
 
@@ -83,6 +84,9 @@
 
 .memberName {
   margin: 10px 50px 10px 0px;
+  width: 25%;
+  text-align: end;
+  /* border: 1px solid black; */
 }
 
 .payMember {
@@ -92,4 +96,12 @@
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+.won {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  /* border: 1px solid black; */
 }

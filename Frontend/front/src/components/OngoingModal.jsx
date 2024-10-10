@@ -227,26 +227,47 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             </div>
 
             {/* 정산 멤버 */}
-            {partPayment.calculates && partPayment.calculates.length > 0 &&
-              <>
-                <div>정산대상</div>
-                {tripDetailInfo.members.map((member, index) => (
-                  <div key={index}>
-                    {partPayment.calculates.length &&
-                      partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
-                      <WarningAmberIcon sx={{ color: 'orange' }} />}
-
-                    {member.last_name}{member.first_name}
-                    <TextField
-                      disabled
-                      variant={isCompleted === 1 ? 'filled' : 'outlined'}
-                      value={matchBankAccount(member.bank_account, member.id)}
-                      onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
-                    />
-                  </div>
-                ))}
-              </>
-            }
+            <div className={styles.memberList}>
+              {partPayment.calculates && partPayment.calculates.length > 0 &&
+                <>
+                  {tripDetailInfo.members.map((member, index) => (
+                    <div className={styles.member} key={index}>
+                      <div className={styles.memberName}>
+                        {partPayment.calculates.length &&
+                          partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
+                          <WarningAmberIcon sx={{ color: 'orange' }} />}
+                        {member.last_name}
+                        {member.first_name}
+                      </div>
+                      <TextField
+                        disabled
+                        variant={isCompleted === 1 ? 'outlined' : 'outlined'}
+                        value={matchBankAccount(member.bank_account, member.id)}
+                        onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
+                        className={styles.customTextField}
+                        InputProps={{
+                          style: {
+                            height: "40px", // 원하는 높이로 조정
+                            width: "120px", // 원하는 너비로 조정
+                          },
+                        }}
+                        inputProps={{
+                          style: {
+                            backgroundColor: "lightgrey",
+                            padding: "8px",
+                            borderRadius: "5px",
+                            textAlign: "right", // 텍스트를 오른쪽 정렬
+                          },
+                        }}
+                      />
+                      <div className={styles.won}>
+                        &nbsp; 원
+                      </div>
+                    </div>
+                  ))}
+                </>
+              }
+            </div>
 
 
             {<div className={styles.memberList}>
@@ -316,7 +337,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                   </div>
                   <TextField
                     disabled={isCompleted === 1}
-                    variant={isCompleted === 1 ? 'filled' : 'outlined'}
+                    variant={isCompleted === 1 ? 'outlined' : 'outlined'}
                     value={matchBankAccount(member.bank_account, member.id)}
                     onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
                     className={styles.customTextField}
