@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,11 +19,21 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
   const fetchPayments = usePaymentStore((state) => state.fetchPayments);
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
-  // const [category, setCategory] = useState('');
   const [payDate, setPayDate] = useState('');
   const [payTime, setPayTime] = useState('');
-
   const [tabIndex, setTabIndex] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      // 현재 날짜와 시간을 기본값으로 설정
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0]; // 'yyyy-mm-dd' 형식
+      const formattedTime = today.toTimeString().split(' ')[0].substring(0, 5); // 'HH:mm' 형식
+      
+      setPayDate(formattedDate);
+      setPayTime(formattedTime);
+    }
+  }, [isOpen]);
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
@@ -35,7 +45,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         trip_id: Number(tripId),
         amount: Number(amount),
         brand_name: brandName,
-        // category: category,
       });
     } else if (tabIndex === 1) {
       onSubmitCash({
@@ -74,30 +83,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
 
           {tabIndex === 0 && (
             <>
-              {/* Category 선택 필드 */}
-              {/* <TextField
-                fullWidth
-                margin="normal"
-                label="카테고리"
-                select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                SelectProps={{
-                  native: true,
-                }}
-              >
-                <option value="" disabled className={styles.option}>
-                </option>
-                <option value="항공">항공</option>
-                <option value="숙소">숙소</option>
-                <option value="교통">교통</option>
-                <option value="식비">식비</option>
-                <option value="카페">카페</option>
-                <option value="쇼핑">쇼핑</option>
-                <option value="관광">관광</option>
-                <option value="기타">기타</option>
-              </TextField> */}
-
               <TextField
                 fullWidth
                 margin="normal"
@@ -114,7 +99,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
-
             </>
           )}
 
@@ -140,6 +124,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
               <TextField
                 fullWidth
                 margin="normal"
+                label="날짜"
                 type="date"
                 value={payDate}
                 onChange={(e) => setPayDate(e.target.value)}
@@ -148,6 +133,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
               <TextField
                 fullWidth
                 margin="normal"
+                label="시간"
                 type="time"
                 value={payTime}
                 onChange={(e) => setPayTime(e.target.value)}
