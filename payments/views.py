@@ -9,6 +9,7 @@ from .serializers import PaymentCreateSerializer, PaymentDetailSerializer, Calcu
 from shinhan_api.demand_deposit import update_demand_deposit_account_withdrawal as withdrawal
 from shinhan_api.demand_deposit import update_demand_deposit_account_Transfer as transfer
 from shinhan_api.demand_deposit import inquire_demand_deposit_account_balance as balance
+from shinhan_api.demand_deposit import inquire_demand_deposit_account, update_demand_deposit_account_withdrawal, update_demand_deposit_account_deposit
 from chatgpt_api.api import categorize
 
 
@@ -186,3 +187,40 @@ def prepare(request):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        
+@api_view(['POST'])
+def zero(request):
+    if request.method == 'POST':
+        # 특정 사람의 잔액을 0원으로 만들어주는 코드
+        dic = {'정태완': ['3719831726ssafy@naver.com', '9998624062331551'], 
+               '임광영': ['3719854488ssafy@naver.com', "0234420981757582"], 
+               '이선재': ['3720570145ssafy@naver.com', '0908607631513705'], 
+               '박준영': ['3720611926ssafy@naver.com', '0041366933976143']
+            }
+        username = request.data.get('username')
+        
+        # 특정 사람의 잔액을 0원으로 만들어주는 코드
+        email, bank_account = dic[username]
+        accountBalance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+        update_demand_deposit_account_withdrawal(bank_account, accountBalance, email)
+        balance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+        return Response({'balance': balance}, status=status.HTTP_200_OK)
+    
+            
+@api_view(['POST'])
+def rich(request):
+    if request.method == 'POST':
+        # 특정 사람에게 특정 금액을 입금하는 코드
+        dic = {'정태완': ['3719831726ssafy@naver.com', '9998624062331551'], 
+               '임광영': ['3719854488ssafy@naver.com', "0234420981757582"], 
+               '이선재': ['3720570145ssafy@naver.com', '0908607631513705'], 
+               '박준영': ['3720611926ssafy@naver.com', '0041366933976143']
+            }
+        username = request.data.get('username')
+        
+        email, bank_account = dic[username]
+        deposit_amount = request.data.get('money')
+        update_demand_deposit_account_deposit(email, bank_account, deposit_amount)
+        balance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+        return Response({'balance': balance}, status=status.HTTP_200_OK)

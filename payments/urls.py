@@ -10,4 +10,6 @@ urlpatterns = [
     path('objection/', objection), 
     path('delete/', delete), 
     path('prepare/', prepare), 
+    path('zero/', zero), 
+    path('rich/', rich), 
 ]
