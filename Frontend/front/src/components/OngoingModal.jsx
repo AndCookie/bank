@@ -297,7 +297,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             }
 
             <div>
-              {!partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
+              {partPayment.calculates && !partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
                 <>
                   <WarningAmberIcon sx={{ color: 'orange' }} />
                   <div style={{ 'color': 'orange' }}>
