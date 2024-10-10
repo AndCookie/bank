@@ -171,7 +171,7 @@ const Payment = ({ selectedDate }) => {
         return new Date(`${payment.pay_date}T${payment.pay_time}`).getTime() == new Date(tripStartDateMidnight).getTime();
       } else {
         return (
-          new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString()
+          new Date(`${payment.pay_date}T${payment.pay_time}`).getTime() !== new Date(tripStartDateMidnight).getTime() && new Date(payment.pay_date).toDateString() === new Date(selectedDate).toDateString()
         );
       }
     })
