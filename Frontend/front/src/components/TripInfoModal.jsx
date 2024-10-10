@@ -29,12 +29,10 @@ const TripInfoModal = ({ isOpen, onClose }) => {
       const postData = {
         trip_id: tripId,
         budget: newBudget,
-        bank_account: userInfo.bankAccount, // userInfo에서 bank_account 가져오기
-        bank_name: userInfo.bankName, // userInfo에서 bank_name 가져오기
       };
 
       // /trips/invite/로 POST 요청 보내기
-      await axiosInstance.post('/trips/invite/', postData);
+      await axiosInstance.post('/trips/budget/', postData);
 
       setEditMode(false); // 수정 모드 종료
     } catch (error) {
