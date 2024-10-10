@@ -208,24 +208,50 @@ def create_demand_deposit_for_each_bank(email):
         {'bankCode': '999', 'bankName': '싸피은행'}]
     for i in rec:
         print(create_demand_deposit(email, i['bankCode'], i['bankName']))
-    
 
 
 if __name__ == "__main__":
-    email = '3719854488ssafy@naver.com'
     # create_demand_deposit_for_each_bank(email)
     # create_demand_deposit("oodeng98@naver.com")
     # pprint(inquire_demand_deposit_list(email))
     # create_demand_deposit_account("3719831726test@naver.com")
     # pprint(inquire_demand_deposit_account_list(email)['REC'])
-    pprint(inquire_demand_deposit_account(email, "0234420981757582")['REC'])
+    # pprint(inquire_demand_deposit_account(email, "0234420981757582")['REC'])
+    # pprint(update_demand_deposit_account_Transfer(email, "9998624062331551", "0234420981757582", 534853))
     # inquire_demand_deposit_account_holder_name()
     # pprint(inquire_demand_deposit_account_balance("email9629@naver.com", "0372462077415412"))
     # email = "email1@naver.com"
-    # pprint(update_demand_deposit_account_withdrawal("0880493544778029", 5000000, email))
     # bank_account = "0882137908931580"
     # update_demand_deposit_account_deposit(email, bank_account, "5000000")
     # pprint(inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance'])
-    # pprint(update_demand_deposit_account_Transfer(email, "9998624062331551", "0234420981757582", 534853))
     # pprint(inquire_transaction_history_list("0817158183605808"))
     # inquire_transaction_history()
+
+    # 특정 사람의 잔액을 0원으로 만들어주는 코드
+    dic = {'정태완': ['3719831726ssafy@naver.com', '9998624062331551'], 
+           '임광영': ['3719854488ssafy@naver.com', "0234420981757582"], 
+           '이선재': ['3720570145ssafy@naver.com', '0908607631513705'], 
+           '박준영': ['3720611926ssafy@naver.com', '0041366933976143']
+           }
+    
+    # 모든 사람의 잔액을 조회하는 코드
+    for username in dic:
+        email, bank_account = dic[username]
+        accountBalance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+        print(username, accountBalance)
+        
+    # exit()
+    
+    username = '정태완'
+    # 특정 사람의 잔액을 0원으로 만들어주는 코드
+    email, bank_account = dic[username]
+    accountBalance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+    update_demand_deposit_account_withdrawal(bank_account, accountBalance, email)
+    pprint(inquire_demand_deposit_account(email, bank_account)['REC'])
+    
+    exit()
+    
+    # 특정 사람에게 천만원을 입금하는 코드
+    deposit_amount = 10000000
+    update_demand_deposit_account_deposit(email, bank_account, deposit_amount)
+    pprint(inquire_demand_deposit_account(email, bank_account)['REC'])

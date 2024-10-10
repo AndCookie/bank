@@ -52,8 +52,7 @@ class TripCreateSerializer(serializers.ModelSerializer):
             except User.DoesNotExist:
                 continue
         request = self.context.get('request')
-        # 추후 이 주석 다시 복귀
-        # send_message(request, uuid_list, trip.trip_name, trip.id)
+        send_message(request, uuid_list, trip.trip_name, trip.id)
         return trip
 
     def update(self, instance, validated_data):
@@ -119,15 +118,15 @@ class TripMainSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['locations'] = LocationSerializer(instance.location_set.all().order_by('country', 'city'), many=True).data
         representation['members'] = MemberDetailSerializer(instance.member_set.all().order_by('user__username'), many=True).data
-        request = self.context.get('request')
+        # request = self.context.get('request')
         for member in representation['members']:
-            bank_account = member['bank_account']
+            # bank_account = member['bank_account']
             is_participate = member['is_participate']
             if not is_participate:
                 continue
-            if request.user.username == member['member']:
-                member_account = account(request.user.email, bank_account)['REC']
-                member['balance'] = member_account['accountBalance']
+            # if request.user.username == member['member']:
+            #     member_account = account(request.user.email, bank_account)['REC']
+            #     member['balance'] = member_account['accountBalance']
         return representation
     
     
