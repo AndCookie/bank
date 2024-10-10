@@ -327,16 +327,15 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               const calculate = partPayment.calculates.find((calculate) => Number(calculate.user_id) === Number(member.id));
               return (
                 <div className={styles.member} key={index}>
+                  <div className={styles.memberName}>
                   {calculate && calculate.remain_cost > 0 && (
                     <WarningAmberIcon sx={{ color: 'orange' }} />
                   )}
-
-                  <div className={styles.memberName}>
                     {member.last_name}
                     {member.first_name}
                   </div>
                   <TextField
-                    disabled={isCompleted === 1}
+                    // disabled={isCompleted === 1}
                     variant={isCompleted === 1 ? 'outlined' : 'outlined'}
                     value={matchBankAccount(member.bank_account, member.id)}
                     onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
