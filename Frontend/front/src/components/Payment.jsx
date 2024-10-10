@@ -32,24 +32,36 @@ const Payment = ({ selectedDate }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
+  const fetchPayments = usePaymentStore((state) => state.fetchPayments);  // fetchPayments 함수
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  // const finalPayments = usePaymentStore((state) => state.finalPayments);
-  // const setFinalPayments = usePaymentStore((state) => state.setFinalPayments);
   const addFinalPayments = usePaymentStore((state) => state.addFinalPayments);
-  const removeFinalPayments = usePaymentStore(
-    (state) => state.removeFinalPayments
-  );
+  const removeFinalPayments = usePaymentStore((state) => state.removeFinalPayments);
 
-  const { mutate: mutatePrepare } = useMutation((newPayment) =>
-    axiosInstance.post('/payments/prepare/', newPayment)
+  const { tripId } = useParams(); // tripId 가져오기
+
+  // 사전 결제내역 POST 요청
+  const { mutate: mutatePrepare } = useMutation(
+    (newPayment) => axiosInstance.post('/payments/prepare/', newPayment),
+    {
+      onSuccess: () => {
+        // 결제 내역이 추가된 후 결제 목록을 다시 가져옴
+        fetchPayments(tripId);
+      },
+    }
   );
 
   // 현금 결제내역 POST 요청
-  const { mutate: mutateCash } = useMutation((newCashPayment) =>
-    axiosInstance.post('/payments/', newCashPayment)
+  const { mutate: mutateCash } = useMutation(
+    (newCashPayment) => axiosInstance.post('/payments/', newCashPayment),
+    {
+      onSuccess: () => {
+        // 결제 내역이 추가된 후 결제 목록을 다시 가져옴
+        fetchPayments(tripId);
+      },
+    }
   );
 
   const handleAddPreparePayment = (newPayment) => {
@@ -230,13 +242,12 @@ const Payment = ({ selectedDate }) => {
 
       {/* 결제 내역 */}
       <div className={styles.payContainer}>
-        <div className={styles.payAdd}>
+        <div className={styles.payAdd} onClick={openModal}>
           <div>
             결제 내역 추가하기
           </div>
           <IconButton
             className={styles.addButton}
-            onClick={openModal}
             sx={{
               borderRadius: "30px",
               padding: 0,
@@ -246,13 +257,14 @@ const Payment = ({ selectedDate }) => {
           >
             <AddIcon />
           </IconButton>
+        </div>
           <PaymentModal
             isOpen={isModalOpen}
             onClose={closeModal}
             onSubmitPrepare={handleAddPreparePayment}  // 여행 전 결제 내역 처리
             onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
+            tripDetailInfo={tripDetailInfo}
           />
-        </div>
         {Object.keys(groupedPayments).map((date) => (
           <div key={date} className={styles.dateGroup}>
             {/* 날짜 표시 */}

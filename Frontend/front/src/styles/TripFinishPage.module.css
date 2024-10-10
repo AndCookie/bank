@@ -1,3 +1,29 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  margin: 0px auto;
+  padding: 10px 10px;
+  background-color: #F3F6FB;
+  /* border: 1px solid black; */
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  margin: 0 auto;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* border: 1px solid black; */
+}
+
+/* 정산 완료  */
 .complete {
   width: 100%;
   height: 200px;
@@ -12,7 +38,82 @@
   /* border: 1px solid black; */
 }
 
-.complete img {
-  width: 30%;
+.completeImg {
+  margin: 0;
+  padding: 0;
+  /* border: 1px solid black; */
+}
+
+
+.completeImg > img {
+  height: 100px;
+  width: 100px;
+}
+
+.completeAmount {
+  width: 100%;
+  height: 70px;
+  display: flex;
   justify-content: center;
+  align-items: end;
+  text-align: center;
+  color: #4b72e1;
+  font-size: xx-large;
+  font-weight: bolder;
+  margin: 0px auto;
+  padding: 0px;
+  /* padding-bottom: 30px; */
+  /* border: 1px solid black; */
+}
+
+.completeMsg {
+  font-size: 22px;
+  font-weight: bolder;
+}
+
+/* 세부 내역 */
+.allContent {
+  width: 80%;
+  height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+}
+
+.content {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.category {
+  width: 20%;
+  /* border: 1px solid black; */
+}
+
+.brandName {
+  width: 60%;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 텍스트를 숨김 */
+  text-overflow: ellipsis; /* 넘치는 텍스트에 '...' 표시 */
+  /* text-overflow: clip; */
+  /* border: 1px solid black; */
+  padding: 0 5%;
+}
+
+.payRecord {
+  width: 20%;
+  font-size: 0.7rem;
+  color: grey;
+  /* border: 1px solid black; */
 }
