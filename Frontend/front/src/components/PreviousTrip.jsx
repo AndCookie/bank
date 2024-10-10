@@ -93,7 +93,7 @@ const PreviousTrip = () => {
       {/* 여행 날짜 섹션 */}
       <div className={(styles.date, styles.trip)}>
         <div className={styles.title}>
-          <div>날짜</div>
+          <div>📅 날짜</div>
           <div className={styles.subtitle}>{duration}</div>
         </div>
         <div className={styles.content}>
@@ -105,7 +105,7 @@ const PreviousTrip = () => {
       {/* 여행 국가 섹션 */}
       <div className={(styles.country, styles.trip)}>
         <div className={styles.title}>
-          <div>국가</div>
+          <div>🏴 국가</div>
           <div className={styles.subtitle}>{locations.length}개</div>
         </div>
         <div className={styles.content}>
@@ -118,7 +118,7 @@ const PreviousTrip = () => {
       {/* 멤버 리스트 섹션 */}
       <div className={(styles.member, styles.trip)}>
         <div className={styles.title}>
-          <div>멤버</div>
+          <div>🙂 멤버</div>
           <div className={styles.subtitle}>{members.length}명</div>
         </div>
         <div className={(styles.content, styles.backgroundMember)}>

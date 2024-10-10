@@ -89,13 +89,20 @@ const Chart = () => {
             <div style="font-size:12px;">${params.percent}%</div>
           `;
         },
+        textStyle: {
+          fontFamily: "Spoqa Han Sans Neo", // 툴팁 글씨체 지정
+        },
       },
       legend: {
         orient: 'horizontal',
-        bottom: '0%',
         left: 'center',
+        bottom: "3%",
         itemGap: 20, // 아이템 간격 조정
         width: '85%', // 너비를 조정하여 4개의 카테고리가 한 줄에 표시되도록 설정
+        textStyle: {
+          fontFamily: "Spoqa Han Sans Neo", // legend 글씨체 지정
+          fontSize: 14,
+        },
       },
       color: [
         "#becaf4",
@@ -112,6 +119,7 @@ const Chart = () => {
           name: '지출 내역',
           type: 'pie',
           radius: '50%',
+          center: ["50%", "40%"], // 차트를 정가운데에 위치
           data: chartData.labels.map((label, index) => ({
             name: label,
             value: chartData.data[index],
@@ -121,6 +129,26 @@ const Chart = () => {
               shadowBlur: 10,
               shadowOffsetX: 0,
               shadowColor: 'rgba(0, 0, 0, 0.5)',
+            },
+          },
+          label: {
+            formatter: function (params) {
+              // params.percent의 정수 부분만 사용
+              const percentage = Math.floor(params.percent);
+              return `{nameStyle|${params.name}}\n{percentStyle|${percentage}%}`;
+            },
+            rich: {
+              nameStyle: {
+                fontSize: 12,
+                fontFamily: "Spoqa Han Sans Neo",
+                fontWeight: "bold",
+                color: "#333",
+              },
+              percentStyle: {
+                fontSize: 12,
+                fontFamily: "Spoqa Han Sans Neo",
+                color: "#999",
+              },
             },
           },
         },
@@ -134,7 +162,7 @@ const Chart = () => {
 
   return (
     <div className={styles.paymentTrip}>
-      <div className={styles.title}>나의 지출</div>
+      <div className={styles.title}>💰 나의 지출</div>
       <div className={styles.content}>
         <ReactECharts option={getChartOptions()} style={{ height: '400px', width: '100%' }} />
       </div>
