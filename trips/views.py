@@ -108,10 +108,10 @@ def detail(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     
-@api_view(['PUT'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def budget(request):
-    if request.method == 'PUT':
+    if request.method == 'POST':
         trip_id = request.data.get('trip_id')
         budget = request.data.get('budget')
         member = Member.objects.get(trip_id=trip_id, user=request.user)

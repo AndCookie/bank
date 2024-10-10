@@ -233,13 +233,23 @@ if __name__ == "__main__":
            '이선재': ['3720570145ssafy@naver.com', '0908607631513705'], 
            '박준영': ['3720611926ssafy@naver.com', '0041366933976143']
            }
-    username = '임광영'
     
+    # 모든 사람의 잔액을 조회하는 코드
+    for username in dic:
+        email, bank_account = dic[username]
+        accountBalance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
+        print(username, accountBalance)
+        
+    # exit()
+    
+    username = '정태완'
     # 특정 사람의 잔액을 0원으로 만들어주는 코드
     email, bank_account = dic[username]
     accountBalance = inquire_demand_deposit_account(email, bank_account)['REC']['accountBalance']
     update_demand_deposit_account_withdrawal(bank_account, accountBalance, email)
     pprint(inquire_demand_deposit_account(email, bank_account)['REC'])
+    
+    exit()
     
     # 특정 사람에게 천만원을 입금하는 코드
     deposit_amount = 10000000
