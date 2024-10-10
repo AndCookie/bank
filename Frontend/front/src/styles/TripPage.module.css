@@ -134,9 +134,10 @@
   right: 0 !important;
   top: 0 !important;
   transform: translate(-25%, 25%) !important;
-  color: white !important;
-  background-color: #757575 !important;
-  border-radius: 50% !important;
+  color: black !important;
+  /* background-color: #757575 !important; */
+  /* background-color: black !important; */
+  border-radius: 30% !important;
   z-index: 100;
   padding: 3px !important;
 }
@@ -152,4 +153,15 @@
   overflow: hidden;
   text-overflow: ellipsis; /* 텍스트가 길 경우 ... 처리 */
   max-width: 70px; /* 이미지와 같은 너비 */
+}
+
+.noPastTrips {
+  width: 100%;
+  height: calc(100vh - 110px);
+  /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  font-size: 1.2rem;
 }

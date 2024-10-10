@@ -135,7 +135,7 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount) => {
     return renderedMemberInfo.find((info) => info.bankAccount === bankAccount)
-      .cost;
+      .cost.toLocaleString();
   };
 
   const navigate = useNavigate();
@@ -185,7 +185,11 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
             fontSize="large"
             onClick={onClose}
           />
-          <div className={styles.totalAmount}>{totalAmount}&nbsp;원</div>
+          <div className={styles.totalAmount}>
+              {(totalAmount !== undefined && totalAmount !== null)
+                ? totalAmount.toLocaleString()
+                : '0'}&nbsp;원
+            </div>
 
           {/* 정산 체크한 결제 내역 */}
           <div className={styles.allContent}>
@@ -237,8 +241,13 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
               </div>
             ))}
           </div>
+          
+          <div className={styles.adjustContainer}>
+            <button className={styles.adjustBtn} onClick={goFinish}>
+              정 산 하 기
+            </button>
+          </div>
 
-          <button onClick={goFinish}>정산하기</button>
         </div>
       </Fade>
     </Modal>

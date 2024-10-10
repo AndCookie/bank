@@ -250,7 +250,7 @@ const Payment = ({ selectedDate }) => {
 
       <div className={styles.adjustContainer}>
         <button className={styles.adjustBtn} onClick={openAdjustModal}>
-          {totalAmount}원 정산하기
+          {totalAmount.toLocaleString()}원 &nbsp; 정산하기
         </button>
       </div>
 

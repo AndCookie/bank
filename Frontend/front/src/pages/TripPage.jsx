@@ -10,6 +10,7 @@ import { useFutureTripStore } from '@/stores/futureTripStore';
 import SketchModal from '@/components/SketchModal';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import BrushIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const TripPage = () => {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -117,12 +118,12 @@ const TripPage = () => {
                 <div className={styles.date}>종료일 : {trip.endDate}</div>
               </div>
               <IconButton className={styles.sketchBtn} onClick={(event) => openModal(event, trip.id, trip.imageUrl)}>
-                <AddIcon />
+              <BrushIcon style={{ fontSize: 30 }} />
               </IconButton>
             </div>
           ))
         ) : (
-          <div className={styles.noPastTrips}>과거 여행 기록이 없습니다.</div>
+          <div className={styles.noPastTrips}>과거 여행 기록이 없어요 😥</div>
         )}
       </div>
 

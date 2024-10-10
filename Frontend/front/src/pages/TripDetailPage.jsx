@@ -108,15 +108,21 @@ const TripDetailPage = () => {
         <div className={styles.back}>
           <MdArrowBack className={styles.btns} size={30} onClick={goBack} />
         </div>
+        <div className={styles.search}>
+          <SearchIcon 
+            className={styles.searchIcon} 
+            onClick={openTripInfoModal} 
+            style={{ fontSize: 30 }}
+          />
+        </div>
       </div>
 
       {/* 프로필 */}
       <div className={styles.profile}>
         <div>{userInfo.profileImage && <img src={userInfo.profileImage} alt={userInfo.nickName} className={styles.circleImage} />}</div>
         <div className={styles.profileStatus}>
-          {userInfo.nickName} 님은 {tripDetailInfo.tripName} 여행 {tripState} 중 &nbsp;
+          {userInfo.nickName} 님은<br /><div className={styles.tripName}>{tripDetailInfo.tripName}</div> 여행 {tripState} 중 &nbsp;
         </div>
-        <SearchIcon onClick={openTripInfoModal} />
       </div>
 
       {/* 여행 일자 */}
