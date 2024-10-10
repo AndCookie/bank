@@ -1,14 +1,46 @@
-import React from 'react';
-import { Modal, Backdrop, Fade } from '@mui/material';
+import React, { useState } from 'react';
+import { Modal, Backdrop, Fade, IconButton, TextField, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTripStore } from '@/stores/tripStore';
 import { useUserStore } from '@/stores/userStore'; // userStore import
+import { useParams } from 'react-router-dom'; // useParams import
+import axiosInstance from '@/axios'; // axiosInstance import
 
 import styles from './styles/TripInfoModal.module.css';
 
 const TripInfoModal = ({ isOpen, onClose }) => {
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-  const { budget } = useUserStore((state) => state); // budget 가져오기
+  const { budget, setUserBudget, userInfo } = useUserStore((state) => state); // budget과 userInfo 가져오기
+  const { tripId } = useParams(); // tripId 가져오기
+
+  const [editMode, setEditMode] = useState(false); // 수정 모드 상태
+  const [newBudget, setNewBudget] = useState(budget.initialBudget); // 새로운 예산 상태
+
+  const handleEditClick = () => {
+    setEditMode(true);
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      // 새로운 예산 업데이트
+
+      // POST 요청 데이터
+      const postData = {
+        trip_id: tripId,
+        budget: newBudget,
+        bank_account: userInfo.bankAccount, // userInfo에서 bank_account 가져오기
+        bank_name: userInfo.bankName, // userInfo에서 bank_name 가져오기
+      };
+
+      // /trips/invite/로 POST 요청 보내기
+      await axiosInstance.post('/trips/invite/', postData);
+
+      setEditMode(false); // 수정 모드 종료
+    } catch (error) {
+      console.error('Error sending budget data:', error);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -48,10 +80,6 @@ const TripInfoModal = ({ isOpen, onClose }) => {
               {tripDetailInfo.locations.map((location, index) => (
                 <div key={index} className={styles.infoMap}>
                   <div className={styles.countryName}>{location.country}</div>
-                  <div className={styles.countryTime}>
-                    <div className={styles.time}>05:54:20 AM</div>
-                    <div className={styles.timeCompare}>한국대비 7시간 느림</div>
-                  </div>
                 </div>
               ))}
             </div>
@@ -61,9 +89,32 @@ const TripInfoModal = ({ isOpen, onClose }) => {
           <div className={styles.budget}>
             <div className={styles.infoTitle}>💰 &nbsp;예산</div>
             <div className={styles.infoDetail}>
-              <div className={styles.infoBudget}>초기 예산: {budget.initialBudget.toLocaleString()}원</div>
-              <div className={styles.infoBudget}>소비 예산: {budget.usedBudget.toLocaleString()}원</div>
-              <div className={styles.infoBudget}>잔여 예산: {budget.remainBudget.toLocaleString()}원</div>
+              {!editMode ? (
+                <>
+                  <div className={styles.infoBudget}>
+                    초기 예산: {budget.initialBudget.toLocaleString()}원
+                    <IconButton onClick={handleEditClick} size="small">
+                      <EditIcon />
+                    </IconButton>
+                  </div>
+                  <div className={styles.infoBudget}>소비 예산: {budget.usedBudget.toLocaleString()}원</div>
+                  <div className={styles.infoBudget}>잔여 예산: {budget.remainBudget.toLocaleString()}원</div>
+                </>
+              ) : (
+                <div className={styles.editBudget}>
+                  <TextField
+                    label="초기 예산"
+                    type="number"
+                    variant="outlined"
+                    value={newBudget}
+                    onChange={(e) => setNewBudget(e.target.value)}
+                    fullWidth
+                  />
+                  <Button variant="contained" onClick={handleSaveClick} className={styles.saveBtn}>
+                    저장
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
