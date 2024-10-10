@@ -225,31 +225,34 @@ const Payment = ({ selectedDate }) => {
         >
           정산 완료
         </button>
-        <IconButton
-          className={styles.addButton}
-          onClick={openModal}
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: '10px',
-            transform: 'translateY(-50%)',
-            backgroundColor: '#4b72e1', // 배경색 파란색으로 설정
-            color: 'white', // 아이콘 색상을 흰색으로 설정
-          }}
-      
-        >
-          <AddIcon />
-        </IconButton>
-        <PaymentModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onSubmitPrepare={handleAddPreparePayment}  // 여행 전 결제 내역 처리
-          onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
-        />
       </div>
 
       {/* 결제 내역 */}
       <div className={styles.payContainer}>
+        <div className={styles.payAdd}>
+          <div>
+            결제 내역 추가하기
+          </div>
+          <IconButton
+            className={styles.addButton}
+            onClick={openModal}
+            sx={{
+              borderRadius: "30px",
+              padding: 0,
+              backgroundColor: 'grey',
+              color: 'white', // 아이콘 색상을 흰색으로 설정
+            }}
+          >
+            <AddIcon />
+          </IconButton>
+          <PaymentModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onSubmitPrepare={handleAddPreparePayment}  // 여행 전 결제 내역 처리
+            onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
+          />
+        </div>
+
         {Object.keys(groupedPayments).map((date) => (
           <div key={date} className={styles.dateGroup}>
             {/* 날짜 표시 */}
