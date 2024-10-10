@@ -69,47 +69,43 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     if (isOpen) {
       setPartPayment(getPartPayment(paymentId));
     }
-  }, [isOpen]);
+  }, [isOpen, paymentId, getPartPayment]);
+  
 
   useEffect(() => {
-    if (isOpen && isCompleted && partPayment.length) {
+    if (isOpen && isCompleted && Array.isArray(partPayment.calculates) && partPayment.calculates.length > 0) {
       setPartPayment((prev) => ({
         ...prev,
         bills: partPayment.calculates.map((calculate) => ({
           cost: calculate.cost,
-          bank_account: tripDetailInfo.members.find((member) => member.id === calculate.user_id).bank_account,
+          bank_account: tripDetailInfo.members.find((member) => member.id === calculate.user_id)?.bank_account || '',
         })),
-      }))
+      }));
     }
-  }, [isOpen, isCompleted, partPayment])
+  }, [isOpen, isCompleted, partPayment.calculates, tripDetailInfo.members]);
+  
 
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
-    if (isOpen && !isCompleted && payments.find(payment => payment.id === paymentId).bills.every(bill => bill.cost === 0)) {
-      // 첫 정산의 경우
-      if (payments.find(payment => payment.id === paymentId).calculates.length === 0) {
-        const baseCost = parseInt(partPayment.amount / tripDetailInfo.members.length);
-        const totalCost = baseCost * tripDetailInfo.members.length;
-
-        setPartPayment((prev) => ({
-          ...prev,
-          bills: tripDetailInfo.members.map((member, index) => ({
-            cost: index === 0 ? baseCost + partPayment.amount - totalCost : baseCost,
-            bank_account: member.bank_account
-          }))
-        }));
-        // 첫 정산이 아닌 경우
-      } else {
-        setPartPayment((prev) => ({
-          ...prev,
-          bills: tripDetailInfo.members.map((member, index) => ({
-            cost: payments.find(payment => payment.id === paymentId).calculates.find(calculate => calculate.user_id === member.id).cost,
-            bank_account: member.bank_account
-          }))
-        }));
+    if (isOpen && !isCompleted) {
+      const currentPayment = payments.find(payment => payment.id === paymentId);
+      if (currentPayment && currentPayment.bills.every(bill => bill.cost === 0)) {
+        if (partPayment.amount && typeof partPayment.amount === 'number' && tripDetailInfo.members.length > 0) {
+          const baseCost = Math.floor(partPayment.amount / tripDetailInfo.members.length);
+          const totalCost = baseCost * tripDetailInfo.members.length;
+  
+          setPartPayment((prev) => ({
+            ...prev,
+            bills: tripDetailInfo.members.map((member, index) => ({
+              cost: index === 0 ? baseCost + partPayment.amount - totalCost : baseCost,
+              bank_account: member.bank_account,
+            })),
+          }));
+        }
       }
     }
-  }, [partPayment]);
+  }, [isOpen, isCompleted, payments, paymentId, partPayment.amount, tripDetailInfo.members]);
+  
 
   // useEffect(() => {
   //   console.log(partPayment)
@@ -117,22 +113,31 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
 
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount, userId) => {
+    let cost = 0;
+  
     if (!isCompleted) {
       const targetBill = (partPayment.bills || []).find(
         (bill) => bill.bank_account === bankAccount
       );
-      return targetBill ? targetBill.cost : 0;
+      cost = targetBill ? targetBill.cost : 0;
     } else {
       const targetBill = (partPayment.calculates || []).find(
         (calculate) => calculate.user_id === userId
       );
-      return targetBill ? targetBill.cost : 0;
+      cost = targetBill ? targetBill.cost : 0;
     }
+  
+    return isNaN(cost) ? 0 : cost; // NaN 방지
   };
+  
+  
 
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
+    if (isNaN(fixedCost)) {
+      return;
+    }
 
     // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
     if (!fixedMembers.includes(bankAccount)) {
@@ -284,8 +289,8 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                       </div>
                       <TextField
                         disabled
-                        variant={isCompleted === 1 ? 'outlined' : 'outlined'}
-                        value={matchBankAccount(member.bank_account, member.id)}
+                        variant="outlined"
+                        value={isNaN(matchBankAccount(member.bank_account, member.id)) ? '' : matchBankAccount(member.bank_account, member.id)}
                         onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
                         className={styles.customTextField}
                         InputProps={{
@@ -313,7 +318,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             </div>
 
 
-            {<div className={styles.memberList}>
+            {<div className={styles.memberAlert}>
               결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />{isCompleted ? '수정' : '정산'}할 수 있어요
             </div>
             }
@@ -400,8 +405,8 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                   </div>
                   <TextField
                     // disabled={isCompleted === 1}
-                    variant={isCompleted === 1 ? 'outlined' : 'outlined'}
-                    value={matchBankAccount(member.bank_account, member.id)}
+                    variant="outlined"
+                    value={isNaN(matchBankAccount(member.bank_account, member.id)) ? '' : matchBankAccount(member.bank_account, member.id)}
                     onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
                     className={styles.customTextField}
                     InputProps={{
@@ -412,7 +417,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                     }}
                     inputProps={{
                       style: {
-                        backgroundColor: "lightgrey",
+                        backgroundColor: "gainsboro",
                         padding: "8px",
                         borderRadius: "5px",
                         textAlign: "right", // 텍스트를 오른쪽 정렬
@@ -446,27 +451,27 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               </>
             )}
           </div>
-          <div className={styles.deleteButtonContainer}>
-            <Button
-              variant="contained"
-              onClick={openDeleteModal}
-              style={{
-                backgroundColor: "lightgrey",
-                color: "black",
-                fontFamily: "Spoqa Han Sans Neo",
-                position: 'absolute',  // 버튼을 절대 위치로 설정
-                right: '40%',  // 오른쪽 여백 설정
-                bottom: '20px',  // 아래쪽 여백 설정
-              }}
-            >
-              삭제
-            </Button>
-            <PaymentDeleteModal
-              showDeleteModal={showDeleteModal}
-              onConfirm={handleDeletePayment}  // 네 클릭 시 결제 삭제
-              onCancel={closeDeleteModal}  // 닫기 클릭 시 삭제 모달 닫기
-            />
-          </div>
+          {!isCompleted && (
+            <div className={styles.deleteButtonContainer}>
+              <Button
+                variant="contained"
+                onClick={openDeleteModal}
+                className={styles.deleteButton}
+                style={{
+                  backgroundColor: "lightgrey",
+                  color: "black",
+                  fontFamily: "Spoqa Han Sans Neo",
+                }}
+              >
+                삭제
+              </Button>
+              <PaymentDeleteModal
+                showDeleteModal={showDeleteModal}
+                onConfirm={handleDeletePayment}  // 네 클릭 시 결제 삭제
+                onCancel={closeDeleteModal}  // 닫기 클릭 시 삭제 모달 닫기
+              />
+            </div>
+)}
         </div>
       </Fade>
     </Modal>

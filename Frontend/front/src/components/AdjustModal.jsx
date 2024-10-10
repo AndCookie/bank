@@ -230,7 +230,7 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
                   }}
                   inputProps={{
                     style: {
-                      backgroundColor: "lightgrey",
+                      backgroundColor: "gainsboro",
                       padding: "8px",
                       borderRadius: "5px",
                       textAlign: "right", // 텍스트를 오른쪽 정렬

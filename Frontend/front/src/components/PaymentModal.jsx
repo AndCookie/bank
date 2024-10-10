@@ -99,7 +99,7 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
 
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <Box className={styles.box} sx={{ ...modalStyle }}>
+      <Box className={styles.box}>
         <IconButton
           onClick={onClose}
           sx={{
@@ -115,8 +115,12 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
         
         <div className={styles.content}>
           <Tabs value={tabIndex} onChange={handleTabChange} aria-label="payment type tabs">
-            <Tab label="사전 결제" />
-            <Tab label="현금 결제" />
+            <Tab label="사전 결제" sx={{
+      fontFamily: '"Spoqa Han Sans Neo", sans-serif !important'
+    }} />
+            <Tab className={styles.fontChange} label="현금 결제" sx={{
+      fontFamily: '"Spoqa Han Sans Neo", sans-serif !important'
+    }} />
           </Tabs>
 
           {tabIndex === 0 && (
@@ -127,6 +131,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 label="내용"
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
 
               <TextField
@@ -136,6 +149,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
             </>
           )}
@@ -148,6 +170,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 label="내용"
                 value={brandName}
                 onChange={(e) => setBrandName(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
 
               <TextField
@@ -157,6 +188,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
 
               <TextField
@@ -165,6 +205,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 type="date"
                 value={payDate}
                 onChange={(e) => setPayDate(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
 
               <TextField
@@ -173,6 +222,15 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
                 type="time"
                 value={payTime}
                 onChange={(e) => setPayTime(e.target.value)}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  "& .MuiFormLabel-root": {
+                    fontFamily: '"Spoqa Han Sans Neo", sans-serif !important',
+                  },
+                  marginBottom: "-5px", // 간격 조정
+                }}
               />
             </>
           )}
@@ -188,17 +246,5 @@ const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
   );
 };
 
-// 모달 스타일
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 350,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 export default PaymentModal;

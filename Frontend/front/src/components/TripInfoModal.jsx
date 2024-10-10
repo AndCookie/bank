@@ -108,9 +108,14 @@ const TripInfoModal = ({ isOpen, onClose }) => {
                     onChange={(e) => setNewBudget(e.target.value)}
                     fullWidth
                   />
-                  <Button variant="contained" onClick={handleSaveClick} className={styles.saveBtn}>
-                    저장
-                  </Button>
+
+                  <div className={styles.saveContainer}>
+                    <Button onClick={handleSaveClick} className={styles.saveBtn} sx={{
+        fontFamily: '"Spoqa Han Sans Neo", sans-serif !important'
+      }}>
+                      저장하기
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
