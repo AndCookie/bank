@@ -9,6 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close'; 
 import { useParams } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
+import styles from "./styles/PaymentModal.module.css";
 
 const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
   const { tripId } = useParams();
@@ -16,7 +17,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
 
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
-  const [category, setCategory] = useState(''); // 기본값을 빈 문자열로 설정
+  // const [category, setCategory] = useState('');
   const [payDate, setPayDate] = useState('');
   const [payTime, setPayTime] = useState('');
 
@@ -32,7 +33,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         trip_id: Number(tripId),
         amount: Number(amount),
         brand_name: brandName,
-        category: category,
+        // category: category,
       });
     } else if (tabIndex === 1) {
       onSubmitCash({
@@ -49,7 +50,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
 
   return (
     <Modal open={isOpen} onClose={onClose}>
-      <Box sx={{ ...modalStyle }}>
+      <Box className={styles.box} sx={{ ...modalStyle }}>
         <IconButton
           onClick={onClose}
           sx={{
@@ -61,100 +62,104 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
           <CloseIcon />
         </IconButton>
 
-        <h2>결제 내역 추가</h2>
+        <div className={styles.title}>결제 내역 추가</div>
+        
+        <div className={styles.content}>
+          <Tabs value={tabIndex} onChange={handleTabChange} aria-label="payment type tabs">
+            <Tab label="사전 결제" />
+            <Tab label="현금 결제" />
+          </Tabs>
 
-        <Tabs value={tabIndex} onChange={handleTabChange} aria-label="payment type tabs">
-          <Tab label="여행 시작 전 결제" />
-          <Tab label="현금 결제" />
-        </Tabs>
+          {tabIndex === 0 && (
+            <>
+              {/* Category 선택 필드 */}
+              {/* <TextField
+                fullWidth
+                margin="normal"
+                label="카테고리"
+                select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                SelectProps={{
+                  native: true,
+                }}
+              >
+                <option value="" disabled className={styles.option}>
+                </option>
+                <option value="항공">항공</option>
+                <option value="숙소">숙소</option>
+                <option value="교통">교통</option>
+                <option value="식비">식비</option>
+                <option value="카페">카페</option>
+                <option value="쇼핑">쇼핑</option>
+                <option value="관광">관광</option>
+                <option value="기타">기타</option>
+              </TextField> */}
 
-        {tabIndex === 0 && (
-          <>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Brand Name"
-              value={brandName}
-              onChange={(e) => setBrandName(e.target.value)}
-            />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="내용"
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Amount"
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="금액"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
 
-            {/* Category 선택 필드 */}
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Category"
-              select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              SelectProps={{
-                native: true,
-              }}
-            >
-              <option value="" disabled>
-              </option>
-              <option value="항공">항공</option>
-              <option value="숙소">숙소</option>
-              <option value="교통">교통</option>
-              <option value="식비">식비</option>
-              <option value="카페">카페</option>
-              <option value="쇼핑">쇼핑</option>
-              <option value="관광">관광</option>
-              <option value="기타">기타</option>
-            </TextField>
-          </>
-        )}
+            </>
+          )}
 
-        {tabIndex === 1 && (
-          <>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Brand Name"
-              value={brandName}
-              onChange={(e) => setBrandName(e.target.value)}
-            />
+          {tabIndex === 1 && (
+            <>
+              <TextField
+                fullWidth
+                margin="normal"
+                label="내용"
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Amount"
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
+              <TextField
+                fullWidth
+                margin="normal"
+                label="금액"
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Pay Date"
-              type="date"
-              value={payDate}
-              onChange={(e) => setPayDate(e.target.value)}
-            />
+              <TextField
+                fullWidth
+                margin="normal"
+                type="date"
+                value={payDate}
+                onChange={(e) => setPayDate(e.target.value)}
+              />
 
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Pay Time"
-              type="time"
-              value={payTime}
-              onChange={(e) => setPayTime(e.target.value)}
-            />
-          </>
-        )}
+              <TextField
+                fullWidth
+                margin="normal"
+                type="time"
+                value={payTime}
+                onChange={(e) => setPayTime(e.target.value)}
+              />
+            </>
+          )}
+        </div>
 
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          제출
-        </Button>
+        <div className={styles.adjustContainer}>
+          <button className={styles.adjustBtn} onClick={handleSubmit}>
+            추 가 하 기
+          </button>
+        </div>
+
       </Box>
     </Modal>
   );
@@ -166,7 +171,7 @@ const modalStyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 350,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,

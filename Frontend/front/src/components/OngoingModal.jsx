@@ -40,6 +40,9 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
 
+  // 고정된 멤버들의 bank_account를 저장하는 배열
+  const [fixedMembers, setFixedMembers] = useState([]);
+
   useEffect(() => {
     if (isOpen) {
       setPartPayment(getPartPayment(paymentId));
@@ -108,40 +111,54 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
-
-    let remainingCost;
-    if (partPayment.calculates.length === 0) {
-      remainingCost = partPayment.amount - fixedCost;
-    } else {
-      remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost;
+  
+    // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
+    if (!fixedMembers.includes(bankAccount)) {
+      setFixedMembers((prev) => [...prev, bankAccount]);
     }
-
+  
+    // 고정되지 않은 멤버들을 필터링
+    const remainingMembers = partPayment.bills.filter(
+      (bill) => !fixedMembers.includes(bill.bank_account) && bill.bank_account !== bankAccount
+    );
+  
+    let remainingCost;
+    const fixedTotal = partPayment.bills
+      .filter((bill) => fixedMembers.includes(bill.bank_account))
+      .reduce((acc, member) => acc + member.cost, 0);
+  
+    if (partPayment.calculates.length === 0) {
+      remainingCost = partPayment.amount - fixedCost - fixedTotal;
+    } else {
+      remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost - fixedTotal;
+    }
+  
+    const evenCost = Math.floor(remainingCost / remainingMembers.length);
+    const remainder = remainingCost % remainingMembers.length; // 1원 차이
+  
     setPartPayment((prevPayment) => {
-      const firstMember = prevPayment.bills[0];
-      const isFirstMemberBeingAdjusted = firstMember.bank_account === bankAccount;
-
-      const otherMembers = prevPayment.bills.filter(bill => bill.bank_account !== bankAccount);
-
       const updatedBills = prevPayment.bills.map((bill, index) => {
         if (bill.bank_account === bankAccount) {
           // 입력된 금액을 조정 중인 사람의 cost 업데이트
           return { ...bill, cost: fixedCost };
-        } else if (index === 0 && !isFirstMemberBeingAdjusted) {
-          // 첫 번째 사람이 조정 중이 아니면, 첫 번째 사람에게 남은 차액 할당
-          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) + (remainingCost % otherMembers.length) };
-        } else if (index === 1 && isFirstMemberBeingAdjusted) {
-          // 첫 번째 사람이 조정 중이면, 두 번째 사람에게 남은 차액 할당
-          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) + (remainingCost % otherMembers.length) };
+        } else if (!fixedMembers.includes(bill.bank_account)) {
+          // 첫 번째 엔빵 대상자가 수정한 사람일 경우, 그 다음 사람에게 1원 차액 할당
+          const isFirstMember = index === 0 && remainingMembers[0].bank_account === bankAccount;
+          const isSecondMember = index === 1 && remainingMembers[1]?.bank_account !== bankAccount;
+          return {
+            ...bill,
+            cost: evenCost + ((isFirstMember || isSecondMember) ? remainder : 0), // 첫 번째 사람 또는 그 다음 사람에게 1원 차액 할당
+          };
         } else {
-          // 나머지 사람들에게 남은 금액을 균등하게 분배
-          return { ...bill, cost: parseInt(remainingCost / otherMembers.length) };
+          // 고정된 멤버는 기존 cost 유지
+          return bill;
         }
       });
+  
       return { ...prevPayment, bills: updatedBills };
     });
   };
-
-  // userId에 따른 이름 반환
+    // userId에 따른 이름 반환
   const matchUserName = () => {
     const matchMember = tripDetailInfo.members.find(
       (member) => Number(member.id) === Number(partPayment.user_id)
@@ -179,6 +196,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           payment.id === partPayment.id ? partPayment : payment
         )
       );
+      setFixedMembers([]);
     }
   }, [isOpen]);
 
@@ -327,16 +345,15 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               const calculate = partPayment.calculates.find((calculate) => Number(calculate.user_id) === Number(member.id));
               return (
                 <div className={styles.member} key={index}>
-                  {calculate && calculate.remain_cost > 0 && (
-                    <WarningAmberIcon sx={{ color: 'orange' }} />
-                  )}
-
                   <div className={styles.memberName}>
+                    {calculate && calculate.remain_cost > 0 && (
+                      <WarningAmberIcon sx={{ color: 'orange' }} />
+                    )}
                     {member.last_name}
                     {member.first_name}
                   </div>
                   <TextField
-                    disabled={isCompleted === 1}
+                    // disabled={isCompleted === 1}
                     variant={isCompleted === 1 ? 'outlined' : 'outlined'}
                     value={matchBankAccount(member.bank_account, member.id)}
                     onChange={(e) => handleCostChange(member.bank_account, e.target.value)}
