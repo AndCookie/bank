@@ -9,12 +9,14 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close'; 
 import { useParams } from 'react-router-dom';
 import { useUserStore } from '@/stores/userStore';
+import { usePaymentStore } from '@/stores/paymentStore';
 import styles from "./styles/PaymentModal.module.css";
 
 const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
   const { tripId } = useParams();
   const userInfo = useUserStore((state) => state.userInfo);
-
+  const userAccount = useUserStore((state) => state.userAccount);
+  const fetchPayments = usePaymentStore((state) => state.fetchPayments);
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
   // const [category, setCategory] = useState('');
@@ -40,7 +42,7 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         pay_date: payDate,
         pay_time: payTime,
         brand_name: brandName,
-        bank_account: userInfo.bankAccount,
+        bank_account: userAccount.bankAccount,
         amount: Number(amount),
       });
     }
