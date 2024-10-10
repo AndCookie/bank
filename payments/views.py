@@ -181,6 +181,7 @@ def prepare(request):
         data['pay_date'] = trip.start_date
         data['pay_time'] = '00:00:00'
         data['bank_account'] = Member.objects.get(trip=trip, user=request.user).bank_account
+        data['category'] = categorize(data.get('brand_name'))
         serializer = PaymentCreateSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
