@@ -118,7 +118,7 @@ class TripMainSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation['locations'] = LocationSerializer(instance.location_set.all().order_by('country', 'city'), many=True).data
         representation['members'] = MemberDetailSerializer(instance.member_set.all().order_by('user__username'), many=True).data
-        request = self.context.get('request')
+        # request = self.context.get('request')
         for member in representation['members']:
             # bank_account = member['bank_account']
             is_participate = member['is_participate']

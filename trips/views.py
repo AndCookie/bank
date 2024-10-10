@@ -104,7 +104,7 @@ def detail(request):
         
         if not Member.objects.filter(trip=trip_id, user=request.user).exists():
             return Response({'error': "현재 사용자는 해당 여행에 참여하지 않았습니다."}, status=status.HTTP_401_UNAUTHORIZED)
-        serializer = TripMainSerializer(trip, context={'request': request})
+        serializer = TripMainSerializer(trip)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     
