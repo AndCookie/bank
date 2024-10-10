@@ -36,8 +36,6 @@ const TripDetailPage = () => {
         fetchTripDetail(tripId),
         fetchPayments(tripId),
       ]);
-
-      console.log(paymentsData)
       
       setUserBudget(paymentsData);
       const updatedPaymentsData = paymentsData.payments_list.map(payment => {

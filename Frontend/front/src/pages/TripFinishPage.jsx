@@ -44,17 +44,17 @@ const TripFinishPage = () => {
   // 선택한 상세 정산 내역 Id
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
 
-  useEffect(() => {
-    console.log('finalPayments', finalPayments);
-  }, [finalPayments])
+  // useEffect(() => {
+  //   console.log('finalPayments', finalPayments);
+  // }, [finalPayments])
 
-  useEffect(() => {
-    console.log('getPartPayment', getPartPayment(1))
-  }, [getPartPayment(1)])
+  // useEffect(() => {
+  //   console.log('getPartPayment', getPartPayment(1))
+  // }, [getPartPayment(1)])
 
-  useEffect(() => {
-    console.log('resultPayments', resultPayments)
-  }, [resultPayments])
+  // useEffect(() => {
+  //   console.log('resultPayments', resultPayments)
+  // }, [resultPayments])
 
   useEffect(() => {
     // 결제 정산 요청
@@ -62,7 +62,7 @@ const TripFinishPage = () => {
       const sendAdjustment = async () => {
         try {
           const response = await axiosInstance.post('/payments/adjustment/', finalPayments);
-          console.log(response)
+          // console.log(response)
           setResultPayments(response.data.payments);
           setResultBudget(response.data.budget);
           setResultBalance(parseInt(response.data.balance));
@@ -140,6 +140,8 @@ const TripFinishPage = () => {
     navigate(-1);
   }
 
+  if (!totalSuccessAmount) return <LoadingPage />
+
   return (
     <div className={styles.container}>
       {/* 뒤로가기 */}
@@ -156,7 +158,7 @@ const TripFinishPage = () => {
         <div className={styles.completeMsg}>정 산 완 료</div>
 
         <div className={styles.fail}>
-          <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;
+          <WarningAmberIcon sx={{ color: 'crimson' }} />&nbsp;
           <span className={styles.failAmount}>{totalFailAmount.toLocaleString()} 원을 못받으셨어요</span>
         </div>
       </div>

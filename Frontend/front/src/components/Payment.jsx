@@ -204,7 +204,6 @@ const Payment = ({ selectedDate }) => {
 
   // 정산 내역 체크
   const handleCheck = (paymentId, amount) => {
-    console.log(amount);
     const updatedPaymentsData = payments.map((payment) => {
       if (payment.id === paymentId) {
         const checked = !payment.checked;

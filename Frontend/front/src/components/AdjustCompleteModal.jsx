@@ -116,7 +116,7 @@ const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => 
               {resultPayment && resultPayment.bills.map((bill, index) => (
                 <div className={styles.member} key={index}>
                   <div className={styles.memberName} style={{
-                    color: bill && bill.remain_cost > 0 ? 'orange' : 'black',
+                    color: bill && bill.remain_cost > 0 ? 'crimson' : 'black',
                   }}>
                     {matchUserName(bill.user_id)}
                   </div>
@@ -147,16 +147,16 @@ const AdjustCompleteModal = ({ isOpen, onClose, resultPayments, paymentId }) => 
             <div className={styles.alertContainer}>
               {resultPayment && !resultPayment.bills.every((calculate) => calculate.remain_cost === 0) && (
                 <>
-                  <WarningAmberIcon sx={{ color: 'lightgreen' }} />&nbsp;미정산 알림&nbsp;<WarningAmberIcon sx={{ color: 'lightgreen' }} />
+                  <WarningAmberIcon sx={{ color: 'crimson' }} />&nbsp;미정산 알림&nbsp;<WarningAmberIcon sx={{ color: 'crimson' }} />
                   <div className={styles.alert}>
                     {resultPayment.bills
                       .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
                         const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
                         return (
                           <div className={styles.alertUser} key={calculate.user_id}>
-                            <span style={{ 'color': 'lightgreen' }}>{member.last_name}{member.first_name}</span>
+                            <span style={{ 'color': 'crimson' }}>{member.last_name}{member.first_name}</span>
                             님이 &nbsp;
-                            <span style={{ 'color': 'lightgreen' }}>{calculate.remain_cost}원</span>
+                            <span style={{ 'color': 'crimson' }}>{calculate.remain_cost}원</span>
                             &nbsp;정산에 실패했습니다.
                           </div>
                         );
