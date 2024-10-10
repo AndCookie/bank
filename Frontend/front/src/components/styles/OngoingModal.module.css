@@ -4,7 +4,7 @@
   left: 50%;
 
   width: 350px;
-  min-height: 60%;
+  min-height: 400px;
   transform: translate(-50%, -50%);
   background-color: white;
   border-radius: 10px;
@@ -33,7 +33,6 @@
   font-size: 1.7rem;
   color: rgb(78, 160, 120);
   height: 50px;
-  margin-top: -20px;
 }
 
 .content {
