@@ -241,13 +241,12 @@ const Payment = ({ selectedDate }) => {
 
       {/* 결제 내역 */}
       <div className={styles.payContainer}>
-        <div className={styles.payAdd}>
+        <div className={styles.payAdd} onClick={openModal}>
           <div>
             결제 내역 추가하기
           </div>
           <IconButton
             className={styles.addButton}
-            onClick={openModal}
             sx={{
               borderRadius: "30px",
               padding: 0,
@@ -257,6 +256,7 @@ const Payment = ({ selectedDate }) => {
           >
             <AddIcon />
           </IconButton>
+        </div>
           <PaymentModal
             isOpen={isModalOpen}
             onClose={closeModal}
@@ -264,7 +264,6 @@ const Payment = ({ selectedDate }) => {
             onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
             tripDetailInfo={tripDetailInfo}
           />
-        </div>
         {Object.keys(groupedPayments).map((date) => (
           <div key={date} className={styles.dateGroup}>
             {/* 날짜 표시 */}

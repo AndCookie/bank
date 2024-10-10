@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/TripFinishPage.module.css';
 import checkImage from '@/assets/images/load/check.png';
+import { useNavigate } from 'react-router-dom';
+import { MdArrowBack } from 'react-icons/md';
 import axiosInstance from '@/axios.js';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import LoadingPage from '@/pages/LoadingPage'; // LoadingPage 컴포넌트 가져오기
 import AdjustCompleteModal from '@/components/AdjustCompleteModal';
+
+import successImg from "@/assets/images/load/check.png";
 
 import FlightIcon from "@mui/icons-material/Flight";
 import HotelIcon from "@mui/icons-material/Hotel";
@@ -77,20 +81,52 @@ const TripFinishPage = () => {
     setisAdjustCompleteOpen(false);
   };
 
+  const navigate = useNavigate();
+  const goBack = () => {
+    navigate(-1);
+  }
+
 
   
   return (
-    <div>
-      <div>정산 완료</div>
-      {resultPayments.map((payment) => (
-        <div key={payment.payment_id} onClick={() => openisAdjustCompleteModal(payment.payment_id)}>
-          {categoryIcons[getPartPayment(payment.payment_id).category]}
-          {getPartPayment(payment.payment_id).brand_name}
-          {getPartPayment(payment.payment_id).pay_date}
-          {getPartPayment(payment.payment_id).pay_time}
-          {isAdjusted(payment.payment_id)}
+    <div className={styles.container}>
+      {/* 뒤로가기 */}
+      <div className={styles.header}>
+        <div className={styles.back}>
+          <MdArrowBack className={styles.btns} size={30} onClick={goBack} />
         </div>
-      ))}
+      </div>
+
+      {/* 정산완료 */}
+      <div className={styles.complete}>
+        <div className={styles.completeImg}><img src={checkImage} alt="체크" /></div>
+        <div className={styles.completeAmount}>얼마야</div>
+        <div className={styles.completeMsg}>정 산 완 료</div>
+      </div>
+
+      {/* 내 정보 */}
+      
+
+      {/* 세부 내역 */}
+      <div className={styles.allContent}>
+        {resultPayments.map((payment) => (
+          <div className={styles.content} key={payment.payment_id} onClick={() => openisAdjustCompleteModal(payment.payment_id)}>
+            <div className={styles.category}>
+              {categoryIcons[getPartPayment(payment.payment_id).category]}
+            </div>
+            <div className={styles.brandName}>{getPartPayment(payment.payment_id).brand_name}</div>
+            <div className={styles.payRecord}>
+              <div className={styles.payDate}>
+                {getPartPayment(payment.payment_id).pay_date}
+              </div>
+              <div className={styles.payTime}>{getPartPayment(payment.payment_id).pay_time}</div>
+            </div>
+            <div className={styles.isAdjusted}>
+              {isAdjusted(payment.payment_id)}
+            </div>
+          </div>
+        ))}
+      </div>
 
       <AdjustCompleteModal isOpen={isAdjustCompleteOpen} onClose={closeisAdjustCompleteModal} resultPayments={resultPayments} paymentId={selectedPaymentId} />
     </div>
