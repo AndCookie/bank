@@ -8,9 +8,10 @@ import {
   Backdrop,
   Fade,
   TextField,
+  Button
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-
+import axiosInstance from '@/axios.js'
 import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
@@ -42,6 +43,16 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
 
   // 고정된 멤버들의 bank_account를 저장하는 배열
   const [fixedMembers, setFixedMembers] = useState([]);
+
+  const handleDeletePayment = async () => {
+    try {
+      await axiosInstance.post(`/payments/delete/`, {payment_id: paymentId});
+      setPayments(payments.filter(payment => payment.id !== paymentId));  // 삭제된 결제 내역을 로컬에서 제거
+      onClose();  // 모달 닫기
+    } catch (error) {
+      console.error('Error deleting payment:', error);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -417,6 +428,20 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                 </div>
               </>
             )}
+          </div>
+          <div className={styles.deleteButtonContainer}>
+            <Button
+              variant="contained"
+              onClick={handleDeletePayment}
+              style={{
+                backgroundColor: "lightgrey",
+                position: 'absolute',  // 버튼을 절대 위치로 설정
+                right: '40%',  // 오른쪽 여백 설정
+                bottom: '20px',  // 아래쪽 여백 설정
+              }}
+            >
+              삭제
+            </Button>
           </div>
         </div>
       </Fade>
