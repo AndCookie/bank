@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
+import PaymentDeleteModal from "./PaymentDeleteModal";
 import {
   Modal,
   Box,
@@ -37,7 +37,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   // 결제 내역 상세 정보
   const [partPayment, setPartPayment] = useState({});
   const getPartPayment = usePaymentStore((state) => state.getPartPayment);
-
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const payments = usePaymentStore((state) => state.payments);
   const setPayments = usePaymentStore((state) => state.setPayments);
 
@@ -48,10 +48,21 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     try {
       await axiosInstance.post(`/payments/delete/`, {payment_id: paymentId});
       setPayments(payments.filter(payment => payment.id !== paymentId));  // 삭제된 결제 내역을 로컬에서 제거
+      setShowDeleteModal(false);
       onClose();  // 모달 닫기
     } catch (error) {
       console.error('Error deleting payment:', error);
     }
+  };
+
+  // 삭제 확인 모달 열기
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+
+  // 삭제 확인 모달 닫기
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
   };
 
   useEffect(() => {
@@ -435,7 +446,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           <div className={styles.deleteButtonContainer}>
             <Button
               variant="contained"
-              onClick={handleDeletePayment}
+              onClick={openDeleteModal} 
               style={{
                 backgroundColor: "lightgrey",
                 position: 'absolute',  // 버튼을 절대 위치로 설정
@@ -445,6 +456,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             >
               삭제
             </Button>
+            <PaymentDeleteModal
+              showDeleteModal={showDeleteModal}
+              onConfirm={handleDeletePayment}  // 네 클릭 시 결제 삭제
+              onCancel={closeDeleteModal}  // 닫기 클릭 시 삭제 모달 닫기
+            />
           </div>
         </div>
       </Fade>
