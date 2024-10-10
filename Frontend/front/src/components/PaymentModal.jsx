@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -7,56 +8,93 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import IconButton from '@mui/material/IconButton'; 
 import CloseIcon from '@mui/icons-material/Close'; 
-import { useParams } from 'react-router-dom';
-import { useUserStore } from '@/stores/userStore';
-import { usePaymentStore } from '@/stores/paymentStore';
+import { useMutation, useQueryClient } from 'react-query'; // react-query 추가
+import axiosInstance from '@/axios'; // axiosInstance import
+import { usePaymentStore } from '@/stores/paymentStore'; // paymentStore import
+import { useTripStore } from '@/stores/tripStore'; // tripStore import
 import styles from "./styles/PaymentModal.module.css";
+import { useUserStore } from '@/stores/userStore'
 
-const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
+const PaymentModal = ({ isOpen, onClose, tripDetailInfo }) => {
   const { tripId } = useParams();
-  const userInfo = useUserStore((state) => state.userInfo);
   const userAccount = useUserStore((state) => state.userAccount);
-  const fetchPayments = usePaymentStore((state) => state.fetchPayments);
+  const setPayments = usePaymentStore((state) => state.setPayments); // paymentStore의 setPayments 함수
+
   const [amount, setAmount] = useState('');
   const [brandName, setBrandName] = useState('');
   const [payDate, setPayDate] = useState('');
   const [payTime, setPayTime] = useState('');
   const [tabIndex, setTabIndex] = useState(0);
-
-  useEffect(() => {
-    if (isOpen) {
-      // 현재 날짜와 시간을 기본값으로 설정
-      const today = new Date();
-      const formattedDate = today.toISOString().split('T')[0]; // 'yyyy-mm-dd' 형식
-      const formattedTime = today.toTimeString().split(' ')[0].substring(0, 5); // 'HH:mm' 형식
-      
-      setPayDate(formattedDate);
-      setPayTime(formattedTime);
-    }
-  }, [isOpen]);
+  const queryClient = useQueryClient(); // react-query queryClient
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
   };
 
-  const handleSubmit = () => {
-    if (tabIndex === 0) {
-      onSubmitPrepare({
-        trip_id: Number(tripId),
-        amount: Number(amount),
-        brand_name: brandName,
-      });
-    } else if (tabIndex === 1) {
-      onSubmitCash({
-        pay_date: payDate,
-        pay_time: payTime,
-        brand_name: brandName,
-        bank_account: userAccount.bankAccount,
-        amount: Number(amount),
-      });
-    }
+  useEffect(() => {
+    if (isOpen) {
+      // 오늘 날짜를 yyyy-MM-dd 형식으로 설정
+      const today = new Date().toISOString().split('T')[0];
+      // 현재 시간을 HH:mm 형식으로 설정
+      const now = new Date().toLocaleTimeString('it-IT').slice(0, 5);
 
-    onClose();
+      setPayDate(today);
+      setPayTime(now);
+    }
+  }, [isOpen]);
+
+
+  // 결제 내역 POST 요청 (prepare, cash 결제 구분)
+  const { mutate: addPayment } = useMutation(
+    (newPayment) => {
+      const endpoint = tabIndex === 0 ? '/payments/prepare/' : '/payments/';
+      return axiosInstance.post(endpoint, newPayment);
+    },
+    {
+      onSuccess: async () => {
+        // 결제 성공 후, 결제 목록을 다시 가져옴
+        const response = await axiosInstance.get('/payments/list/', {
+          params: { trip_id: tripId },
+        });
+
+        const paymentsData = response.data;
+
+        // 결제 내역 갱신
+        const updatedPaymentsData = paymentsData.payments_list.map(payment => {
+          const bills = tripDetailInfo.members.map(member => ({
+            cost: 0,
+            bank_account: member.bank_account,
+          }));
+
+          return {
+            ...payment,
+            bills,
+            checked: false,
+          };
+        });
+
+        setPayments(updatedPaymentsData); // paymentStore에 결제 내역 업데이트
+      },
+      onError: (error) => {
+        console.error('결제 내역 추가 오류:', error);
+      }
+    }
+  );
+
+  // 결제 내역 추가 핸들러
+  const handleSubmit = () => {
+    const newPayment = {
+      trip_id: Number(tripId),
+      amount: Number(amount),
+      brand_name: brandName,
+      bank_account: userAccount.bankAccount,
+      pay_date: payDate,
+      pay_time: payTime,
+    };
+
+    // 결제 요청 보내기
+    addPayment(newPayment);
+    onClose(); // 모달 닫기
   };
 
   return (
@@ -124,7 +162,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="날짜"
                 type="date"
                 value={payDate}
                 onChange={(e) => setPayDate(e.target.value)}
@@ -133,7 +170,6 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
               <TextField
                 fullWidth
                 margin="normal"
-                label="시간"
                 type="time"
                 value={payTime}
                 onChange={(e) => setPayTime(e.target.value)}
@@ -143,11 +179,10 @@ const PaymentModal = ({ isOpen, onClose, onSubmitPrepare, onSubmitCash }) => {
         </div>
 
         <div className={styles.adjustContainer}>
-          <button className={styles.adjustBtn} onClick={handleSubmit}>
-            추 가 하 기
-          </button>
+          <Button className={styles.adjustBtn} onClick={handleSubmit}>
+            추가하기
+          </Button>
         </div>
-
       </Box>
     </Modal>
   );

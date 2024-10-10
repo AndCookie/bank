@@ -166,7 +166,7 @@ const Payment = ({ selectedDate }) => {
       if (selectedDate === "all") {
         return true;
       } else if (selectedDate === "prepare") {
-        return new Date(payment.pay_date) < tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
+        return new Date(payment.pay_date) == tripStartDateMidnight; // 자정 기준으로 준비 내역 필터링
       } else {
         return (
           new Date(payment.pay_date).toDateString() ===
@@ -262,6 +262,7 @@ const Payment = ({ selectedDate }) => {
             onClose={closeModal}
             onSubmitPrepare={handleAddPreparePayment}  // 여행 전 결제 내역 처리
             onSubmitCash={handleAddCashPayment}  // 현금 결제 내역 처리
+            tripDetailInfo={tripDetailInfo}
           />
         </div>
         {Object.keys(groupedPayments).map((date) => (
