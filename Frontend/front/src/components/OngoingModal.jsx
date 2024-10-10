@@ -452,6 +452,8 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               onClick={openDeleteModal}
               style={{
                 backgroundColor: "lightgrey",
+                color: "black",
+                fontFamily: "Spoqa Han Sans Neo",
                 position: 'absolute',  // 버튼을 절대 위치로 설정
                 right: '40%',  // 오른쪽 여백 설정
                 bottom: '20px',  // 아래쪽 여백 설정
