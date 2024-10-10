@@ -81,7 +81,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
         setPartPayment((prev) => ({
           ...prev,
           bills: tripDetailInfo.members.map((member, index) => ({
-            cost: payments.find(payment => payment.id === paymentId).calculates.find(calculate => calculate.user_id === member.id).remain_cost,
+            cost: payments.find(payment => payment.id === paymentId).calculates.find(calculate => calculate.user_id === member.id).cost,
             bank_account: member.bank_account
           }))
         }));
@@ -111,31 +111,31 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
     const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
-  
+
     // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
     if (!fixedMembers.includes(bankAccount)) {
       setFixedMembers((prev) => [...prev, bankAccount]);
     }
-  
+
     // 고정되지 않은 멤버들을 필터링
     const remainingMembers = partPayment.bills.filter(
       (bill) => !fixedMembers.includes(bill.bank_account) && bill.bank_account !== bankAccount
     );
-  
+
     let remainingCost;
     const fixedTotal = partPayment.bills
       .filter((bill) => fixedMembers.includes(bill.bank_account))
       .reduce((acc, member) => acc + member.cost, 0);
-  
+
     if (partPayment.calculates.length === 0) {
       remainingCost = partPayment.amount - fixedCost - fixedTotal;
     } else {
       remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost - fixedTotal;
     }
-  
+
     const evenCost = Math.floor(remainingCost / remainingMembers.length);
     const remainder = remainingCost % remainingMembers.length; // 1원 차이
-  
+
     setPartPayment((prevPayment) => {
       const updatedBills = prevPayment.bills.map((bill, index) => {
         if (bill.bank_account === bankAccount) {
@@ -154,11 +154,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
           return bill;
         }
       });
-  
+
       return { ...prevPayment, bills: updatedBills };
     });
   };
-    // userId에 따른 이름 반환
+  // userId에 따른 이름 반환
   const matchUserName = () => {
     const matchMember = tripDetailInfo.members.find(
       (member) => Number(member.id) === Number(partPayment.user_id)
@@ -250,10 +250,13 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                 <>
                   {tripDetailInfo.members.map((member, index) => (
                     <div className={styles.member} key={index}>
-                      <div className={styles.memberName}>
-                        {partPayment.calculates.length &&
+                      <div className={styles.memberName} style={{
+                        color: partPayment.calculates.length &&
+                          partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 ? 'orange' : 'black',
+                      }}>
+                        {/* {partPayment.calculates.length &&
                           partPayment.calculates.find((calculate) => calculate.user_id == member.id).remain_cost > 0 &&
-                          <WarningAmberIcon sx={{ color: 'orange' }} />}
+                          <WarningAmberIcon sx={{ color: 'orange' }} />} */}
                         {member.last_name}
                         {member.first_name}
                       </div>
@@ -292,6 +295,25 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               결제 당사자 <div className={styles.payMember}>{matchUserName()}</div>님만<br />{isCompleted ? '수정' : '정산'}할 수 있어요
             </div>
             }
+
+            <div>
+              {!partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
+                <>
+                  <WarningAmberIcon sx={{ color: 'orange' }} />
+                  <div style={{ 'color': 'orange' }}>
+                    {partPayment.calculates
+                      .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
+                        const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
+                        return (
+                          <div key={calculate.user_id}>
+                            {member.last_name}{member.first_name}님이 {calculate.remain_cost}원을 정산하지 않았습니다.
+                          </div>
+                        );
+                      })}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </Fade>
       </Modal>
@@ -345,10 +367,9 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               const calculate = partPayment.calculates.find((calculate) => Number(calculate.user_id) === Number(member.id));
               return (
                 <div className={styles.member} key={index}>
-                  <div className={styles.memberName}>
-                    {calculate && calculate.remain_cost > 0 && (
-                      <WarningAmberIcon sx={{ color: 'orange' }} />
-                    )}
+                  <div className={styles.memberName} style={{
+                    color: calculate && calculate.remain_cost > 0 ? 'orange' : 'black',
+                  }}>
                     {member.last_name}
                     {member.first_name}
                   </div>
@@ -377,6 +398,25 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
                 </div>
               );
             })}
+          </div>
+
+          <div>
+            {!partPayment.calculates.every((calculate) => calculate.remain_cost === 0) && (
+              <>
+                <WarningAmberIcon sx={{ color: 'orange' }} />
+                <div style={{ 'color': 'orange' }}>
+                  {partPayment.calculates
+                    .filter((calculate) => calculate.remain_cost !== 0).map((calculate) => {
+                      const member = tripDetailInfo.members.find((member) => member.id === calculate.user_id);
+                      return (
+                        <div key={calculate.user_id}>
+                          {member.last_name}{member.first_name}님이 {calculate.remain_cost}원을 정산하지 않았습니다.
+                        </div>
+                      );
+                    })}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </Fade>
