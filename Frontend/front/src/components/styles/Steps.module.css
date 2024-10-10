@@ -13,7 +13,8 @@
 .second,
 .third,
 .fourth,
-.fifth {
+.fifth,
+.sixth {
   margin: 0px 10px;
   /* border: 2px solid blue; */
 }
