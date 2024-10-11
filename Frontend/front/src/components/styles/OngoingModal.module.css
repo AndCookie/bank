@@ -131,7 +131,7 @@
   /* border: 1px solid black !important; */
 }
 
-.deleteButton {
+.okButton {
   min-width: 100px; /* 버튼 최소 너비 강제 적용 */
   border-radius: 30px;
   padding: 8px 20px;
