@@ -122,28 +122,32 @@
 }
 
 .deleteButtonContainer {
-  display: flex !important;
-  justify-content: center !important; /* 중앙 정렬 */
-  align-items: center !important;
-  gap: 20px !important; /* 버튼 간의 간격을 설정하고, !important로 강제 */
-  margin: 20px auto 0px auto !important;
-  width: 100% !important;
-  /* border: 1px solid black !important; */
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center;
+  gap: 20px;
+  margin: 20px auto 0px auto;
+  width: 100%;
 }
 
 .okButton {
-  min-width: 100px; /* 버튼 최소 너비 강제 적용 */
+  min-width: 100px;
+  border: none;
   border-radius: 30px;
   padding: 8px 20px;
   background-color: #4b72e1;
-  font-family: "Spoqa Han Sans Neo"; /* 폰트 강제 적용 */
+  color: white;
+  font-weight: 500;
+  font-family: "Spoqa Han Sans Neo";
 }
 
 .deleteButton {
-  min-width: 100px; /* 버튼 최소 너비 강제 적용 */
+  min-width: 100px;
+  border: none;
   border-radius: 30px;
   padding: 8px 20px;
   background-color: lightgrey;
-  font-family: "Spoqa Han Sans Neo"; /* 폰트 강제 적용 */
+  font-weight: 500;
+  font-family: "Spoqa Han Sans Neo";
 }
 
