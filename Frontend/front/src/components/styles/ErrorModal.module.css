@@ -37,7 +37,8 @@
 }
 
 .modalBtn {
-  background-color: #4b72e1;
+  /* background-color: #4b72e1; */
+  background-color: grey;
   text-align: center;
   width: 120px;
   margin: 0px 5px;
@@ -47,5 +48,5 @@
 }
 
 .modalBtn:hover {
-  background-color: blue;
+  background-color: black;
 }
