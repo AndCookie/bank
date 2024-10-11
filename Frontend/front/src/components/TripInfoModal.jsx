@@ -24,17 +24,18 @@ const TripInfoModal = ({ isOpen, onClose }) => {
   const handleSaveClick = async () => {
     try {
       // 새로운 예산 업데이트
-
+      const numericBudget = parseInt(newBudget, 10); // newBudget을 숫자로 변환
+  
       // POST 요청 데이터
       const postData = {
         trip_id: tripId,
-        budget: newBudget,
+        budget: numericBudget,
       };
-
+  
       // /trips/invite/로 POST 요청 보내기
       const response = await axiosInstance.post('/trips/budget/', postData);
-
-      setInitialBudget(response.data.budget)
+  
+      setInitialBudget(response.data.budget);
       setEditMode(false); // 수정 모드 종료
     } catch (error) {
       console.error('Error sending budget data:', error);
@@ -88,17 +89,17 @@ const TripInfoModal = ({ isOpen, onClose }) => {
           <div className={styles.budget}>
             <div className={styles.infoTitle}>💰 &nbsp;예산</div>
             <div className={styles.infoDetail}>
-              {!editMode ? (
-                <>
-                  <div className={styles.infoBudget}>
-                    초기 예산 | {budget.initialBudget.toLocaleString()}원
-                    <IconButton onClick={handleEditClick} size="small">
-                      <EditIcon />
-                    </IconButton>
-                  </div>
-                  <div className={styles.infoBudget}>소비 예산 | {budget.usedBudget.toLocaleString()}원</div>
-                  <div className={styles.infoBudget}>잔여 예산 | {budget.remainBudget.toLocaleString()}원</div>
-                </>
+            {!editMode ? (
+              <>
+                <div className={styles.infoBudget}>
+                  초기 예산 | {Number(budget.initialBudget).toLocaleString()}원
+                  <IconButton onClick={handleEditClick} size="small">
+                    <EditIcon />
+                  </IconButton>
+                </div>
+                <div className={styles.infoBudget}>소비 예산 | {Number(budget.usedBudget).toLocaleString()}원</div>
+                <div className={styles.infoBudget}>잔여 예산 | {Number(budget.remainBudget).toLocaleString()}원</div>
+              </>
               ) : (
                 <div className={styles.editBudget}>
                   <TextField
