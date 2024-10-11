@@ -17,7 +17,7 @@ import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
-
+import { ButtonGroup } from '@mui/material';
 import styles from "./styles/OngoingModal.module.css";
 
 import FlightIcon from "@mui/icons-material/Flight";
@@ -494,40 +494,30 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               </>
             )}
           </div>
+          
           {!isCompleted && (
             <div className={styles.deleteButtonContainer}>
-              <Button
-                variant="contained"
+              <button
                 onClick={applyAdjust}
-                className={styles.deleteButton}
-                style={{
-                  backgroundColor: "lightgrey",
-                  color: "black",
-                  fontFamily: "Spoqa Han Sans Neo",
-                }}
+                className={styles.deleteButton}  // className을 사용하여 스타일 적용
               >
                 확인
-              </Button>
-
-              <Button
-                variant="contained"
+              </button>
+            
+              <button
                 onClick={openDeleteModal}
-                className={styles.deleteButton}
-                style={{
-                  backgroundColor: "lightgrey",
-                  color: "black",
-                  fontFamily: "Spoqa Han Sans Neo",
-                }}
+                className={styles.deleteButton}  // className을 사용하여 스타일 적용
               >
                 삭제
-              </Button>
-
+              </button>
+            
               <PaymentDeleteModal
                 showDeleteModal={showDeleteModal}
                 onConfirm={handleDeletePayment}  // 네 클릭 시 결제 삭제
                 onCancel={closeDeleteModal}  // 닫기 클릭 시 삭제 모달 닫기
               />
             </div>
+          
           )}
         </div>
       </Fade>
