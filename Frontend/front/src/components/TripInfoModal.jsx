@@ -11,7 +11,7 @@ import styles from './styles/TripInfoModal.module.css';
 
 const TripInfoModal = ({ isOpen, onClose }) => {
   const tripDetailInfo = useTripStore((state) => state.tripDetailInfo);
-  const { budget, setUserBudget, userInfo } = useUserStore((state) => state); // budget과 userInfo 가져오기
+  const { budget, setUserBudget, setInitialBudget, userInfo } = useUserStore((state) => state); // budget과 userInfo 가져오기
   const { tripId } = useParams(); // tripId 가져오기
 
   const [editMode, setEditMode] = useState(false); // 수정 모드 상태
@@ -32,8 +32,9 @@ const TripInfoModal = ({ isOpen, onClose }) => {
       };
 
       // /trips/invite/로 POST 요청 보내기
-      await axiosInstance.post('/trips/budget/', postData);
+      const response = await axiosInstance.post('/trips/budget/', postData);
 
+      setInitialBudget(response.data.budget)
       setEditMode(false); // 수정 모드 종료
     } catch (error) {
       console.error('Error sending budget data:', error);

@@ -43,6 +43,14 @@ export const useUserStore = create(
           usedBudget: budgets.budget.used_budget || 0,
           remainBudget: budgets.budget.remain_budget || 0,
         },
+      })),
+
+      setInitialBudget: (budgetData) => set((state) => ({
+        budget: {
+          initialBudget: budgetData,
+          usedBudget: state.budget.usedBudget || 0,
+          remainBudget: state.budget.remainBudget || 0, 
+        }
       }))
     }),
     {
