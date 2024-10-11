@@ -13,8 +13,9 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import { useTripStore } from "@/stores/tripStore";
 import { usePaymentStore } from "@/stores/paymentStore";
+import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
+
 import axiosInstance from "@/axios.js";
-import ErrorModal from '@/components/ErrorModal';
 
 import styles from "./styles/AdjustModal.module.css";
 
@@ -139,24 +140,17 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
       .cost.toLocaleString();
   };
 
+  const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
+
   const navigate = useNavigate();
   const { tripId } = useParams();
-
-  const [isErrorModalOpen, setIsErorModalOpen] = useState(false);
-
-  const openErrorModal = () => {
-    setIsErorModalOpen(true);
-  }
-
-  const closeErrorModal = () => {
-    setIsErorModalOpen(false);
-  }
 
   const goFinish = () => {
     if (finalPayments.payments.length > 0) {
       navigate(`/finish/${tripId}`);
     } else {
-      openErrorModal();
+      onClose();
+      setError('정산 내역을 선택해주세요.');
     }
   };
 
@@ -267,12 +261,6 @@ const AdjustModal = ({ isOpen, onClose, totalAmount }) => {
           </div>
         </Fade>
       </Modal>
-
-      <ErrorModal
-        errorMessage={'정산 내역을 선택하세요.'}
-        showErrorModal={isErrorModalOpen}
-        clearError={closeErrorModal}
-      />
     </>
   );
 };

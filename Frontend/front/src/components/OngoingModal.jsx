@@ -15,6 +15,7 @@ import axiosInstance from '@/axios.js'
 import { useUserStore } from '@/stores/userStore';
 import { useTripStore } from '@/stores/tripStore';
 import { usePaymentStore } from '@/stores/paymentStore';
+import { useErrorStore } from '../stores/errorStore'; // Error Store 가져오기
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 import { ButtonGroup } from '@mui/material';
@@ -241,23 +242,26 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
 
   // 모달 창이 닫힐 때 payments에 저장하기
   // if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) === partPayment.amount)
-  useEffect(() => {
-    if (!isOpen && partPayment.bills) {
-      if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
-        return
-      }
+  // useEffect(() => {
+  //   if (!isOpen && partPayment.bills) {
+  //     if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
+  //       return
+  //     }
 
-      setPayments(
-        payments.map((payment) =>
-          payment.id === partPayment.id ? partPayment : payment
-        )
-      );
-      setFixedMembers([]);
-    }
-  }, [isOpen]);
+  //     setPayments(
+  //       payments.map((payment) =>
+  //         payment.id === partPayment.id ? partPayment : payment
+  //       )
+  //     );
+  //     setFixedMembers([]);
+  //   }
+  // }, [isOpen]);
 
+  const { setError } = useErrorStore(); // 에러 메시지 설정 함수 가져오기
   const applyAdjust = () => {
     if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
+      onClose();
+      setError('정산 금액이 맞지 않습니다.');
       return
     }
 
