@@ -70,7 +70,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       setPartPayment(getPartPayment(paymentId));
     }
   }, [isOpen, paymentId, getPartPayment]);
-  
+
 
   useEffect(() => {
     if (isOpen && isCompleted && Array.isArray(partPayment.calculates) && partPayment.calculates.length > 0) {
@@ -83,7 +83,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       }));
     }
   }, [isOpen, isCompleted, partPayment.calculates, tripDetailInfo.members]);
-  
+
 
   // 여행 멤버 수만큼 나누어 저장
   useEffect(() => {
@@ -93,7 +93,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
         if (partPayment.amount && typeof partPayment.amount === 'number' && tripDetailInfo.members.length > 0) {
           const baseCost = Math.floor(partPayment.amount / tripDetailInfo.members.length);
           const totalCost = baseCost * tripDetailInfo.members.length;
-  
+
           setPartPayment((prev) => ({
             ...prev,
             bills: tripDetailInfo.members.map((member, index) => ({
@@ -105,7 +105,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       }
     }
   }, [isOpen, isCompleted, payments, paymentId, partPayment.amount, tripDetailInfo.members]);
-  
+
 
   // useEffect(() => {
   //   console.log(partPayment)
@@ -114,7 +114,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   // 여행 멤버별 정산 금액 매칭
   const matchBankAccount = (bankAccount, userId) => {
     let cost = 0;
-  
+
     if (!isCompleted) {
       const targetBill = (partPayment.bills || []).find(
         (bill) => bill.bank_account === bankAccount
@@ -126,11 +126,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       );
       cost = targetBill ? targetBill.cost : 0;
     }
-  
+
     return isNaN(cost) ? 0 : cost; // NaN 방지
   };
-  
-  
+
+
 
   // 여행 멤버별 정산 금액 조정
   const handleCostChange = (bankAccount, inputCost) => {
@@ -138,12 +138,12 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     if (isNaN(fixedCost)) {
       return;
     }
-  
+
     // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
     if (!fixedMembers.includes(bankAccount)) {
       setFixedMembers((prev) => [...prev, bankAccount]);
     }
-  
+
     // 특정 멤버의 cost만 업데이트
     setPartPayment((prevPayment) => {
       const updatedBills = prevPayment.bills.map((bill) => {
@@ -152,7 +152,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
         }
         return bill; // 나머지는 그대로 유지
       });
-  
+
       return { ...prevPayment, bills: updatedBills };
     });
   };
@@ -246,7 +246,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
         return
       }
-      
+
       setPayments(
         payments.map((payment) =>
           payment.id === partPayment.id ? partPayment : payment
@@ -255,6 +255,20 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       setFixedMembers([]);
     }
   }, [isOpen]);
+
+  const applyAdjust = () => {
+    if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
+      return
+    }
+
+    setPayments(
+      payments.map((payment) =>
+        payment.id === partPayment.id ? partPayment : payment
+      )
+    );
+    setFixedMembers([]);
+    onClose()
+  }
 
   if (!isOpen) return null;
 
@@ -274,11 +288,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
       >
         <Fade in={isOpen}>
           <div className={styles.box}>
-            <CloseIcon
+            {/* <CloseIcon
               className={styles.closeBtn}
               fontSize="large"
               onClick={onClose}
-            />
+            /> */}
             <div className={styles.totalAmount}>
               {(partPayment.amount !== undefined && partPayment.amount !== null)
                 ? partPayment.amount.toLocaleString()
@@ -394,11 +408,11 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     >
       <Fade in={isOpen}>
         <div className={styles.box}>
-          <CloseIcon
+          {/* <CloseIcon
             className={styles.closeBtn}
             fontSize="large"
             onClick={onClose}
-          />
+          /> */}
           <div className={styles.totalAmount}>
             {(partPayment.amount !== undefined && partPayment.amount !== null)
               ? partPayment.amount.toLocaleString()
@@ -484,6 +498,19 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             <div className={styles.deleteButtonContainer}>
               <Button
                 variant="contained"
+                onClick={applyAdjust}
+                className={styles.deleteButton}
+                style={{
+                  backgroundColor: "lightgrey",
+                  color: "black",
+                  fontFamily: "Spoqa Han Sans Neo",
+                }}
+              >
+                확인
+              </Button>
+
+              <Button
+                variant="contained"
                 onClick={openDeleteModal}
                 className={styles.deleteButton}
                 style={{
@@ -494,16 +521,17 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
               >
                 삭제
               </Button>
+
               <PaymentDeleteModal
                 showDeleteModal={showDeleteModal}
                 onConfirm={handleDeletePayment}  // 네 클릭 시 결제 삭제
                 onCancel={closeDeleteModal}  // 닫기 클릭 시 삭제 모달 닫기
               />
             </div>
-)}
+          )}
         </div>
       </Fade>
-    </Modal>
+    </Modal >
   );
 };
 
