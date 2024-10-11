@@ -138,53 +138,77 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
     if (isNaN(fixedCost)) {
       return;
     }
-
+  
     // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
     if (!fixedMembers.includes(bankAccount)) {
       setFixedMembers((prev) => [...prev, bankAccount]);
     }
-
-    // 고정되지 않은 멤버들을 필터링
-    const remainingMembers = partPayment.bills.filter(
-      (bill) => !fixedMembers.includes(bill.bank_account) && bill.bank_account !== bankAccount
-    );
-
-    let remainingCost;
-    const fixedTotal = partPayment.bills
-      .filter((bill) => fixedMembers.includes(bill.bank_account))
-      .reduce((acc, member) => acc + member.cost, 0);
-
-    if (partPayment.calculates.length === 0) {
-      remainingCost = partPayment.amount - fixedCost - fixedTotal;
-    } else {
-      remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost - fixedTotal;
-    }
-
-    const evenCost = Math.floor(remainingCost / remainingMembers.length);
-    const remainder = remainingCost % remainingMembers.length; // 1원 차이
-
+  
+    // 특정 멤버의 cost만 업데이트
     setPartPayment((prevPayment) => {
-      const updatedBills = prevPayment.bills.map((bill, index) => {
+      const updatedBills = prevPayment.bills.map((bill) => {
         if (bill.bank_account === bankAccount) {
-          // 입력된 금액을 조정 중인 사람의 cost 업데이트
-          return { ...bill, cost: fixedCost };
-        } else if (!fixedMembers.includes(bill.bank_account)) {
-          // 첫 번째 엔빵 대상자가 수정한 사람일 경우, 그 다음 사람에게 1원 차액 할당
-          const isFirstMember = index === 0 && remainingMembers[0].bank_account === bankAccount;
-          const isSecondMember = index === 1 && remainingMembers[1]?.bank_account !== bankAccount;
-          return {
-            ...bill,
-            cost: evenCost + ((isFirstMember || isSecondMember) ? remainder : 0), // 첫 번째 사람 또는 그 다음 사람에게 1원 차액 할당
-          };
-        } else {
-          // 고정된 멤버는 기존 cost 유지
-          return bill;
+          return { ...bill, cost: fixedCost }; // 수정된 멤버의 cost만 업데이트
         }
+        return bill; // 나머지는 그대로 유지
       });
-
+  
       return { ...prevPayment, bills: updatedBills };
     });
   };
+  // const handleCostChange = (bankAccount, inputCost) => {
+  //   const fixedCost = inputCost === '' ? 0 : parseInt(inputCost);
+  //   if (isNaN(fixedCost)) {
+  //     return;
+  //   }
+
+  //   // 현재 수정된 bank_account가 fixedMembers에 없으면 추가
+  //   if (!fixedMembers.includes(bankAccount)) {
+  //     setFixedMembers((prev) => [...prev, bankAccount]);
+  //   }
+
+  //   // 고정되지 않은 멤버들을 필터링
+  //   const remainingMembers = partPayment.bills.filter(
+  //     (bill) => !fixedMembers.includes(bill.bank_account) && bill.bank_account !== bankAccount
+  //   );
+
+  //   let remainingCost;
+  //   const fixedTotal = partPayment.bills
+  //     .filter((bill) => fixedMembers.includes(bill.bank_account))
+  //     .reduce((acc, member) => acc + member.cost, 0);
+
+  //   if (partPayment.calculates.length === 0) {
+  //     remainingCost = partPayment.amount - fixedCost - fixedTotal;
+  //   } else {
+  //     remainingCost = partPayment.calculates.reduce((acc, calculate) => acc + calculate.remain_cost, 0) - fixedCost - fixedTotal;
+  //   }
+
+  //   const evenCost = Math.floor(remainingCost / remainingMembers.length);
+  //   const remainder = remainingCost % remainingMembers.length; // 1원 차이
+
+  //   setPartPayment((prevPayment) => {
+  //     const updatedBills = prevPayment.bills.map((bill, index) => {
+  //       if (bill.bank_account === bankAccount) {
+  //         // 입력된 금액을 조정 중인 사람의 cost 업데이트
+  //         return { ...bill, cost: fixedCost };
+  //       } else if (!fixedMembers.includes(bill.bank_account)) {
+  //         // 첫 번째 엔빵 대상자가 수정한 사람일 경우, 그 다음 사람에게 1원 차액 할당
+  //         const isFirstMember = index === 0 && remainingMembers[0].bank_account === bankAccount;
+  //         const isSecondMember = index === 1 && remainingMembers[1]?.bank_account !== bankAccount;
+  //         return {
+  //           ...bill,
+  //           cost: evenCost + ((isFirstMember || isSecondMember) ? remainder : 0), // 첫 번째 사람 또는 그 다음 사람에게 1원 차액 할당
+  //         };
+  //       } else {
+  //         // 고정된 멤버는 기존 cost 유지
+  //         return bill;
+  //       }
+  //     });
+
+  //     return { ...prevPayment, bills: updatedBills };
+  //   });
+  // };
+
   // userId에 따른 이름 반환
   const matchUserName = () => {
     const matchMember = tripDetailInfo.members.find(
@@ -216,8 +240,13 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
   };
 
   // 모달 창이 닫힐 때 payments에 저장하기
+  // if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) === partPayment.amount)
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen && partPayment.bills) {
+      if (partPayment.bills.reduce((acc, bill) => acc + bill.cost, 0) !== partPayment.amount) {
+        return
+      }
+      
       setPayments(
         payments.map((payment) =>
           payment.id === partPayment.id ? partPayment : payment
