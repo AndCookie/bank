@@ -499,7 +499,7 @@ const OngoingModal = ({ isOpen, onClose, paymentId, isCompleted }) => {
             <div className={styles.deleteButtonContainer}>
               <button
                 onClick={applyAdjust}
-                className={styles.deleteButton}  // className을 사용하여 스타일 적용
+                className={styles.okButton}  // className을 사용하여 스타일 적용
               >
                 확인
               </button>
