@@ -128,13 +128,15 @@
   gap: 20px !important; /* 버튼 간의 간격을 설정하고, !important로 강제 */
   margin: 20px auto 0px auto !important;
   width: 100% !important;
-  border: 1px solid black !important;
+  /* border: 1px solid black !important; */
 }
 
 .deleteButton {
   min-width: 100px !important; /* 버튼 최소 너비 강제 적용 */
+  border-radius: 30px;
+  padding: 8px 20px;
   background-color: lightgrey !important;
-  color: black !important;
+  /* color: black !important; */
   font-family: "Spoqa Han Sans Neo" !important; /* 폰트 강제 적용 */
 }
 
